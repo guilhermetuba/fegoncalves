@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Controle de Semijoias</title>
+</head>
+<body>
+    <h1>Bem-vindo ao Controle de Semijoias</h1>
+    <p>Este é o seu site inicial.</p>
+</body>
+</html>
