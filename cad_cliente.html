@@ -5,55 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro de Clientes</title>
   <script>
-    function validarCPF(cpf) {
-      cpf = cpf.replace(/[^\d]+/g, '');
-      if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
-
-      let soma = 0, resto;
-      for (let i = 1; i <= 9; i++) soma += parseInt(cpf[i - 1]) * (11 - i);
-      resto = (soma * 10) % 11;
-      if (resto === 10 || resto === 11) resto = 0;
-      if (resto !== parseInt(cpf[9])) return false;
-
-      soma = 0;
-      for (let i = 1; i <= 10; i++) soma += parseInt(cpf[i - 1]) * (12 - i);
-      resto = (soma * 10) % 11;
-      if (resto === 10 || resto === 11) resto = 0;
-      return resto === parseInt(cpf[10]);
-    }
-
-    function validarFormulario(event) {
-      event.preventDefault();
-      let cpfInput = document.getElementById("cpf");
-      let cpf = cpfInput.value;
-
-      if (!validarCPF(cpf)) {
-        alert("CPF inválido! Verifique e tente novamente.");
-        return;
-      }
-
-      let form = document.getElementById("clienteForm");
-      let formData = new FormData(form);
-
-      fetch(form.action, {
-        method: form.method,
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data); // Verifica o retorno do Apps Script
-        if (data.result === "error") {
-          alert(data.message); // Exibe a mensagem de erro, como "CPF já cadastrado"
-        } else {
-          alert(data.message); // Exibe a mensagem de sucesso
-          form.reset(); // Limpa o formulário após o sucesso
-        }
-      })
-      .catch(error => {
-        alert("Erro ao cadastrar. Tente novamente.");
-      });
-    }
-
+    // Funções para aplicar as máscaras de CPF e telefone
     function aplicarMascaraCPF() {
       let cpf = document.getElementById("cpf");
       cpf.value = cpf.value.replace(/\D/g, '')
@@ -67,6 +19,28 @@
       telefone.value = telefone.value.replace(/\D/g, '')
                                      .replace(/(\d{2})(\d)/, '($1) $2')
                                      .replace(/(\d{4,5})(\d{4})$/, '$1-$2');
+    }
+
+    // Função para enviar o formulário
+    function validarFormulario(event) {
+      event.preventDefault(); // Impede o envio automático do formulário
+      let form = document.getElementById("clienteForm");
+      let formData = new FormData(form);
+
+      fetch(form.action, {
+        method: form.method,
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message);  // Mensagem de sucesso ou erro
+        if (data.result === "success") {
+          form.reset();  // Limpa o formulário
+        }
+      })
+      .catch(error => {
+        alert("Erro ao cadastrar. Tente novamente.");
+      });
     }
   </script>
 </head>
@@ -110,4 +84,5 @@
 
 </body>
 </html>
+
 
