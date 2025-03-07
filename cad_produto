@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Produtos</title>
+  <script>
+    // Função para aplicar a máscara de moeda (para os campos de preço)
+    function aplicarMascaraMoeda(event) {
+      var valor = event.target.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+      valor = valor.replace(/(\d)(\d{8})$/, '$1.$2'); // Adiciona ponto a cada 8 dígitos
+      valor = valor.replace(/(\d)(\d{5})$/, '$1.$2'); // Adiciona ponto a cada 5 dígitos
+      valor = valor.replace(/(\d)(\d{2})$/, '$1,$2'); // Adiciona vírgula para as casas decimais
+      event.target.value = valor;
+    }
+
+    // Função para garantir que a quantidade seja maior ou igual a 0
+    function validarQuantidade(event) {
+      let quantidade = event.target.value;
+      if (quantidade < 0) {
+        event.target.setCustomValidity("Quantidade não pode ser negativa");
+      } else {
+        event.target.setCustomValidity("");
+      }
+    }
+
+    // Função para enviar o formulário
+    function validarFormulario(event) {
+      event.preventDefault(); // Impede o envio automático do formulário
+      let form = document.getElementById("produtoForm");
+      let formData = new FormData(form);
+
+      fetch(form.action, {
+        method: form.method,
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message);  // Mensagem de sucesso ou erro
+        if (data.result === "success") {
+          form.reset();  // Limpa o formulário
+        }
+      })
+      .catch(error => {
+        alert("Erro ao cadastrar. Tente novamente.");
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <h2>Cadastro de Produtos</h2>
+  <form id="produtoForm" action="https://script.google.com/macros/s/AKfycbzCO9RDUxw34yZsH9NgXIQrIcoqw_vT69ZiKpyNfps1RkZzt0UMAMN19Pf08t3gEeEI/exec" method="POST" onsubmit="validarFormulario(event)">
+    
+    <div>
+      <label for="codigo">Código:</label>
+      <input type="text" id="codigo" name="codigo" required>
+    </div>
+
+    <div>
+      <label for="produto">Produto:</label>
+      <input type="text" id="produto" name="produto" required>
+    </div>
+
+    <div>
+      <label for="fornecedor">Fornecedor:</label>
+      <input type="text" id="fornecedor" name="fornecedor" required>
+    </div>
+
+    <div>
+      <label for="categoria">Categoria:</label>
+      <select id="categoria" name="categoria" required>
+        <option value="Brinco">Brinco</option>
+        <option value="Colar">Colar</option>
+        <option value="Pulseira">Pulseira</option>
+        <option value="Bracelete">Bracelete</option>
+        <option value="Anel">Anel</option>
+        <option value="Acessório">Acessório</option>
+        <option value="Conjunto">Conjunto</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="quantidade">Quantidade:</label>
+      <input type="number" id="quantidade" name="quantidade" required min="0" oninput="validarQuantidade(event)">
+    </div>
+
+    <div>
+      <label for="precoCusto">Preço de Custo:</label>
+      <input type="text" id="precoCusto" name="precoCusto" required oninput="aplicarMascaraMoeda(event)">
+    </div>
+
+    <div>
+      <label for="precoVenda">Preço de Venda:</label>
+      <input type="text" id="precoVenda" name="precoVenda" required oninput="aplicarMascaraMoeda(event)">
+    </div>
+
+    <button type="submit">Cadastrar</button>
+  </form>
+
+</body>
+</html>
