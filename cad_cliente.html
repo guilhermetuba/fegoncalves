@@ -4,25 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro de Clientes</title>
+  <!-- Referência ao arquivo de configuração -->
+  <script src="config.js"></script>
   <script>
     // Máscara para CPF
     // Máscara para CPF, permitindo apenas 11 números
 
     function aplicarMascaraCPF() {
-  let cpf = document.getElementById("cpf");
-  // Remove qualquer coisa que não seja número
-  cpf.value = cpf.value.replace(/\D/g, '');
-  
-  // Limita o número de caracteres para 11
-  if (cpf.value.length > 11) {
-    cpf.value = cpf.value.slice(0, 11);
-  }
+      let cpf = document.getElementById("cpf");
+      // Remove qualquer coisa que não seja número
+      cpf.value = cpf.value.replace(/\D/g, '');
+      
+      // Limita o número de caracteres para 11
+      if (cpf.value.length > 11) {
+        cpf.value = cpf.value.slice(0, 11);
+      }
 
-  // Aplica a máscara
-  cpf.value = cpf.value.replace(/(\d{3})(\d)/, '$1.$2')
-                       .replace(/(\d{3})(\d)/, '$1.$2')
-                       .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-}
+      // Aplica a máscara
+      cpf.value = cpf.value.replace(/(\d{3})(\d)/, '$1.$2')
+                           .replace(/(\d{3})(\d)/, '$1.$2')
+                           .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    }
 
     // Validação de CPF
     function validarCPF(cpf) {
@@ -74,7 +76,8 @@
       let form = document.getElementById("clienteForm");
       let formData = new FormData(form);
 
-      fetch(form.action, {
+      // Usando a variável da URL de configuração
+      fetch(URL_API, {
         method: form.method,
         body: formData
       })
@@ -94,7 +97,7 @@
 <body>
 
   <h2>Cadastro de Clientes</h2>
-  <form id="clienteForm" action="https://script.google.com/macros/s/AKfycbyHcNhjxxNlgZbpZWJQzS-eWNDmoPXomIIgwfwHE_ZLqiPvkYX7OEYzAxfWcnlINYbi/exec" method="POST" onsubmit="validarFormulario(event)">
+  <form id="clienteForm" method="POST" onsubmit="validarFormulario(event)">
     <input type="hidden" name="tipo" value="cliente">
     <div>
       <label for="nome">Nome:</label>
@@ -131,4 +134,5 @@
 
 </body>
 </html>
+
 
