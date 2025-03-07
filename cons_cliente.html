@@ -10,7 +10,7 @@
     });
 
     function carregarClientes() {
-      fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec?acao=listarClientes")
+      fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec?acao=consultarClientes")
         .then(response => response.json())
         .then(data => {
           let select = document.getElementById("clienteSelecionado");
@@ -28,7 +28,7 @@
     function buscarCliente() {
       let cpf = document.getElementById("clienteSelecionado").value;
       if (!cpf) return;
-      
+
       fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec?acao=buscarCliente&cpf=" + cpf)
         .then(response => response.json())
         .then(data => {
@@ -54,7 +54,7 @@
         endereco: document.getElementById("endereco").value,
         observacoes: document.getElementById("observacoes").value
       };
-      
+
       fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec", {
         method: "POST",
         body: JSON.stringify(dados)
@@ -67,7 +67,7 @@
     function excluirCliente() {
       let cpf = document.getElementById("clienteSelecionado").value;
       if (!cpf || !confirm("Tem certeza que deseja excluir este cliente?")) return;
-      
+
       fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec?acao=excluirCliente&cpf=" + cpf)
         .then(response => response.json())
         .then(data => {
@@ -76,10 +76,34 @@
         })
         .catch(error => console.error("Erro ao excluir cliente:", error));
     }
+
+    function filtrarClientes() {
+      let nome = document.getElementById("nomeCliente").value.trim();
+      fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec?acao=consultarClientes&nome=" + nome)
+        .then(response => response.json())
+        .then(data => {
+          exibirClientes(data);
+        })
+        .catch(error => console.error("Erro ao carregar clientes:", error));
+    }
+
+    function exibirClientes(clientes) {
+      let select = document.getElementById("clienteSelecionado");
+      select.innerHTML = "<option value=''>Selecione um cliente</option>";
+      clientes.forEach(cliente => {
+        let option = document.createElement("option");
+        option.value = cliente.cpf;
+        option.textContent = cliente.nome;
+        select.appendChild(option);
+      });
+    }
   </script>
 </head>
 <body>
   <h2>Consultar Cliente</h2>
+  <label for="nomeCliente">Pesquisar por nome:</label>
+  <input type="text" id="nomeCliente" oninput="filtrarClientes()" placeholder="Digite o nome do cliente">
+  <br><br>
   <label for="clienteSelecionado">Selecione um cliente:</label>
   <select id="clienteSelecionado" onchange="buscarCliente()"></select>
 
@@ -94,3 +118,4 @@
   <button onclick="excluirCliente()">Excluir</button>
 </body>
 </html>
+
