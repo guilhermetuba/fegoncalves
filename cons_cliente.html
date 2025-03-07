@@ -10,7 +10,7 @@
     });
 
     function carregarClientes() {
-      fetch("URL_DO_APPS_SCRIPT?acao=listarClientes")
+      fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec?acao=listarClientes")
         .then(response => response.json())
         .then(data => {
           let select = document.getElementById("clienteSelecionado");
@@ -29,7 +29,7 @@
       let cpf = document.getElementById("clienteSelecionado").value;
       if (!cpf) return;
       
-      fetch("URL_DO_APPS_SCRIPT?acao=buscarCliente&cpf=" + cpf)
+      fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec?acao=buscarCliente&cpf=" + cpf)
         .then(response => response.json())
         .then(data => {
           if (data) {
@@ -55,7 +55,7 @@
         observacoes: document.getElementById("observacoes").value
       };
       
-      fetch("URL_DO_APPS_SCRIPT", {
+      fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec", {
         method: "POST",
         body: JSON.stringify(dados)
       })
@@ -68,7 +68,7 @@
       let cpf = document.getElementById("clienteSelecionado").value;
       if (!cpf || !confirm("Tem certeza que deseja excluir este cliente?")) return;
       
-      fetch("URL_DO_APPS_SCRIPT?acao=excluirCliente&cpf=" + cpf)
+      fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec?acao=excluirCliente&cpf=" + cpf)
         .then(response => response.json())
         .then(data => {
           alert(data.message);
