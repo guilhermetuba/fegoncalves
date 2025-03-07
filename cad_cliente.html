@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro de Clientes</title>
   <script>
-    // Função para aplicar a máscara do CPF
+    // Máscara para CPF
     function aplicarMascaraCPF() {
       let cpf = document.getElementById("cpf");
       cpf.value = cpf.value.replace(/\D/g, '')
@@ -14,37 +14,23 @@
                            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
     }
 
-    // Função para validar o CPF
-    function validarCPF(cpf) {
-      cpf = cpf.replace(/\D/g, ""); // Remove caracteres não numéricos
-
-      if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
-
-      let soma = 0, resto;
-      for (let i = 1; i <= 9; i++) soma += parseInt(cpf[i - 1]) * (11 - i);
-      resto = (soma * 10) % 11;
-      if (resto === 10 || resto === 11) resto = 0;
-      if (resto !== parseInt(cpf[9])) return false;
-
-      soma = 0;
-      for (let i = 1; i <= 10; i++) soma += parseInt(cpf[i - 1]) * (12 - i);
-      resto = (soma * 10) % 11;
-      if (resto === 10 || resto === 11) resto = 0;
-      return resto === parseInt(cpf[10]);
+    // Máscara para telefone com limite de caracteres
+    function aplicarMascaraTelefone() {
+      let telefone = document.getElementById("telefone");
+      telefone.value = telefone.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+      
+      if (telefone.value.length > 11) { 
+        telefone.value = telefone.value.slice(0, 11); // Limita a 11 dígitos
+      }
+      
+      telefone.value = telefone.value.replace(/^(\d{2})(\d)/, '($1) $2') // Adiciona o DDD
+                                     .replace(/(\d{5})(\d)/, '$1-$2') // Celular com 9 dígitos
+                                     .replace(/(\d{4})(\d{4})$/, '$1-$2'); // Telefone fixo
     }
 
-    // Função para validar o formulário antes de enviar
+    // Função para enviar o formulário
     function validarFormulario(event) {
       event.preventDefault(); // Impede o envio automático do formulário
-
-      let cpfInput = document.getElementById("cpf");
-      let cpf = cpfInput.value;
-
-      if (!validarCPF(cpf)) {
-        alert("Erro: CPF inválido! Verifique e tente novamente.");
-        return;
-      }
-
       let form = document.getElementById("clienteForm");
       let formData = new FormData(form);
 
@@ -54,9 +40,9 @@
       })
       .then(response => response.json())
       .then(data => {
-        alert(data.message); // Mensagem de sucesso ou erro
+        alert(data.message);  // Mensagem de sucesso ou erro
         if (data.result === "success") {
-          form.reset(); // Limpa o formulário
+          form.reset();  // Limpa o formulário
         }
       })
       .catch(error => {
@@ -68,7 +54,7 @@
 <body>
 
   <h2>Cadastro de Clientes</h2>
-  <form id="clienteForm" action="https://script.google.com/macros/s/AKfycbxw21fNuQsOasAQsZifUvn5Tnk1jizKDf5WEA_bRaCQiFWmXmMlswMELu_acHMzN4Jl/exec" method="POST" onsubmit="validarFormulario(event)">
+  <form id="clienteForm" action="https://script.google.com/macros/s/AKfycbzCO9RDUxw34yZsH9NgXIQrIcoqw_vT69ZiKpyNfps1RkZzt0UMAMN19Pf08t3gEeEI/exec" method="POST" onsubmit="validarFormulario(event)">
     
     <div>
       <label for="nome">Nome:</label>
@@ -82,7 +68,7 @@
 
     <div>
       <label for="telefone">Telefone:</label>
-      <input type="text" id="telefone" name="telefone">
+      <input type="text" id="telefone" name="telefone" required oninput="aplicarMascaraTelefone()">
     </div>
 
     <div>
@@ -105,4 +91,3 @@
 
 </body>
 </html>
-
