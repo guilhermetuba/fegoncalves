@@ -23,9 +23,16 @@
         telefone.value = telefone.value.slice(0, 11); // Limita a 11 dígitos
       }
       
-      telefone.value = telefone.value.replace(/^(\d{2})(\d)/, '($1) $2') // Adiciona o DDD
-                                     .replace(/(\d{5})(\d)/, '$1-$2') // Celular com 9 dígitos
-                                     .replace(/(\d{4})(\d{4})$/, '$1-$2'); // Telefone fixo
+      // Para telefone fixo (10 dígitos)
+      if (telefone.value.length <= 10) {
+        telefone.value = telefone.value.replace(/^(\d{2})(\d)/, '($1) $2') // Adiciona o DDD
+                                       .replace(/(\d{4})(\d{1,4})$/, '$1-$2'); // Traço após o 4º dígito
+      }
+      // Para telefone celular (11 dígitos)
+      else {
+        telefone.value = telefone.value.replace(/^(\d{2})(\d)/, '($1) $2') // Adiciona o DDD
+                                       .replace(/(\d{5})(\d{1,4})$/, '$1-$2'); // Traço após o 5º dígito
+      }
     }
 
     // Função para enviar o formulário
@@ -82,7 +89,7 @@
     </div>
 
     <div>
-      <label for="observacoes">Observações:</label>
+      <label for="observacoes">Observaçõess:</label>
       <textarea id="observacoes" name="observacoes"></textarea>
     </div>
 
@@ -91,3 +98,4 @@
 
 </body>
 </html>
+
