@@ -102,6 +102,30 @@
 
     <button type="submit">Cadastrar</button>
   </form>
+<script>
+document.getElementById("clienteForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Impede o envio automático
+
+    let cpf = document.getElementById("cpf").value;
+
+    // URL do seu App Script que verifica o CPF
+    let scriptUrl = "https://script.google.com/macros/s/AKfycbzCO9RDUxw34yZsH9NgXIQrIcoqw_vT69ZiKpyNfps1RkZzt0UMAMN19Pf08t3gEeEI/exec";
+
+    fetch(scriptUrl + "?cpf=" + cpf)
+        .then(response => response.json())
+        .then(data => {
+            if (data.exists) {
+                alert("⚠️ CPF já cadastrado! Use outro CPF.");
+            } else {
+                event.target.submit(); // Envia o formulário se o CPF não existir
+            }
+        })
+        .catch(error => {
+            console.error("Erro ao verificar CPF:", error);
+            alert("Erro ao verificar CPF. Tente novamente.");
+        });
+});
+</script>
 
 </body>
 </html>
