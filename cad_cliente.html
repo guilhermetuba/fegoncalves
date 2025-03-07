@@ -14,30 +14,53 @@
                            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
     }
 
+    // Validação de CPF
+    function validarCPF(cpf) {
+      cpf = cpf.replace(/\D/g, ''); // Remove caracteres não numéricos
+
+      if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false; // Verifica se tem 11 dígitos e não é repetido
+
+      let soma = 0, resto;
+      for (let i = 1; i <= 9; i++) soma += parseInt(cpf[i - 1]) * (11 - i);
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf[9])) return false;
+
+      soma = 0;
+      for (let i = 1; i <= 10; i++) soma += parseInt(cpf[i - 1]) * (12 - i);
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      return resto === parseInt(cpf[10]);
+    }
+
     // Máscara para telefone com limite de caracteres
     function aplicarMascaraTelefone() {
       let telefone = document.getElementById("telefone");
       telefone.value = telefone.value.replace(/\D/g, ''); // Remove caracteres não numéricos
-      
+
       if (telefone.value.length > 11) { 
         telefone.value = telefone.value.slice(0, 11); // Limita a 11 dígitos
       }
-      
-      // Para telefone fixo (10 dígitos)
+
       if (telefone.value.length <= 10) {
-        telefone.value = telefone.value.replace(/^(\d{2})(\d)/, '($1) $2') // Adiciona o DDD
-                                       .replace(/(\d{4})(\d{1,4})$/, '$1-$2'); // Traço após o 4º dígito
-      }
-      // Para telefone celular (11 dígitos)
-      else {
-        telefone.value = telefone.value.replace(/^(\d{2})(\d)/, '($1) $2') // Adiciona o DDD
-                                       .replace(/(\d{5})(\d{1,4})$/, '$1-$2'); // Traço após o 5º dígito
+        telefone.value = telefone.value.replace(/^(\d{2})(\d)/, '($1) $2')
+                                       .replace(/(\d{4})(\d{1,4})$/, '$1-$2');
+      } else {
+        telefone.value = telefone.value.replace(/^(\d{2})(\d)/, '($1) $2')
+                                       .replace(/(\d{5})(\d{1,4})$/, '$1-$2');
       }
     }
 
-    // Função para enviar o formulário
+    // Função para validar e enviar o formulário
     function validarFormulario(event) {
-      event.preventDefault(); // Impede o envio automático do formulário
+      event.preventDefault();
+      
+      let cpf = document.getElementById("cpf").value;
+      if (!validarCPF(cpf)) {
+        alert("CPF inválido! Verifique e tente novamente.");
+        return;
+      }
+
       let form = document.getElementById("clienteForm");
       let formData = new FormData(form);
 
@@ -47,9 +70,9 @@
       })
       .then(response => response.json())
       .then(data => {
-        alert(data.message);  // Mensagem de sucesso ou erro
+        alert(data.message);
         if (data.result === "success") {
-          form.reset();  // Limpa o formulário
+          form.reset();
         }
       })
       .catch(error => {
