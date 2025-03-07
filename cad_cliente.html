@@ -41,6 +41,7 @@
       })
       .then(response => response.json())
       .then(data => {
+        console.log(data); // Verifica o retorno do Apps Script
         if (data.result === "error") {
           alert(data.message); // Exibe a mensagem de erro, como "CPF já cadastrado"
         } else {
@@ -100,7 +101,7 @@
     </div>
 
     <div>
-      <label for="observacoes">Observaçõess:</label>
+      <label for="observacoes">Observações:</label>
       <textarea id="observacoes" name="observacoes"></textarea>
     </div>
 
