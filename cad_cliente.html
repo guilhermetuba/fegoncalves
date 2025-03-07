@@ -6,13 +6,23 @@
   <title>Cadastro de Clientes</title>
   <script>
     // Máscara para CPF
+    // Máscara para CPF, permitindo apenas 11 números
+
     function aplicarMascaraCPF() {
-      let cpf = document.getElementById("cpf");
-      cpf.value = cpf.value.replace(/\D/g, '')
-                           .replace(/(\d{3})(\d)/, '$1.$2')
-                           .replace(/(\d{3})(\d)/, '$1.$2')
-                           .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    }
+  let cpf = document.getElementById("cpf");
+  // Remove qualquer coisa que não seja número
+  cpf.value = cpf.value.replace(/\D/g, '');
+  
+  // Limita o número de caracteres para 11
+  if (cpf.value.length > 11) {
+    cpf.value = cpf.value.slice(0, 11);
+  }
+
+  // Aplica a máscara
+  cpf.value = cpf.value.replace(/(\d{3})(\d)/, '$1.$2')
+                       .replace(/(\d{3})(\d)/, '$1.$2')
+                       .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+}
 
     // Validação de CPF
     function validarCPF(cpf) {
