@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultar Cliente</title>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      carregarClientes();
+    });
+
+    function carregarClientes() {
+      fetch("URL_DO_APPS_SCRIPT?acao=listarClientes")
+        .then(response => response.json())
+        .then(data => {
+          let select = document.getElementById("clienteSelecionado");
+          select.innerHTML = "<option value=''>Selecione um cliente</option>";
+          data.forEach(cliente => {
+            let option = document.createElement("option");
+            option.value = cliente.cpf;
+            option.textContent = cliente.nome;
+            select.appendChild(option);
+          });
+        })
+        .catch(error => console.error("Erro ao carregar clientes:", error));
+    }
+
+    function buscarCliente() {
+      let cpf = document.getElementById("clienteSelecionado").value;
+      if (!cpf) return;
+      
+      fetch("URL_DO_APPS_SCRIPT?acao=buscarCliente&cpf=" + cpf)
+        .then(response => response.json())
+        .then(data => {
+          if (data) {
+            document.getElementById("nome").value = data.nome;
+            document.getElementById("telefone").value = data.telefone;
+            document.getElementById("email").value = data.email;
+            document.getElementById("endereco").value = data.endereco;
+            document.getElementById("observacoes").value = data.observacoes;
+          }
+        })
+        .catch(error => console.error("Erro ao buscar cliente:", error));
+    }
+
+    function atualizarCliente() {
+      let cpf = document.getElementById("clienteSelecionado").value;
+      let dados = {
+        acao: "atualizarCliente",
+        cpf: cpf,
+        nome: document.getElementById("nome").value,
+        telefone: document.getElementById("telefone").value,
+        email: document.getElementById("email").value,
+        endereco: document.getElementById("endereco").value,
+        observacoes: document.getElementById("observacoes").value
+      };
+      
+      fetch("URL_DO_APPS_SCRIPT", {
+        method: "POST",
+        body: JSON.stringify(dados)
+      })
+      .then(response => response.json())
+      .then(data => alert(data.message))
+      .catch(error => console.error("Erro ao atualizar cliente:", error));
+    }
+
+    function excluirCliente() {
+      let cpf = document.getElementById("clienteSelecionado").value;
+      if (!cpf || !confirm("Tem certeza que deseja excluir este cliente?")) return;
+      
+      fetch("URL_DO_APPS_SCRIPT?acao=excluirCliente&cpf=" + cpf)
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message);
+          carregarClientes();
+        })
+        .catch(error => console.error("Erro ao excluir cliente:", error));
+    }
+  </script>
+</head>
+<body>
+  <h2>Consultar Cliente</h2>
+  <label for="clienteSelecionado">Selecione um cliente:</label>
+  <select id="clienteSelecionado" onchange="buscarCliente()"></select>
+
+  <h3>Dados do Cliente</h3>
+  <label>Nome:</label> <input type="text" id="nome"><br>
+  <label>Telefone:</label> <input type="text" id="telefone"><br>
+  <label>Email:</label> <input type="email" id="email"><br>
+  <label>Endereço:</label> <input type="text" id="endereco"><br>
+  <label>Observações:</label> <textarea id="observacoes"></textarea><br>
+
+  <button onclick="atualizarCliente()">Atualizar</button>
+  <button onclick="excluirCliente()">Excluir</button>
+</body>
+</html>
