@@ -46,20 +46,21 @@
     }
   </style>
   <script>
-    // Função para carregar os clientes na lista suspensa
-    function carregarClientes() {
-      fetch(URL_API)
-        .then(response => response.json())
-        .then(data => {
-          const select = document.getElementById('clientes');
-          data.clientes.forEach(cliente => {
-            const option = document.createElement('option');
-            option.value = cliente.id;
-            option.textContent = cliente.nome;
-            select.appendChild(option);
-          });
-        });
-    }
+
+// Função para carregar os clientes na lista suspensa
+function carregarClientes() {
+  fetch(URL_API)
+    .then(response => response.json())
+    .then(data => {
+      const select = document.getElementById('clientes');
+      data.clientes.forEach(cliente => {
+        const option = document.createElement('option');
+        option.value = cliente.cpf; // Altere para cpf
+        option.textContent = cliente.nome;
+        select.appendChild(option);
+      });
+    });
+}
 
     // Função para carregar os dados do cliente
     function carregarDadosCliente() {
