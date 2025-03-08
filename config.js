@@ -1,2 +1,2 @@
 // config.js
-const URL_API = "https://script.google.com/macros/s/AKfycbxQ6VNHO3bPWrubmJZ7mVIssovBWfzDFWhQuGJPVDOaE-1ZaZbhzWR4cu-edYfzP2wJ/exec";
+const URL_API = "https://script.google.com/macros/s/AKfycbw6YaqLRVl_oQj9w2BZ2LB6rzWEah2jOkjaphPGfFJZJzNjZeQ07Qw686q0kck14rfp/exec";
