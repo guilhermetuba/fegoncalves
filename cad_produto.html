@@ -116,13 +116,13 @@
       </select>
 
       <label for="quantidade">Quantidade:</label>
-      <input type="number" id="quantidade" name="quantidade" required min="0" oninput="validarQuantidade(event)">
+      <input type="number" id="quantidade" name="quantidade" required min="0" inputmode="numeric" oninput="validarQuantidade(event)">
 
       <label for="precoCusto">Preço de Custo:</label>
-      <input type="text" id="precoCusto" name="precoCusto" oninput="aplicarMascaraMoeda(event), validarPreco(event)">
+      <input type="text" id="precoCusto" name="precoCusto" inputmode="numeric" oninput="aplicarMascaraMoeda(event), validarPreco(event)">
 
       <label for="precoVenda">Preço de Venda:</label>
-      <input type="text" id="precoVenda" name="precoVenda"  oninput="aplicarMascaraMoeda(event), validarPreco(event)">
+      <input type="text" id="precoVenda" name="precoVenda"  inputmode="numeric" oninput="aplicarMascaraMoeda(event), validarPreco(event)">
 
       <button type="submit">Cadastrar</button>
     </form>
