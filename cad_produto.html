@@ -19,10 +19,23 @@
       event.target.setCustomValidity(quantidade < 0 ? "Quantidade não pode ser negativa" : "");
     }
 
+    function validarPreco(event) {
+      let preco = event.target.value.replace(",", ".");
+      if (isNaN(preco) || preco <= 0) {
+        event.target.setCustomValidity("Preço inválido");
+      } else {
+        event.target.setCustomValidity("");
+      }
+    }
+
     function validarFormulario(event) {
       event.preventDefault();
       let form = document.getElementById("produtoForm");
       let formData = new FormData(form);
+
+      // Desabilitar o botão de envio durante o processamento
+      let button = document.querySelector('button');
+      button.disabled = true;
 
       fetch(URL_API, { method: "POST", body: formData })
       .then(response => response.json())
@@ -30,7 +43,11 @@
         alert(data.message);
         if (data.result === "success") form.reset();
       })
-      .catch(() => alert("Erro ao cadastrar. Tente novamente."));
+      .catch(() => alert("Erro ao cadastrar. Tente novamente."))
+      .finally(() => {
+        // Reabilitar o botão após a resposta
+        button.disabled = false;
+      });
     }
   </script>
 </head>
@@ -41,13 +58,13 @@
     <input type="hidden" name="tipo" value="produto">
 
     <label for="codigo">Código:</label>
-    <input type="text" id="codigo" name="codigo" required>
+    <input type="text" id="codigo" name="codigo" required inputmode="text">
 
     <label for="produto">Produto:</label>
-    <input type="text" id="produto" name="produto" required>
+    <input type="text" id="produto" name="produto" required inputmode="text">
 
     <label for="fornecedor">Fornecedor:</label>
-    <input type="text" id="fornecedor" name="fornecedor">
+    <input type="text" id="fornecedor" name="fornecedor" inputmode="text">
 
     <label for="categoria">Categoria:</label>
     <select id="categoria" name="categoria" required>
@@ -61,16 +78,17 @@
     </select>
 
     <label for="quantidade">Quantidade:</label>
-    <input type="number" id="quantidade" name="quantidade" required min="0" oninput="validarQuantidade(event)">
+    <input type="number" id="quantidade" name="quantidade" required min="0" oninput="validarQuantidade(event)" inputmode="numeric">
 
     <label for="precoCusto">Preço de Custo:</label>
-    <input type="text" id="precoCusto" name="precoCusto" oninput="aplicarMascaraMoeda(event)">
+    <input type="text" id="precoCusto" name="precoCusto" oninput="aplicarMascaraMoeda(event)" required oninput="validarPreco(event)" inputmode="numeric">
 
     <label for="precoVenda">Preço de Venda:</label>
-    <input type="text" id="precoVenda" name="precoVenda" oninput="aplicarMascaraMoeda(event)">
+    <input type="text" id="precoVenda" name="precoVenda" oninput="aplicarMascaraMoeda(event)" required oninput="validarPreco(event)" inputmode="numeric">
 
     <button type="submit">Cadastrar</button>
   </form>
 
 </body>
 </html>
+
