@@ -46,6 +46,7 @@
     }
   </style>
   <script>
+    // Função para aplicar a máscara no CPF
     function aplicarMascaraCPF() {
       let cpf = document.getElementById("cpf");
       cpf.value = cpf.value.replace(/\D/g, '').slice(0, 11);
@@ -54,6 +55,7 @@
                            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
     }
 
+    // Função para aplicar a máscara no telefone
     function aplicarMascaraTelefone() {
       let telefone = document.getElementById("telefone");
       telefone.value = telefone.value.replace(/\D/g, '').slice(0, 11);
@@ -62,18 +64,61 @@
         : telefone.value.replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d{1,4})$/, '$1-$2');
     }
 
+    // Função para validar o CPF
+    function validarCPF(cpf) {
+      cpf = cpf.replace(/\D/g, '');
+      if (cpf.length !== 11) return false;
+
+      // Verificação do CPF
+      let soma = 0;
+      let resto;
+      for (let i = 1; i <= 9; i++) {
+        soma += parseInt(cpf.charAt(i - 1)) * (11 - i);
+      }
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.charAt(9))) return false;
+
+      soma = 0;
+      for (let i = 1; i <= 10; i++) {
+        soma += parseInt(cpf.charAt(i - 1)) * (12 - i);
+      }
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.charAt(10))) return false;
+
+      return true;
+    }
+
+    // Função para validar o formulário antes de enviar
     function validarFormulario(event) {
       event.preventDefault();
       let form = document.getElementById("clienteForm");
       let formData = new FormData(form);
 
+      // Verificando se o CPF é válido
+      let cpf = formData.get('cpf');
+      if (!validarCPF(cpf)) {
+        alert("CPF inválido.");
+        return;
+      }
+
+      // Desabilitar o botão de envio enquanto processa
+      let button = document.querySelector('button');
+      button.disabled = true;
+
+      // Enviando o formulário via fetch
       fetch(URL_API, { method: "POST", body: formData })
       .then(response => response.json())
       .then(data => {
         alert(data.message);
         if (data.result === "success") form.reset();
       })
-      .catch(() => alert("Erro ao cadastrar. Tente novamente."));
+      .catch(() => alert("Erro ao cadastrar. Tente novamente."))
+      .finally(() => {
+        // Reabilitar o botão após a resposta
+        button.disabled = false;
+      });
     }
   </script>
 </head>
@@ -108,6 +153,7 @@
 
 </body>
 </html>
+
 
 
 
