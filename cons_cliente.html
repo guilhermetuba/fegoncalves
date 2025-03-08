@@ -3,119 +3,150 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consultar Cliente</title>
+  <title>Consulta de Clientes</title>
+  <script src="config.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    select, input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #6f42c1; /* Cor roxa */
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #5a32a3; /* Cor roxa mais escura ao passar o mouse */
+    }
+  </style>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      carregarClientes();
-    });
-
+    // Função para carregar os clientes na lista suspensa
     function carregarClientes() {
-      fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec?acao=consultarClientes")
+      fetch(URL_API)
         .then(response => response.json())
         .then(data => {
-          let select = document.getElementById("clienteSelecionado");
-          select.innerHTML = "<option value=''>Selecione um cliente</option>";
-          data.forEach(cliente => {
-            let option = document.createElement("option");
-            option.value = cliente.cpf;
+          const select = document.getElementById('clientes');
+          data.clientes.forEach(cliente => {
+            const option = document.createElement('option');
+            option.value = cliente.id;
             option.textContent = cliente.nome;
             select.appendChild(option);
           });
-        })
-        .catch(error => console.error("Erro ao carregar clientes:", error));
+        });
     }
 
-    function buscarCliente() {
-      let cpf = document.getElementById("clienteSelecionado").value;
-      if (!cpf) return;
+    // Função para carregar os dados do cliente
+    function carregarDadosCliente() {
+      const clienteId = document.getElementById('clientes').value;
+      if (!clienteId) return;
 
-      fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec?acao=buscarCliente&cpf=" + cpf)
+      fetch(`${URL_API}/${clienteId}`)
         .then(response => response.json())
-        .then(data => {
-          if (data) {
-            document.getElementById("nome").value = data.nome;
-            document.getElementById("telefone").value = data.telefone;
-            document.getElementById("email").value = data.email;
-            document.getElementById("endereco").value = data.endereco;
-            document.getElementById("observacoes").value = data.observacoes;
-          }
-        })
-        .catch(error => console.error("Erro ao buscar cliente:", error));
+        .then(cliente => {
+          document.getElementById('nome').value = cliente.nome;
+          document.getElementById('cpf').value = cliente.cpf;
+          document.getElementById('telefone').value = cliente.telefone;
+          document.getElementById('email').value = cliente.email;
+          document.getElementById('endereco').value = cliente.endereco;
+          document.getElementById('observacoes').value = cliente.observacoes;
+        });
     }
 
+    // Função para atualizar os dados do cliente
     function atualizarCliente() {
-      let cpf = document.getElementById("clienteSelecionado").value;
-      let dados = {
-        acao: "atualizarCliente",
-        cpf: cpf,
-        nome: document.getElementById("nome").value,
-        telefone: document.getElementById("telefone").value,
-        email: document.getElementById("email").value,
-        endereco: document.getElementById("endereco").value,
-        observacoes: document.getElementById("observacoes").value
-      };
-
-      fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec", {
-        method: "POST",
-        body: JSON.stringify(dados)
+      const clienteId = document.getElementById('clientes').value;
+      const form = document.getElementById('clienteForm');
+      const formData = new FormData(form);
+      formData.append('id', clienteId);
+      fetch(`${URL_API}/${clienteId}`, {
+        method: 'PUT',
+        body: formData
       })
-      .then(response => response.json())
-      .then(data => alert(data.message))
-      .catch(error => console.error("Erro ao atualizar cliente:", error));
-    }
-
-    function excluirCliente() {
-      let cpf = document.getElementById("clienteSelecionado").value;
-      if (!cpf || !confirm("Tem certeza que deseja excluir este cliente?")) return;
-
-      fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec?acao=excluirCliente&cpf=" + cpf)
         .then(response => response.json())
         .then(data => {
           alert(data.message);
-          carregarClientes();
         })
-        .catch(error => console.error("Erro ao excluir cliente:", error));
+        .catch(() => alert("Erro ao atualizar. Tente novamente."));
     }
 
-    function filtrarClientes() {
-      let nome = document.getElementById("nomeCliente").value.trim();
-      fetch("https://script.google.com/macros/s/AKfycbzMac8MusaWOHEA2yEFUeTO0_-js5-eIabxLwzWsrTgI-z3E51Eq577Wun6uO59VnWv/exec?acao=consultarClientes&nome=" + nome)
-        .then(response => response.json())
-        .then(data => {
-          exibirClientes(data);
+    // Função para excluir o cliente
+    function excluirCliente() {
+      const clienteId = document.getElementById('clientes').value;
+      if (confirm("Tem certeza de que deseja excluir este cliente?")) {
+        fetch(`${URL_API}/${clienteId}`, {
+          method: 'DELETE'
         })
-        .catch(error => console.error("Erro ao carregar clientes:", error));
+          .then(response => response.json())
+          .then(data => {
+            alert(data.message);
+            carregarClientes();
+          })
+          .catch(() => alert("Erro ao excluir. Tente novamente."));
+      }
     }
 
-    function exibirClientes(clientes) {
-      let select = document.getElementById("clienteSelecionado");
-      select.innerHTML = "<option value=''>Selecione um cliente</option>";
-      clientes.forEach(cliente => {
-        let option = document.createElement("option");
-        option.value = cliente.cpf;
-        option.textContent = cliente.nome;
-        select.appendChild(option);
-      });
-    }
+    // Carregar os clientes ao carregar a página
+    window.onload = carregarClientes;
   </script>
 </head>
 <body>
-  <h2>Consultar Cliente</h2>
-  <label for="nomeCliente">Pesquisar por nome:</label>
-  <input type="text" id="nomeCliente" oninput="filtrarClientes()" placeholder="Digite o nome do cliente">
-  <br><br>
-  <label for="clienteSelecionado">Selecione um cliente:</label>
-  <select id="clienteSelecionado" onchange="buscarCliente()"></select>
 
-  <h3>Dados do Cliente</h3>
-  <label>Nome:</label> <input type="text" id="nome"><br>
-  <label>Telefone:</label> <input type="text" id="telefone"><br>
-  <label>Email:</label> <input type="email" id="email"><br>
-  <label>Endereço:</label> <input type="text" id="endereco"><br>
-  <label>Observações:</label> <textarea id="observacoes"></textarea><br>
+  <div class="container">
+    <h2>Consulta de Clientes</h2>
+    <form id="clienteForm">
+      <label for="clientes">Selecione o Cliente:</label>
+      <select id="clientes" name="clientes" onchange="carregarDadosCliente()">
+        <option value="">Selecione</option>
+      </select>
 
-  <button onclick="atualizarCliente()">Atualizar</button>
-  <button onclick="excluirCliente()">Excluir</button>
+      <label for="nome">Nome:</label>
+      <input type="text" id="nome" name="nome" required readonly>
+
+      <label for="cpf">CPF:</label>
+      <input type="text" id="cpf" name="cpf" required readonly>
+
+      <label for="telefone">Telefone:</label>
+      <input type="text" id="telefone" name="telefone" readonly>
+
+      <label for="email">E-mail:</label>
+      <input type="email" id="email" name="email" readonly>
+
+      <label for="endereco">Endereço:</label>
+      <input type="text" id="endereco" name="endereco" readonly>
+
+      <label for="observacoes">Observações:</label>
+      <textarea id="observacoes" name="observacoes" readonly></textarea>
+
+      <button type="button" onclick="atualizarCliente()">Atualizar</button>
+      <button type="button" onclick="excluirCliente()">Excluir</button>
+    </form>
+  </div>
+
 </body>
 </html>
-
