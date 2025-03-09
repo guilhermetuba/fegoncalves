@@ -44,6 +44,19 @@
     button:hover {
       background: #5a32a3;
     }
+    .produtos-lista {
+      margin-top: 20px;
+    }
+    .produtos-lista ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .produtos-lista li {
+      padding: 8px;
+      background-color: #f1f1f1;
+      margin-bottom: 5px;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
@@ -79,47 +92,15 @@
       <label for="vencimento">Data 1ª Parcela:</label>
       <input type="date" id="vencimento" name="vencimento">
       
-      <button type="submit">Registrar Venda</button>
-    </form>
-  </div>
-  
-  <script>
-    function calcularParcelas() {
-      let totalFinal = parseFloat(document.getElementById("totalFinal").value.replace(',', '.')) || 0;
-      let selectParcelas = document.getElementById("parcelamento");
-      selectParcelas.innerHTML = "";
+      <label for="produto">Produto:</label>
+      <select id="produto" name="produto">
+        <option value="">Selecione um produto</option>
+        <option value="001">Produto 1</option>
+        <option value="002">Produto 2</option>
+        <option value="003">Produto 3</option>
+      </select>
+      <button type="button" onclick="incluirProduto()">Incluir Produto</button>
       
-      for (let i = 1; i <= 10; i++) {
-        let valorParcela = (totalFinal / i).toFixed(2).replace('.', ',');
-        let option = document.createElement("option");
-        option.value = i;
-        option.textContent = `${i}x de R$${valorParcela}`;
-        selectParcelas.appendChild(option);
-      }
-    }
+      <div class="produtos-lista">
+        <label>Produtos Selecionados:</label>
     
-    function atualizarTotal() {
-      let total = parseFloat(document.getElementById("total").value.replace(',', '.')) || 0;
-      let desconto = parseFloat(document.getElementById("desconto").value.replace(',', '.')) || 0;
-      let totalFinal = (total - desconto).toFixed(2).replace('.', ',');
-      document.getElementById("totalFinal").value = totalFinal;
-      calcularParcelas();
-    }
-    
-    function registrarVenda(event) {
-      event.preventDefault();
-      let form = document.getElementById("vendaForm");
-      let formData = new FormData(form);
-      
-      fetch(URL_API, { method: "POST", body: formData })
-        .then(response => response.json())
-        .then(data => {
-          alert(data.message);
-          if (data.result === "success") form.reset();
-        })
-        .catch(() => alert("Erro ao registrar venda. Tente novamente."));
-    }
-  </script>
-</body>
-</html>
-
