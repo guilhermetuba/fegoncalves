@@ -67,7 +67,15 @@
       <select id="cliente" name="cliente" required>
         <option value="">Selecione um cliente</option>
       </select>
+
+      <label for="produto">Produto:</label>
+      <select id="produto" name="produto" onchange="atualizarValorProduto()">
+        <option value="">Selecione um produto</option>
+      </select>
       
+      <label for="valorProduto">Valor do Produto:</label>
+      <input type="text" id="valorProduto" name="valorProduto" readonly>
+
       <label for="total">Total:</label>
       <input type="text" id="total" name="total" readonly>
       
@@ -92,25 +100,48 @@
       <label for="vencimento">Data 1ª Parcela:</label>
       <input type="date" id="vencimento" name="vencimento">
       
-      <label for="produto">Produto:</label>
-      <select id="produto" name="produto">
-        <option value="">Selecione um produto</option>
-        <option value="001">Produto 1</option>
-        <option value="002">Produto 2</option>
-        <option value="003">Produto 3</option>
-      </select>
-      <button type="button" onclick="incluirProduto()">Incluir Produto</button>
-      
       <div class="produtos-lista">
         <label>Produtos Selecionados:</label>
         <ul id="produtosLista"></ul>
       </div>
       
+      <button type="button" onclick="incluirProduto()">Incluir Produto</button>
+      
       <button type="submit">Registrar Venda</button>
     </form>
   </div>
-  
+
   <script>
+    let produtos = [];
+
+    // Função para carregar os produtos do Google Sheets
+    function carregarProdutos() {
+      fetch("URL_DO_SEU_GOOGLE_APPS_SCRIPT")
+        .then(response => response.json())
+        .then(data => {
+          produtos = data;
+          let produtoSelect = document.getElementById("produto");
+          
+          // Adiciona os produtos ao select
+          produtos.forEach(produto => {
+            let option = document.createElement("option");
+            option.value = produto.codigo;
+            option.textContent = produto.nome;
+            produtoSelect.appendChild(option);
+          });
+        })
+        .catch(error => alert("Erro ao carregar produtos."));
+    }
+
+    // Atualiza o valor do produto selecionado
+    function atualizarValorProduto() {
+      let produtoCodigo = document.getElementById("produto").value;
+      let produto = produtos.find(p => p.codigo === produtoCodigo);
+      if (produto) {
+        document.getElementById("valorProduto").value = `R$ ${produto.valor.toFixed(2).replace('.', ',')}`;
+      }
+    }
+
     function calcularParcelas() {
       let totalFinal = parseFloat(document.getElementById("totalFinal").value.replace(',', '.')) || 0;
       let selectParcelas = document.getElementById("parcelamento");
@@ -124,7 +155,7 @@
         selectParcelas.appendChild(option);
       }
     }
-    
+
     function atualizarTotal() {
       let total = parseFloat(document.getElementById("total").value.replace(',', '.')) || 0;
       let desconto = parseFloat(document.getElementById("desconto").value.replace(',', '.')) || 0;
@@ -132,20 +163,21 @@
       document.getElementById("totalFinal").value = totalFinal;
       calcularParcelas();
     }
-    
+
     function incluirProduto() {
       let produtoSelect = document.getElementById("produto");
       let produtoNome = produtoSelect.options[produtoSelect.selectedIndex].text;
       let produtoCodigo = produtoSelect.value;
-      
+      let valorProduto = document.getElementById("valorProduto").value;
+
       if (produtoCodigo === "") {
         alert("Selecione um produto.");
         return;
       }
-      
+
       let listaProdutos = document.getElementById("produtosLista");
       let itemProduto = document.createElement("li");
-      itemProduto.textContent = produtoNome;
+      itemProduto.textContent = `${produtoNome} - ${valorProduto}`;
       
       // Adiciona botão para remover produto
       let botaoRemover = document.createElement("button");
@@ -157,15 +189,14 @@
       itemProduto.appendChild(botaoRemover);
       
       listaProdutos.appendChild(itemProduto);
-      
       atualizarTotal(); // Atualiza o total
     }
-    
+
     function registrarVenda(event) {
       event.preventDefault();
       let form = document.getElementById("vendaForm");
       let formData = new FormData(form);
-      
+
       fetch(URL_API, { method: "POST", body: formData })
         .then(response => response.json())
         .then(data => {
@@ -174,6 +205,9 @@
         })
         .catch(() => alert("Erro ao registrar venda. Tente novamente."));
     }
+
+    // Carregar produtos assim que a página carregar
+    window.onload = carregarProdutos;
   </script>
 </body>
 </html>
