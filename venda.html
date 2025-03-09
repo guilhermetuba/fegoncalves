@@ -137,7 +137,7 @@
     // Função para carregar os clientes e produtos do Google Sheets
     function carregarClientesEProdutos() {
       // Carregar os clientes
-      fetch("https://script.google.com/macros/s/AKfycbzUtm8KqJ-s56rz4n4mfxH5kF3FS9OK--U5mcgJcIH-90xZfmExWdyP0wvFbfFv8i7/exec?tipo=cliente")
+      fetch("URL_API")
         .then(response => response.json())
         .then(data => {
           clientes = data;
@@ -154,7 +154,7 @@
         .catch(error => alert("Erro ao carregar clientes."));
 
       // Carregar os produtos
-      fetch("https://script.google.com/macros/s/AKfycbzUtm8KqJ-s56rz4n4mfxH5kF3FS9OK--U5mcgJcIH-90xZfmExWdyP0wvFbfFv8i7/exec?tipo=produto")
+      fetch("URL_API")
         .then(response => response.json())
         .then(data => {
           produtos = data;
@@ -239,7 +239,7 @@
       let form = document.getElementById("vendaForm");
       let formData = new FormData(form);
 
-      fetch("URL_DO_SEU_GOOGLE_APPS_SCRIPT", { method: "POST", body: formData })
+      fetch("URL_API", { method: "POST", body: formData })
         .then(response => response.json())
         .then(data => {
           alert(data.message);
