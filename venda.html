@@ -134,42 +134,42 @@
     let produtos = [];
     let clientes = [];
 
-    // Função para carregar os clientes e produtos do Google Sheets
-    function carregarClientesEProdutos() {
-      // Carregar os clientes
-      fetch("URL_API")
-        .then(response => response.json())
-        .then(data => {
-          clientes = data;
-          let clienteSelect = document.getElementById("cliente");
-          
-          // Adiciona os clientes ao select
-          clientes.forEach(cliente => {
-            let option = document.createElement("option");
-            option.value = cliente.cpf;
-            option.textContent = cliente.nome;
-            clienteSelect.appendChild(option);
-          });
-        })
-        .catch(error => alert("Erro ao carregar clientes."));
+   // Função para carregar os clientes e produtos do Google Sheets
+function carregarClientesEProdutos() {
+  // Carregar os clientes
+  fetch("URL_API/obterClientes")
+    .then(response => response.json())
+    .then(data => {
+      clientes = data;
+      let clienteSelect = document.getElementById("cliente");
+      
+      // Adiciona os clientes ao select
+      clientes.forEach(cliente => {
+        let option = document.createElement("option");
+        option.value = cliente.cpf;
+        option.textContent = cliente.nome;
+        clienteSelect.appendChild(option);
+      });
+    })
+    .catch(error => alert("Erro ao carregar clientes."));
 
-      // Carregar os produtos
-      fetch("URL_API")
-        .then(response => response.json())
-        .then(data => {
-          produtos = data;
-          let produtoSelect = document.getElementById("produto");
-          
-          // Adiciona os produtos ao select
-          produtos.forEach(produto => {
-            let option = document.createElement("option");
-            option.value = produto.codigo;
-            option.textContent = produto.produto;
-            produtoSelect.appendChild(option);
-          });
-        })
-        .catch(error => alert("Erro ao carregar produtos."));
-    }
+  // Carregar os produtos
+  fetch("URL_API/obterProdutos")
+    .then(response => response.json())
+    .then(data => {
+      produtos = data;
+      let produtoSelect = document.getElementById("produto");
+      
+      // Adiciona os produtos ao select
+      produtos.forEach(produto => {
+        let option = document.createElement("option");
+        option.value = produto.codigo;
+        option.textContent = produto.produto;
+        produtoSelect.appendChild(option);
+      });
+    })
+    .catch(error => alert("Erro ao carregar produtos."));
+}
 
     // Atualiza o valor do produto selecionado
     function atualizarValorProduto() {
