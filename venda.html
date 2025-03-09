@@ -55,19 +55,6 @@
         <option value="">Selecione um cliente</option>
       </select>
       
-      <div id="produtos">
-        <label>Produto:</label>
-        <div class="produto-item">
-          <input type="text" name="codigoProduto[]" placeholder="Código" onblur="buscarProduto(this)">
-          <select name="produto[]" required onchange="atualizarPreco(this)">
-            <option value="">Selecione um produto</option>
-          </select>
-          <input type="number" name="quantidade[]" placeholder="Qtd" min="1" required oninput="atualizarTotal()">
-          <input type="text" name="preco[]" placeholder="Preço" readonly>
-        </div>
-      </div>
-      <button type="button" onclick="adicionarProduto()">Adicionar Produto</button>
-      
       <label for="total">Total:</label>
       <input type="text" id="total" name="total" readonly>
       
@@ -85,10 +72,9 @@
       </select>
       
       <label for="parcelamento">Parcelas:</label>
-      <input type="number" id="parcelamento" name="parcelamento" min="1" value="1" oninput="calcularParcelas()">
-      
-      <label for="valorParcela">Valor da Parcela:</label>
-      <input type="text" id="valorParcela" name="valorParcela" readonly>
+      <select id="parcelamento" name="parcelamento" onchange="calcularParcelas()">
+        <option value="1">1x de R$0,00</option>
+      </select>
       
       <label for="vencimento">Data 1ª Parcela:</label>
       <input type="date" id="vencimento" name="vencimento">
@@ -98,39 +84,26 @@
   </div>
   
   <script>
-    function adicionarProduto() {
-      let divProdutos = document.getElementById("produtos");
-      let novoProduto = document.createElement("div");
-      novoProduto.classList.add("produto-item");
-      novoProduto.innerHTML = `
-        <input type="text" name="codigoProduto[]" placeholder="Código" onblur="buscarProduto(this)">
-        <select name="produto[]" required onchange="atualizarPreco(this)">
-          <option value="">Selecione um produto</option>
-        </select>
-        <input type="number" name="quantidade[]" placeholder="Qtd" min="1" required oninput="atualizarTotal()">
-        <input type="text" name="preco[]" placeholder="Preço" readonly>
-      `;
-      divProdutos.appendChild(novoProduto);
+    function calcularParcelas() {
+      let totalFinal = parseFloat(document.getElementById("totalFinal").value.replace(',', '.')) || 0;
+      let selectParcelas = document.getElementById("parcelamento");
+      selectParcelas.innerHTML = "";
+      
+      for (let i = 1; i <= 10; i++) {
+        let valorParcela = (totalFinal / i).toFixed(2).replace('.', ',');
+        let option = document.createElement("option");
+        option.value = i;
+        option.textContent = `${i}x de R$${valorParcela}`;
+        selectParcelas.appendChild(option);
+      }
     }
     
     function atualizarTotal() {
-      // Código para calcular total e total final com desconto
-    }
-    
-    function atualizarParcelas() {
-      // Código para definir parcelas conforme forma de pagamento
-    }
-    
-    function calcularParcelas() {
-      // Código para calcular valor da parcela
-    }
-    
-    function buscarProduto(input) {
-      // Código para buscar produto pelo código no banco de dados
-    }
-    
-    function atualizarPreco(select) {
-      // Código para buscar preço do produto selecionado
+      let total = parseFloat(document.getElementById("total").value.replace(',', '.')) || 0;
+      let desconto = parseFloat(document.getElementById("desconto").value.replace(',', '.')) || 0;
+      let totalFinal = (total - desconto).toFixed(2).replace('.', ',');
+      document.getElementById("totalFinal").value = totalFinal;
+      calcularParcelas();
     }
     
     function registrarVenda(event) {
@@ -149,3 +122,4 @@
   </script>
 </body>
 </html>
+
