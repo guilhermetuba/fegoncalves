@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Efetuar Venda</title>
+  <title>Vendas</title>
   <script src="config.js"></script>
   <style>
     body {
@@ -48,7 +48,7 @@
 </head>
 <body>
   <div class="container">
-    <h2>Efetuar Venda</h2>
+    <h2>Vendas</h2>
     <form id="vendaForm" method="POST" onsubmit="registrarVenda(event)">
       <label for="cliente">Cliente:</label>
       <select id="cliente" name="cliente" required>
@@ -58,24 +58,40 @@
       <div id="produtos">
         <label>Produto:</label>
         <div class="produto-item">
-          <select name="produto[]" required>
+          <input type="text" name="codigoProduto[]" placeholder="Código" onblur="buscarProduto(this)">
+          <select name="produto[]" required onchange="atualizarPreco(this)">
             <option value="">Selecione um produto</option>
           </select>
-          <input type="number" name="quantidade[]" placeholder="Qtd" min="1" required>
-          <input type="text" name="preco[]" placeholder="Preço" required>
+          <input type="number" name="quantidade[]" placeholder="Qtd" min="1" required oninput="atualizarTotal()">
+          <input type="text" name="preco[]" placeholder="Preço" readonly>
         </div>
       </div>
       <button type="button" onclick="adicionarProduto()">Adicionar Produto</button>
       
+      <label for="total">Total:</label>
+      <input type="text" id="total" name="total" readonly>
+      
+      <label for="desconto">Desconto:</label>
+      <input type="text" id="desconto" name="desconto" oninput="atualizarTotal()">
+      
+      <label for="totalFinal">Total Final:</label>
+      <input type="text" id="totalFinal" name="totalFinal" readonly>
+      
       <label for="pagamento">Forma de Pagamento:</label>
-      <select id="pagamento" name="pagamento" required>
+      <select id="pagamento" name="pagamento" required onchange="atualizarParcelas()">
         <option value="Dinheiro">Dinheiro</option>
         <option value="Pix">Pix</option>
         <option value="Cartão">Cartão</option>
       </select>
       
       <label for="parcelamento">Parcelas:</label>
-      <input type="number" id="parcelamento" name="parcelamento" min="1" value="1">
+      <input type="number" id="parcelamento" name="parcelamento" min="1" value="1" oninput="calcularParcelas()">
+      
+      <label for="valorParcela">Valor da Parcela:</label>
+      <input type="text" id="valorParcela" name="valorParcela" readonly>
+      
+      <label for="vencimento">Data 1ª Parcela:</label>
+      <input type="date" id="vencimento" name="vencimento">
       
       <button type="submit">Registrar Venda</button>
     </form>
@@ -87,13 +103,34 @@
       let novoProduto = document.createElement("div");
       novoProduto.classList.add("produto-item");
       novoProduto.innerHTML = `
-        <select name="produto[]" required>
+        <input type="text" name="codigoProduto[]" placeholder="Código" onblur="buscarProduto(this)">
+        <select name="produto[]" required onchange="atualizarPreco(this)">
           <option value="">Selecione um produto</option>
         </select>
-        <input type="number" name="quantidade[]" placeholder="Qtd" min="1" required>
-        <input type="text" name="preco[]" placeholder="Preço" required>
+        <input type="number" name="quantidade[]" placeholder="Qtd" min="1" required oninput="atualizarTotal()">
+        <input type="text" name="preco[]" placeholder="Preço" readonly>
       `;
       divProdutos.appendChild(novoProduto);
+    }
+    
+    function atualizarTotal() {
+      // Código para calcular total e total final com desconto
+    }
+    
+    function atualizarParcelas() {
+      // Código para definir parcelas conforme forma de pagamento
+    }
+    
+    function calcularParcelas() {
+      // Código para calcular valor da parcela
+    }
+    
+    function buscarProduto(input) {
+      // Código para buscar produto pelo código no banco de dados
+    }
+    
+    function atualizarPreco(select) {
+      // Código para buscar preço do produto selecionado
     }
     
     function registrarVenda(event) {
