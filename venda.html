@@ -103,4 +103,77 @@
       
       <div class="produtos-lista">
         <label>Produtos Selecionados:</label>
+        <ul id="produtosLista"></ul>
+      </div>
+      
+      <button type="submit">Registrar Venda</button>
+    </form>
+  </div>
+  
+  <script>
+    function calcularParcelas() {
+      let totalFinal = parseFloat(document.getElementById("totalFinal").value.replace(',', '.')) || 0;
+      let selectParcelas = document.getElementById("parcelamento");
+      selectParcelas.innerHTML = "";
+      
+      for (let i = 1; i <= 10; i++) {
+        let valorParcela = (totalFinal / i).toFixed(2).replace('.', ',');
+        let option = document.createElement("option");
+        option.value = i;
+        option.textContent = `${i}x de R$${valorParcela}`;
+        selectParcelas.appendChild(option);
+      }
+    }
     
+    function atualizarTotal() {
+      let total = parseFloat(document.getElementById("total").value.replace(',', '.')) || 0;
+      let desconto = parseFloat(document.getElementById("desconto").value.replace(',', '.')) || 0;
+      let totalFinal = (total - desconto).toFixed(2).replace('.', ',');
+      document.getElementById("totalFinal").value = totalFinal;
+      calcularParcelas();
+    }
+    
+    function incluirProduto() {
+      let produtoSelect = document.getElementById("produto");
+      let produtoNome = produtoSelect.options[produtoSelect.selectedIndex].text;
+      let produtoCodigo = produtoSelect.value;
+      
+      if (produtoCodigo === "") {
+        alert("Selecione um produto.");
+        return;
+      }
+      
+      let listaProdutos = document.getElementById("produtosLista");
+      let itemProduto = document.createElement("li");
+      itemProduto.textContent = produtoNome;
+      
+      // Adiciona botão para remover produto
+      let botaoRemover = document.createElement("button");
+      botaoRemover.textContent = "Remover";
+      botaoRemover.onclick = function() {
+        listaProdutos.removeChild(itemProduto);
+        atualizarTotal(); // Atualiza o total
+      };
+      itemProduto.appendChild(botaoRemover);
+      
+      listaProdutos.appendChild(itemProduto);
+      
+      atualizarTotal(); // Atualiza o total
+    }
+    
+    function registrarVenda(event) {
+      event.preventDefault();
+      let form = document.getElementById("vendaForm");
+      let formData = new FormData(form);
+      
+      fetch(URL_API, { method: "POST", body: formData })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message);
+          if (data.result === "success") form.reset();
+        })
+        .catch(() => alert("Erro ao registrar venda. Tente novamente."));
+    }
+  </script>
+</body>
+</html>
