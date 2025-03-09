@@ -76,7 +76,7 @@
     }
   </style>
 </head>
-<body>
+ <body>
   <div class="container">
     <h2>Vendas</h2>
     <form id="vendaForm" method="POST" onsubmit="registrarVenda(event)">
@@ -132,10 +132,29 @@
 
   <script>
     let produtos = [];
+    let clientes = [];
 
-    // Função para carregar os produtos do Google Sheets
-    function carregarProdutos() {
-      fetch("URL_DO_SEU_GOOGLE_APPS_SCRIPT")
+    // Função para carregar os clientes e produtos do Google Sheets
+    function carregarClientesEProdutos() {
+      // Carregar os clientes
+      fetch("https://script.google.com/macros/s/AKfycbzUtm8KqJ-s56rz4n4mfxH5kF3FS9OK--U5mcgJcIH-90xZfmExWdyP0wvFbfFv8i7/exec?tipo=cliente")
+        .then(response => response.json())
+        .then(data => {
+          clientes = data;
+          let clienteSelect = document.getElementById("cliente");
+          
+          // Adiciona os clientes ao select
+          clientes.forEach(cliente => {
+            let option = document.createElement("option");
+            option.value = cliente.cpf;
+            option.textContent = cliente.nome;
+            clienteSelect.appendChild(option);
+          });
+        })
+        .catch(error => alert("Erro ao carregar clientes."));
+
+      // Carregar os produtos
+      fetch("https://script.google.com/macros/s/AKfycbzUtm8KqJ-s56rz4n4mfxH5kF3FS9OK--U5mcgJcIH-90xZfmExWdyP0wvFbfFv8i7/exec?tipo=produto")
         .then(response => response.json())
         .then(data => {
           produtos = data;
@@ -145,7 +164,7 @@
           produtos.forEach(produto => {
             let option = document.createElement("option");
             option.value = produto.codigo;
-            option.textContent = produto.nome;
+            option.textContent = produto.produto;
             produtoSelect.appendChild(option);
           });
         })
@@ -157,32 +176,11 @@
       let produtoCodigo = document.getElementById("produto").value;
       let produto = produtos.find(p => p.codigo === produtoCodigo);
       if (produto) {
-        document.getElementById("valorProduto").value = `R$ ${produto.valor.toFixed(2).replace('.', ',')}`;
+        document.getElementById("valorProduto").value = `R$ ${produto.precoVenda.toFixed(2).replace('.', ',')}`;
       }
     }
 
-    function calcularParcelas() {
-      let totalFinal = parseFloat(document.getElementById("totalFinal").value.replace(',', '.')) || 0;
-      let selectParcelas = document.getElementById("parcelamento");
-      selectParcelas.innerHTML = "";
-      
-      for (let i = 1; i <= 10; i++) {
-        let valorParcela = (totalFinal / i).toFixed(2).replace('.', ',');
-        let option = document.createElement("option");
-        option.value = i;
-        option.textContent = `${i}x de R$${valorParcela}`;
-        selectParcelas.appendChild(option);
-      }
-    }
-
-    function atualizarTotal() {
-      let total = parseFloat(document.getElementById("total").value.replace(',', '.')) || 0;
-      let desconto = parseFloat(document.getElementById("desconto").value.replace(',', '.')) || 0;
-      let totalFinal = (total - desconto).toFixed(2).replace('.', ',');
-      document.getElementById("totalFinal").value = totalFinal;
-      calcularParcelas();
-    }
-
+    // Função para incluir produto na lista
     function incluirProduto() {
       let produtoSelect = document.getElementById("produto");
       let produtoNome = produtoSelect.options[produtoSelect.selectedIndex].text;
@@ -211,12 +209,37 @@
       atualizarTotal(); // Atualiza o total
     }
 
+    // Atualiza o total com desconto
+    function atualizarTotal() {
+      let total = parseFloat(document.getElementById("total").value.replace(',', '.')) || 0;
+      let desconto = parseFloat(document.getElementById("desconto").value.replace(',', '.')) || 0;
+      let totalFinal = (total - desconto).toFixed(2).replace('.', ',');
+      document.getElementById("totalFinal").value = totalFinal;
+      calcularParcelas();
+    }
+
+    // Calcula as parcelas
+    function calcularParcelas() {
+      let totalFinal = parseFloat(document.getElementById("totalFinal").value.replace(',', '.')) || 0;
+      let selectParcelas = document.getElementById("parcelamento");
+      selectParcelas.innerHTML = "";
+      
+      for (let i = 1; i <= 10; i++) {
+        let valorParcela = (totalFinal / i).toFixed(2).replace('.', ',');
+        let option = document.createElement("option");
+        option.value = i;
+        option.textContent = `${i}x de R$${valorParcela}`;
+        selectParcelas.appendChild(option);
+      }
+    }
+
+    // Envia os dados do formulário para o Google Apps Script
     function registrarVenda(event) {
       event.preventDefault();
       let form = document.getElementById("vendaForm");
       let formData = new FormData(form);
 
-      fetch(URL_API, { method: "POST", body: formData })
+      fetch("URL_DO_SEU_GOOGLE_APPS_SCRIPT", { method: "POST", body: formData })
         .then(response => response.json())
         .then(data => {
           alert(data.message);
@@ -225,8 +248,8 @@
         .catch(() => alert("Erro ao registrar venda. Tente novamente."));
     }
 
-    // Carregar produtos assim que a página carregar
-    window.onload = carregarProdutos;
+    // Carregar dados quando a página carregar
+    window.onload = carregarClientesEProdutos;
   </script>
 </body>
 </html>
