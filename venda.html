@@ -56,6 +56,18 @@
       background-color: #f1f1f1;
       margin-bottom: 5px;
       border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .produtos-lista li button {
+      margin-left: 10px;
+      background-color: red;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 4px;
     }
   </style>
 </head>
@@ -75,6 +87,8 @@
       
       <label for="valorProduto">Valor do Produto:</label>
       <input type="text" id="valorProduto" name="valorProduto" readonly>
+
+      <button type="button" onclick="incluirProduto()">Incluir Produto</button>
 
       <label for="total">Total:</label>
       <input type="text" id="total" name="total" readonly>
@@ -104,8 +118,6 @@
         <label>Produtos Selecionados:</label>
         <ul id="produtosLista"></ul>
       </div>
-      
-      <button type="button" onclick="incluirProduto()">Incluir Produto</button>
       
       <button type="submit">Registrar Venda</button>
     </form>
@@ -211,3 +223,4 @@
   </script>
 </body>
 </html>
+
