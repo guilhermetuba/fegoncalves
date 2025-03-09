@@ -69,6 +69,11 @@
       padding: 5px 10px;
       border-radius: 4px;
     }
+    hr {
+      border: 0;
+      border-top: 1px solid #ccc;
+      margin-top: 30px;
+    }
   </style>
 </head>
 <body>
@@ -89,6 +94,13 @@
       <input type="text" id="valorProduto" name="valorProduto" readonly>
 
       <button type="button" onclick="incluirProduto()">Incluir Produto</button>
+
+      <div class="produtos-lista">
+        <label>Produtos Selecionados:</label>
+        <ul id="produtosLista"></ul>
+      </div>
+
+      <hr>
 
       <label for="total">Total:</label>
       <input type="text" id="total" name="total" readonly>
@@ -113,11 +125,6 @@
       
       <label for="vencimento">Data 1ª Parcela:</label>
       <input type="date" id="vencimento" name="vencimento">
-      
-      <div class="produtos-lista">
-        <label>Produtos Selecionados:</label>
-        <ul id="produtosLista"></ul>
-      </div>
       
       <button type="submit">Registrar Venda</button>
     </form>
@@ -223,4 +230,3 @@
   </script>
 </body>
 </html>
-
