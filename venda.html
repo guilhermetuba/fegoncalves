@@ -134,12 +134,17 @@
     let produtos = [];
     let clientes = [];
 
-   // Função para carregar os clientes e produtos do Google Sheets
 function carregarClientesEProdutos() {
+  console.log("Função carregarClientesEProdutos foi chamada."); // Log para verificar se a função está sendo chamada
+
   // Carregar os clientes
   fetch("URL_API/obterClientes")
-    .then(response => response.json())
+    .then(response => {
+      console.log("Resposta recebida de obterClientes", response); // Verifica se a resposta foi recebida
+      return response.json();
+    })
     .then(data => {
+      console.log("Clientes recebidos:", data); // Log dos dados recebidos da API
       clientes = data;
       let clienteSelect = document.getElementById("cliente");
       
@@ -151,12 +156,19 @@ function carregarClientesEProdutos() {
         clienteSelect.appendChild(option);
       });
     })
-    .catch(error => alert("Erro ao carregar clientes."));
+    .catch(error => {
+      console.error("Erro na requisição de clientes:", error); // Log de erro caso a requisição falhe
+      alert("Erro ao carregar clientes.");
+    });
 
   // Carregar os produtos
   fetch("URL_API/obterProdutos")
-    .then(response => response.json())
+    .then(response => {
+      console.log("Resposta recebida de obterProdutos", response);
+      return response.json();
+    })
     .then(data => {
+      console.log("Produtos recebidos:", data);
       produtos = data;
       let produtoSelect = document.getElementById("produto");
       
@@ -168,18 +180,24 @@ function carregarClientesEProdutos() {
         produtoSelect.appendChild(option);
       });
     })
-    .catch(error => alert("Erro ao carregar produtos."));
+    .catch(error => {
+      console.error("Erro ao carregar produtos:", error);
+      alert("Erro ao carregar produtos.");
+    });
 }
 
     // Atualiza o valor do produto selecionado
     function atualizarValorProduto() {
-      let produtoCodigo = document.getElementById("produto").value;
-      let produto = produtos.find(p => p.codigo === produtoCodigo);
-      if (produto) {
-        document.getElementById("valorProduto").value = `R$ ${produto.precoVenda.toFixed(2).replace('.', ',')}`;
-      }
-    }
-
+  let produtoCodigo = document.getElementById("produto").value;
+  console.log("Produto selecionado:", produtoCodigo);  // Log do código do produto selecionado
+  let produto = produtos.find(p => p.codigo === produtoCodigo);
+  if (produto) {
+    console.log("Produto encontrado:", produto);  // Log do produto encontrado
+    document.getElementById("valorProduto").value = `R$ ${produto.precoVenda.toFixed(2).replace('.', ',')}`;
+  } else {
+    console.log("Produto não encontrado");  // Log caso o produto não seja encontrado
+  }
+}
     // Função para incluir produto na lista
     function incluirProduto() {
       let produtoSelect = document.getElementById("produto");
