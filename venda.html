@@ -267,7 +267,15 @@ function carregarClientesEProdutos() {
     }
 
     // Carregar dados quando a página carregar
-    window.onload = carregarClientesEProdutos;
+    window.onload = function() {
+  carregarClientesEProdutos();
+  fetch(URL_API, { method: "GET" })
+    .then(response => response.text())
+    .then(data => JSON.parse(data))
+    .then(json => console.log(json))  // Verifica o que o script retorna
+    .catch(error => console.error("Erro:", error));
+};
+
   </script>
 </body>
 </html>
