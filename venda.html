@@ -137,53 +137,46 @@
 function carregarClientesEProdutos() {
   console.log("Função carregarClientesEProdutos foi chamada."); // Log para verificar se a função está sendo chamada
 
-  // Carregar os clientes
-  fetch(URL_API+"/obterClientes")
-    .then(response => {
-      console.log("Resposta recebida de obterClientes", response); // Verifica se a resposta foi recebida
-      return response.json();
-    })
-    .then(data => {
-      console.log("Clientes recebidos:", data); // Log dos dados recebidos da API
-      clientes = data;
-      let clienteSelect = document.getElementById("cliente");
-      
-      // Adiciona os clientes ao select
-      clientes.forEach(cliente => {
-        let option = document.createElement("option");
-        option.value = cliente.cpf;
-        option.textContent = cliente.nome;
-        clienteSelect.appendChild(option);
-      });
-    })
-    .catch(error => {
-      console.error("Erro na requisição de clientes:", error); // Log de erro caso a requisição falhe
-      alert("Erro ao carregar clientes.");
+  //carregar os clientes
+fetch('https://semijoias.guilhermetuba.workers.dev/obterClientes')
+  .then(response => response.json())
+  .then(data => {
+    clientes = data;
+    let clienteSelect = document.getElementById("cliente");
+
+    // Preenche os clientes no select
+    clientes.forEach(cliente => {
+      let option = document.createElement("option");
+      option.value = cliente.cpf;
+      option.textContent = cliente.nome;
+      clienteSelect.appendChild(option);
     });
+  })
+  .catch(error => {
+    console.error("Erro ao carregar clientes:", error);
+    alert("Erro ao carregar clientes.");
+  });
 
   // Carregar os produtos
-  fetch(URL_API+"/obterProdutos")
-    .then(response => {
-      console.log("Resposta recebida de obterProdutos", response);
-      return response.json();
-    })
-    .then(data => {
-      console.log("Produtos recebidos:", data);
-      produtos = data;
-      let produtoSelect = document.getElementById("produto");
-      
-      // Adiciona os produtos ao select
-      produtos.forEach(produto => {
-        let option = document.createElement("option");
-        option.value = produto.codigo;
-        option.textContent = produto.produto;
-        produtoSelect.appendChild(option);
-      });
-    })
-    .catch(error => {
-      console.error("Erro ao carregar produtos:", error);
-      alert("Erro ao carregar produtos.");
+fetch('https://semijoias.guilhermetuba.workers.dev/obterProdutos')
+  .then(response => response.json())
+  .then(data => {
+    produtos = data;
+    let produtoSelect = document.getElementById("produto");
+
+    // Preenche os produtos no select
+    produtos.forEach(produto => {
+      let option = document.createElement("option");
+      option.value = produto.codigo;
+      option.textContent = produto.produto;
+      produtoSelect.appendChild(option);
     });
+  })
+  .catch(error => {
+    console.error("Erro ao carregar produtos:", error);
+    alert("Erro ao carregar produtos.");
+  });
+
 }
 
     // Atualiza o valor do produto selecionado
