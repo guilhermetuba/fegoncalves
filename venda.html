@@ -138,7 +138,7 @@ function carregarClientesEProdutos() {
   console.log("Função carregarClientesEProdutos foi chamada."); // Log para verificar se a função está sendo chamada
 
   // Carregar os clientes
-  fetch("URL_API/obterClientes")
+  fetch(URL_API+"/obterClientes")
     .then(response => {
       console.log("Resposta recebida de obterClientes", response); // Verifica se a resposta foi recebida
       return response.json();
@@ -162,7 +162,7 @@ function carregarClientesEProdutos() {
     });
 
   // Carregar os produtos
-  fetch("URL_API/obterProdutos")
+  fetch(URL_API+"/obterProdutos")
     .then(response => {
       console.log("Resposta recebida de obterProdutos", response);
       return response.json();
@@ -257,7 +257,7 @@ function carregarClientesEProdutos() {
       let form = document.getElementById("vendaForm");
       let formData = new FormData(form);
 
-      fetch("URL_API", { method: "POST", body: formData })
+      fetch(URL_API, { method: "POST", body: formData })
         .then(response => response.json())
         .then(data => {
           alert(data.message);
