@@ -269,7 +269,7 @@ function carregarClientesEProdutos() {
     // Carregar dados quando a página carregar
     window.onload = function() {
   carregarClientesEProdutos();
-  fetch(URL_API, { method: "GET" })
+  fetch(URL_API+"?no-cors=true, { method: "GET" })
     .then(response => response.text())
     .then(data => JSON.parse(data))
     .then(json => console.log(json))  // Verifica o que o script retorna
