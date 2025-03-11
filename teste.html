@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Dados da Planilha</title>
+</head>
+<body>
+    <h1>Dados da Planilha Google Sheets</h1>
+    <div id="dados"></div>
+
+    <script>
+        const sheetId = '1-r5uYv0yTB3__2rrHNLiosd2mFHHCdJAjwMdvxUKXRQ';
+        const base = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?`;
+        const query = encodeURIComponent('Select *');
+        const url = `${base}&tq=${query}`;
+
+        fetch(url)
+            .then(res => res.text())
+            .then(rep => {
+                const data = JSON.parse(rep.substr(47).slice(0, -2));
+                const table = document.createElement('table');
+                data.table.rows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    row.c.forEach(cell => {
+                        const td = document.createElement('td');
+                        td.textContent = cell.v;
+                        tr.appendChild(td);
+                    });
+                    table.appendChild(tr);
+                });
+                document.getElementById('dados').appendChild(table);
+            });
+    </script>
+</body>
+</html>
