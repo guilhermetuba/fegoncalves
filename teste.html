@@ -3,34 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Sheets CRUD</title>
+    <title>Estoque</title>
 </head>
 <body>
 
-    <h2>Dados do Google Sheets</h2>
+    <h2>Dados do Estoque</h2>
     <table border="1" id="tabela">
         <tbody></tbody>
     </table>
 
-    <h3>Editar Valor</h3>
-    Linha: <input type="number" id="linha" min="1">  
-    Coluna: <input type="number" id="coluna" min="1">  
-    Novo Valor: <input type="text" id="valor">  
-    <button onclick="editarCelula()">Salvar</button>
-
     <script>
-        const API_URL = "API_URL"; // Substitua pela URL do seu script
+        const API_URL = "URL_DA_SUA_API"; // Substitua pela URL do seu script
 
-        // Buscar dados
         function carregarDados() {
             fetch(API_URL)
                 .then(response => response.json())
                 .then(data => {
                     let tabela = document.querySelector("#tabela tbody");
                     tabela.innerHTML = "";
-                    data.forEach((linha, i) => {
+                    data.forEach((linha) => {
                         let tr = document.createElement("tr");
-                        linha.forEach((celula, j) => {
+                        linha.forEach((celula) => {
                             let td = document.createElement("td");
                             td.textContent = celula;
                             tr.appendChild(td);
@@ -41,28 +34,6 @@
                 .catch(error => console.error("Erro ao buscar dados:", error));
         }
 
-        // Editar célula
-        function editarCelula() {
-            let linha = document.getElementById("linha").value;
-            let coluna = document.getElementById("coluna").value;
-            let valor = document.getElementById("valor").value;
-
-            fetch(API_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ linha: parseInt(linha), coluna: parseInt(coluna), valor: valor })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    alert("Atualizado com sucesso!");
-                    carregarDados();
-                }
-            })
-            .catch(error => console.error("Erro ao atualizar:", error));
-        }
-
-        // Carregar ao abrir
         carregarDados();
     </script>
 
