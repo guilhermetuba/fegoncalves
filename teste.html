@@ -54,6 +54,7 @@
             fetch(`${URL_API}?produto=${encodeURIComponent(produtoSelecionado)}`)
                 .then(response => response.json())
                 .then(data => {
+                     console.log("Dados do produto:", data); // Adiciona um log para verificar a resposta da API
                     if (data.error) {
                         document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
                         return;
