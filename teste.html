@@ -111,11 +111,16 @@
                     let detalhesDiv = document.getElementById("detalhesProduto");
                     detalhesDiv.innerHTML = "";
 
+                    // Verificando se os campos existem nos dados antes de tentar acessá-los
+                    let codigoProduto = data.codigo || "Não encontrado";
+                    let nomeProduto = data.nomeProduto || "Não encontrado";
+                    let precoVenda = data.precoVenda || "Não encontrado";
+
                     // Exibir apenas os campos Código, Produto e Preço de Venda
                     let camposExibidos = {
-                        "Código": data.codigo,
-                        "Produto": data.nomeProduto,
-                        "Preço": data.precoVenda // Modificado para mostrar como "Preço"
+                        "Código": codigoProduto,
+                        "Produto": nomeProduto,
+                        "Preço": precoVenda // Modificado para mostrar como "Preço"
                     };
 
                     for (let chave in camposExibidos) {
