@@ -51,11 +51,22 @@
     let codigoSelecionado = document.getElementById("listaProdutos").value;
     if (!codigoSelecionado) return;
 
-    fetch(`${URL_API}?codigo=${encodeURIComponent(codigoSelecionado)}`)
+    fetch(URL_API)
         .then(response => response.json())
         .then(data => {
-            if (data.error) {
-                console.log("Dados do produto:", data); // Insere um log para verificar a resposta da API
+            console.log("Dados recebidos:", data); // Para depuração
+
+            if (!data.dados || data.dados.length < 2) {
+                document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
+                return;
+            }
+
+            let cabecalho = data.dados[0]; // A primeira linha é o cabeçalho
+            let produtos = data.dados.slice(1); // Remove o cabeçalho para buscar os produtos
+
+            let produtoEncontrado = produtos.find(linha => linha[0] == codigoSelecionado); // Procura pelo código
+
+            if (!produtoEncontrado) {
                 document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
                 return;
             }
@@ -63,11 +74,9 @@
             let detalhesDiv = document.getElementById("detalhesProduto");
             detalhesDiv.innerHTML = "";
 
-            // Campos que queremos exibir
-            let camposDesejados = ["Código", "Produto", "Fornecedor", "Categoria", "Quantidade", "Preço de Custo", "Preço de Venda"];
-
-            camposDesejados.forEach((campo, index) => {
-                let valor = data[index]; // Assume que data é um array ordenado igual à planilha
+            // Criar campos de input com base no cabeçalho e nos valores encontrados
+            cabecalho.forEach((campo, index) => {
+                let valor = produtoEncontrado[index] || ""; // Se não existir, deixa vazio
                 let div = document.createElement("div");
                 div.innerHTML = `<strong>${campo}:</strong> <input type="text" id="campo_${campo}" value="${valor}">`;
                 detalhesDiv.appendChild(div);
