@@ -9,42 +9,41 @@
 <body>
 
     <h2>Selecione um Cliente</h2>
-    <select id="listaClientes">
-        <option value="">Selecione um cliente...</option>
+    <select id="listaClientes" onchange="carregarProdutos()">
+        <option value="">Selecione um Cliente...</option>
     </select>
 
-    <h2>Selecione um Produto ou Digite o Código</h2>
+    <h2>Selecione um Produto</h2>
     <select id="listaProdutos" onchange="buscarProduto()">
-        <option value="">Selecione...</option>
+        <option value="">Selecione um Produto...</option>
     </select>
-
-    <input type="text" id="codigoProduto" placeholder="Digite o código" oninput="buscarProdutoPorCodigo()" />
-    <button onclick="buscarProdutoPorCodigo()">Consultar</button>
 
     <h3>Detalhes do Produto</h3>
     <div id="detalhesProduto"></div>
 
     <script>
         function carregarClientes() {
-            fetch(URL_API + "?tabela=Clientes")
+            fetch(URL_API)
                 .then(response => response.json())
                 .then(data => {
-                    if (!data.dados || data.dados.length < 2) {
-                        console.error("Erro ao carregar clientes!");
+                    if (!data.clientes || data.clientes.length < 2) {
+                        console.error("Nenhum cliente encontrado.");
                         return;
                     }
 
-                    let clientes = data.dados.slice(1); // Remove o cabeçalho
-                    let selectClientes = document.getElementById("listaClientes");
-                    selectClientes.innerHTML = "<option value=''>Selecione um cliente...</option>";
+                    let cabecalho = data.clientes[0];
+                    let clientes = data.clientes.slice(1); 
 
-                    clientes.forEach(cliente => {
-                        let nomeCliente = cliente[0]; // Primeira coluna é o nome
-                        if (nomeCliente) {
+                    let select = document.getElementById("listaClientes");
+                    select.innerHTML = "<option value=''>Selecione um Cliente...</option>";
+
+                    clientes.forEach(linha => {
+                        let nome = linha[0]; // Nome do cliente
+                        if (nome) {
                             let option = document.createElement("option");
-                            option.value = nomeCliente;
-                            option.textContent = nomeCliente;
-                            selectClientes.appendChild(option);
+                            option.value = nome;
+                            option.textContent = nome;
+                            select.appendChild(option);
                         }
                     });
                 })
@@ -52,37 +51,60 @@
         }
 
         function carregarProdutos() {
-            fetch(URL_API + "?tabela=Estoque")
+            fetch(URL_API)
                 .then(response => response.json())
                 .then(data => {
-                    if (!data.dados || data.dados.length < 2) {
-                        console.error("Erro ao carregar produtos!");
+                    if (!data.estoque || data.estoque.length < 2) {
+                        console.error("Nenhum produto encontrado.");
                         return;
                     }
 
-                    let produtos = data.dados.slice(1); // Remove o cabeçalho
-                    let selectProdutos = document.getElementById("listaProdutos");
-                    selectProdutos.innerHTML = "<option value=''>Selecione...</option>";
+                    let cabecalho = data.estoque[0];
+                    let produtos = data.estoque.slice(1); 
 
-                    produtos.sort((a, b) => String(a[1]).localeCompare(String(b[1])));
+                    let select = document.getElementById("listaProdutos");
+                    select.innerHTML = "<option value=''>Selecione um Produto...</option>";
 
-                    produtos.forEach(produto => {
-                        let codigo = produto[0];
-                        let nomeProduto = produto[1];
+                    produtos.forEach(linha => {
+                        let codigo = linha[0]; 
+                        let nomeProduto = linha[1]; 
                         if (codigo && nomeProduto) {
                             let option = document.createElement("option");
                             option.value = codigo;
                             option.textContent = nomeProduto;
-                            selectProdutos.appendChild(option);
+                            select.appendChild(option);
                         }
                     });
                 })
                 .catch(error => console.error("Erro ao buscar produtos:", error));
         }
 
-        // Carregar os clientes e produtos ao abrir a página
+        function buscarProduto() {
+            let codigoSelecionado = document.getElementById("listaProdutos").value;
+            if (!codigoSelecionado) return;
+
+            fetch(`${URL_API}?produto=${encodeURIComponent(codigoSelecionado)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
+                        return;
+                    }
+
+                    let detalhesDiv = document.getElementById("detalhesProduto");
+                    detalhesDiv.innerHTML = "";
+
+                    for (let chave in data) {
+                        let div = document.createElement("div");
+                        div.innerHTML = `<strong>${chave}:</strong> <input type="text" id="campo_${chave}" value="${data[chave]}">`;
+                        detalhesDiv.appendChild(div);
+                    }
+                })
+                .catch(error => console.error("Erro ao buscar produto:", error));
+        }
+
+        // Carregar os clientes ao abrir a página
         carregarClientes();
-        carregarProdutos();
     </script>
 
 </body>
