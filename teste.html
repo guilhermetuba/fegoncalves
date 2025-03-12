@@ -111,9 +111,16 @@
                     let detalhesDiv = document.getElementById("detalhesProduto");
                     detalhesDiv.innerHTML = "";
 
-                    for (let chave in data) {
+                    // Exibir apenas os campos Código, Produto e Preço de Venda
+                    let camposExibidos = {
+                        "Código": data.codigo,
+                        "Produto": data.nomeProduto,
+                        "Preço": data.precoVenda // Modificado para mostrar como "Preço"
+                    };
+
+                    for (let chave in camposExibidos) {
                         let div = document.createElement("div");
-                        div.innerHTML = `<strong>${chave}:</strong> <input type="text" id="campo_${chave}" value="${data[chave]}">`;
+                        div.innerHTML = `<strong>${chave}:</strong> <input type="text" id="campo_${chave}" value="${camposExibidos[chave]}" readonly>`;
                         detalhesDiv.appendChild(div);
                     }
                 })
@@ -126,4 +133,3 @@
 
 </body>
 </html>
-
