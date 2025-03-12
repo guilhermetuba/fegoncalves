@@ -3,42 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estoque</title>
+    <title>Selecionar Produto</title>
 </head>
 <body>
 
-    <h2>Dados do Estoque</h2>
-    <table border="1" id="tabela">
-        <tbody></tbody>
-    </table>
-<script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxX38GZAOdJx-UNZYMEtOpngzJtgGg62h7DmKsmxWNjcooJpwKKJIvbIFfXQjs3txWF/exec"; // Substitua pela URL do seu script
+    <h2>Selecione um Produto</h2>
+    <select id="listaProdutos">
+        <option value="">Carregando...</option>
+    </select>
 
-    function carregarDados() {
-        fetch(API_URL)
-            .then(response => response.json())
-            .then(data => {
-                if (!data.dados) {
-                    throw new Error("Formato inesperado!");
-                }
-                let tabela = document.querySelector("#tabela tbody");
-                tabela.innerHTML = "";
-                data.dados.forEach((linha) => { // 🛠 Agora acessamos `dados`
-                    let tr = document.createElement("tr");
-                    linha.forEach((celula) => {
-                        let td = document.createElement("td");
-                        td.textContent = celula;
-                        tr.appendChild(td);
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbxX38GZAOdJx-UNZYMEtOpngzJtgGg62h7DmKsmxWNjcooJpwKKJIvbIFfXQjs3txWF/exec"; // Substitua pela URL do seu script
+
+        function carregarProdutos() {
+            fetch(API_URL)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.dados) {
+                        throw new Error("Formato inesperado!");
+                    }
+                    
+                    let select = document.getElementById("listaProdutos");
+                    select.innerHTML = ""; // Limpa opções antigas
+
+                    data.dados.forEach((linha, index) => {
+                        if (index === 0) return; // Pula o cabeçalho da planilha
+
+                        let produto = linha[0]; // Assume que a coluna A tem os produtos
+                        if (produto) {
+                            let option = document.createElement("option");
+                            option.value = produto;
+                            option.textContent = produto;
+                            select.appendChild(option);
+                        }
                     });
-                    tabela.appendChild(tr);
-                });
-            })
-            .catch(error => console.error("Erro ao buscar dados:", error));
-    }
+                })
+                .catch(error => console.error("Erro ao buscar produtos:", error));
+        }
 
-    carregarDados();
-</script>
+        carregarProdutos();
+    </script>
 
-   
 </body>
 </html>
+
