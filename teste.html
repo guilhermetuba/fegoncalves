@@ -21,7 +21,7 @@
 
     <script>
         
-       function carregarProdutos() {
+      function carregarProdutos() {
     fetch(URL_API)
         .then(response => response.json())
         .then(data => {
@@ -34,7 +34,7 @@
             let produtos = data.dados.slice(1); // Remove o cabeçalho para listar os produtos
 
             // Ordenar os produtos pelo nome (coluna 1 - Produto)
-            produtos.sort((a, b) => a[1].localeCompare(b[1]));
+            produtos.sort((a, b) => String(a[1]).localeCompare(String(b[1])));
 
             let select = document.getElementById("listaProdutos");
             select.innerHTML = "<option value=''>Selecione...</option>";
@@ -87,6 +87,7 @@ function buscarProduto() {
         })
         .catch(error => console.error("Erro ao buscar detalhes:", error));
 }
+
 
         function atualizarProduto() {
             let produtoSelecionado = document.getElementById("listaProdutos").value;
