@@ -29,7 +29,7 @@
                     data.dados.forEach((linha, index) => {
                         if (index === 0) return; // Pula o cabeçalho da planilha
 
-                        let produto = linha[0]; // Assume que a coluna A tem os produtos
+                        let produto = linha[1]; // Assume que a coluna A tem os produtos
                         if (produto) {
                             let option = document.createElement("option");
                             option.value = produto;
