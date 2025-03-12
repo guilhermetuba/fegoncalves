@@ -13,10 +13,16 @@
         <option value="">Selecione um Cliente...</option>
     </select>
 
-    <h2>Selecione um Produto</h2>
-    <select id="listaProdutos" onchange="buscarProduto()">
-        <option value="">Selecione um Produto...</option>
-    </select>
+    <h2>Selecione ou Digite um Código de Produto</h2>
+    <div>
+        <select id="listaProdutos" onchange="buscarProduto()">
+            <option value="">Selecione um Produto...</option>
+        </select>
+    </div>
+    <div>
+        <input type="text" id="codigoProduto" placeholder="Digite o código do produto">
+        <button onclick="buscarProduto()">Consultar</button>
+    </div>
 
     <h3>Detalhes do Produto</h3>
     <div id="detalhesProduto"></div>
@@ -81,9 +87,20 @@
 
         function buscarProduto() {
             let codigoSelecionado = document.getElementById("listaProdutos").value;
-            if (!codigoSelecionado) return;
+            let codigoProdutoDigitado = document.getElementById("codigoProduto").value.trim();
 
-            fetch(`${URL_API}?produto=${encodeURIComponent(codigoSelecionado)}`)
+            // Se o código foi selecionado do select, usá-lo
+            if (codigoSelecionado) {
+                buscarDetalhesProduto(codigoSelecionado);
+            }
+            // Se o usuário digitou um código, usá-lo
+            else if (codigoProdutoDigitado) {
+                buscarDetalhesProduto(codigoProdutoDigitado);
+            }
+        }
+
+        function buscarDetalhesProduto(codigo) {
+            fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -109,3 +126,4 @@
 
 </body>
 </html>
+
