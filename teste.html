@@ -11,31 +11,34 @@
     <table border="1" id="tabela">
         <tbody></tbody>
     </table>
+<script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbxX38GZAOdJx-UNZYMEtOpngzJtgGg62h7DmKsmxWNjcooJpwKKJIvbIFfXQjs3txWF/exec"; // Substitua pela URL do seu script
 
-    <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbyUop58Sh-diV7mU-VtJDlFmkAXh-azgGaKExwe5hcs6eQ4BFLkgznGA1nOLObfCl_V/exec"; // Substitua pela URL do seu script
-
-        function carregarDados() {
-            fetch(API_URL)
-                .then(response => response.json())
-                .then(data => {
-                    let tabela = document.querySelector("#tabela tbody");
-                    tabela.innerHTML = "";
-                    data.forEach((linha) => {
-                        let tr = document.createElement("tr");
-                        linha.forEach((celula) => {
-                            let td = document.createElement("td");
-                            td.textContent = celula;
-                            tr.appendChild(td);
-                        });
-                        tabela.appendChild(tr);
+    function carregarDados() {
+        fetch(API_URL)
+            .then(response => response.json())
+            .then(data => {
+                if (!data.dados) {
+                    throw new Error("Formato inesperado!");
+                }
+                let tabela = document.querySelector("#tabela tbody");
+                tabela.innerHTML = "";
+                data.dados.forEach((linha) => { // 🛠 Agora acessamos `dados`
+                    let tr = document.createElement("tr");
+                    linha.forEach((celula) => {
+                        let td = document.createElement("td");
+                        td.textContent = celula;
+                        tr.appendChild(td);
                     });
-                })
-                .catch(error => console.error("Erro ao buscar dados:", error));
-        }
+                    tabela.appendChild(tr);
+                });
+            })
+            .catch(error => console.error("Erro ao buscar dados:", error));
+    }
 
-        carregarDados();
-    </script>
+    carregarDados();
+</script>
 
+   
 </body>
 </html>
