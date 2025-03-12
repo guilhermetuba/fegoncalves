@@ -1,35 +1,70 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>Dados da Planilha</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets CRUD</title>
 </head>
 <body>
-    <h1>Dados da Planilha Google Sheets</h1>
-    <div id="dados"></div>
+
+    <h2>Dados do Google Sheets</h2>
+    <table border="1" id="tabela">
+        <tbody></tbody>
+    </table>
+
+    <h3>Editar Valor</h3>
+    Linha: <input type="number" id="linha" min="1">  
+    Coluna: <input type="number" id="coluna" min="1">  
+    Novo Valor: <input type="text" id="valor">  
+    <button onclick="editarCelula()">Salvar</button>
 
     <script>
-        const sheetId = '1-r5uYv0yTB3__2rrHNLiosd2mFHHCdJAjwMdvxUKXRQ';
-        const base = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?`;
-        const query = encodeURIComponent('Select *');
-        const url = `${base}&tq=${query}`;
+        const API_URL = "API_URL"; // Substitua pela URL do seu script
 
-        fetch(url)
-            .then(res => res.text())
-            .then(rep => {
-                const data = JSON.parse(rep.substr(47).slice(0, -2));
-                const table = document.createElement('table');
-                data.table.rows.forEach(row => {
-                    const tr = document.createElement('tr');
-                    row.c.forEach(cell => {
-                        const td = document.createElement('td');
-                        td.textContent = cell.v;
-                        tr.appendChild(td);
+        // Buscar dados
+        function carregarDados() {
+            fetch(API_URL)
+                .then(response => response.json())
+                .then(data => {
+                    let tabela = document.querySelector("#tabela tbody");
+                    tabela.innerHTML = "";
+                    data.forEach((linha, i) => {
+                        let tr = document.createElement("tr");
+                        linha.forEach((celula, j) => {
+                            let td = document.createElement("td");
+                            td.textContent = celula;
+                            tr.appendChild(td);
+                        });
+                        tabela.appendChild(tr);
                     });
-                    table.appendChild(tr);
-                });
-                document.getElementById('dados').appendChild(table);
-            });
+                })
+                .catch(error => console.error("Erro ao buscar dados:", error));
+        }
+
+        // Editar célula
+        function editarCelula() {
+            let linha = document.getElementById("linha").value;
+            let coluna = document.getElementById("coluna").value;
+            let valor = document.getElementById("valor").value;
+
+            fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ linha: parseInt(linha), coluna: parseInt(coluna), valor: valor })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    alert("Atualizado com sucesso!");
+                    carregarDados();
+                }
+            })
+            .catch(error => console.error("Erro ao atualizar:", error));
+        }
+
+        // Carregar ao abrir
+        carregarDados();
     </script>
+
 </body>
 </html>
