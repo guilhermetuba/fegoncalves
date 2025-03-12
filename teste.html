@@ -16,7 +16,7 @@
     <script>
        
         function carregarProdutos() {
-            fetch(API_URL)
+            fetch(URL_API)
                 .then(response => response.json())
                 .then(data => {
                     if (!data.dados) {
