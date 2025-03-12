@@ -21,50 +21,54 @@
 
     <script>
         
-        function carregarProdutos() {
-            fetch(URL_API)
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.dados) {
-                        throw new Error("Formato inesperado!");
-                    }
-                    
-                    let select = document.getElementById("listaProdutos");
-                    select.innerHTML = "<option value=''>Selecione...</option>";
+       function carregarProdutos() {
+    fetch(URL_API)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.dados || data.dados.length < 2) {
+                console.error("Formato de dados inesperado!");
+                return;
+            }
 
-                    data.dados.forEach((linha, index) => {
-                        if (index === 0) return;
-                        let codigo = linha[0];   // Código do produto (Coluna 1)
-                        let produto = linha[1]; // Nome do Produto (Coluna 2)
-                        if (produto) {
-                            let option = document.createElement("option");
-                            option.value = codigo;
-                            option.textContent = produto;
-                            select.appendChild(option);
-                        }
-                    });
-                })
-                .catch(error => console.error("Erro ao buscar produtos:", error));
-        }
+            let cabecalho = data.dados[0]; // Primeira linha é o cabeçalho
+            let produtos = data.dados.slice(1); // Remove o cabeçalho para listar os produtos
 
-        function buscarProduto() {
+            // Ordenar os produtos pelo nome (coluna 1 - Produto)
+            produtos.sort((a, b) => a[1].localeCompare(b[1]));
+
+            let select = document.getElementById("listaProdutos");
+            select.innerHTML = "<option value=''>Selecione...</option>";
+
+            produtos.forEach((linha) => {
+                let codigo = linha[0]; 
+                let nomeProduto = linha[1]; 
+                if (codigo && nomeProduto) {
+                    let option = document.createElement("option");
+                    option.value = codigo; 
+                    option.textContent = nomeProduto;
+                    select.appendChild(option);
+                }
+            });
+        })
+        .catch(error => console.error("Erro ao buscar produtos:", error));
+}
+
+function buscarProduto() {
     let codigoSelecionado = document.getElementById("listaProdutos").value;
     if (!codigoSelecionado) return;
 
     fetch(URL_API)
         .then(response => response.json())
         .then(data => {
-            console.log("Dados recebidos:", data); // Para depuração
-
             if (!data.dados || data.dados.length < 2) {
                 document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
                 return;
             }
 
-            let cabecalho = data.dados[0]; // A primeira linha é o cabeçalho
-            let produtos = data.dados.slice(1); // Remove o cabeçalho para buscar os produtos
+            let cabecalho = data.dados[0]; // Primeira linha é o cabeçalho
+            let produtos = data.dados.slice(1); // Remove o cabeçalho
 
-            let produtoEncontrado = produtos.find(linha => linha[0] == codigoSelecionado); // Procura pelo código
+            let produtoEncontrado = produtos.find(linha => linha[0] == codigoSelecionado); // Busca o código
 
             if (!produtoEncontrado) {
                 document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
@@ -74,9 +78,8 @@
             let detalhesDiv = document.getElementById("detalhesProduto");
             detalhesDiv.innerHTML = "";
 
-            // Criar campos de input com base no cabeçalho e nos valores encontrados
             cabecalho.forEach((campo, index) => {
-                let valor = produtoEncontrado[index] || ""; // Se não existir, deixa vazio
+                let valor = produtoEncontrado[index] ?? ""; // Mantém "0" visível
                 let div = document.createElement("div");
                 div.innerHTML = `<strong>${campo}:</strong> <input type="text" id="campo_${campo}" value="${valor}">`;
                 detalhesDiv.appendChild(div);
@@ -84,7 +87,6 @@
         })
         .catch(error => console.error("Erro ao buscar detalhes:", error));
 }
-
 
         function atualizarProduto() {
             let produtoSelecionado = document.getElementById("listaProdutos").value;
