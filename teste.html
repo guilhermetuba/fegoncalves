@@ -34,11 +34,11 @@
 
                     data.dados.forEach((linha, index) => {
                         if (index === 0) return;
-
-                        let produto = linha[0]; 
+                        let codigo = linha[0];   // Código do produto (Coluna 1)
+                        let produto = linha[1]; // Nome do Produto (Coluna 2)
                         if (produto) {
                             let option = document.createElement("option");
-                            option.value = produto;
+                            option.value = codigo;
                             option.textContent = produto;
                             select.appendChild(option);
                         }
@@ -48,29 +48,33 @@
         }
 
         function buscarProduto() {
-            let produtoSelecionado = document.getElementById("listaProdutos").value;
-            if (!produtoSelecionado) return;
+    let codigoSelecionado = document.getElementById("listaProdutos").value;
+    if (!codigoSelecionado) return;
 
-            fetch(`${URL_API}?produto=${encodeURIComponent(produtoSelecionado)}`)
-                .then(response => response.json())
-                .then(data => {
-                     console.log("Dados do produto:", data); // Adiciona um log para verificar a resposta da API
-                    if (data.error) {
-                        document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
-                        return;
-                    }
+    fetch(`${URL_API}?codigo=${encodeURIComponent(codigoSelecionado)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
+                return;
+            }
 
-                    let detalhesDiv = document.getElementById("detalhesProduto");
-                    detalhesDiv.innerHTML = "";
+            let detalhesDiv = document.getElementById("detalhesProduto");
+            detalhesDiv.innerHTML = "";
 
-                    Object.keys(data).forEach((campo) => {
-                        let div = document.createElement("div");
-                        div.innerHTML = `<strong>${campo}:</strong> <input type="text" id="campo_${campo}" value="${data[campo]}">`;
-                        detalhesDiv.appendChild(div);
-                    });
-                })
-                .catch(error => console.error("Erro ao buscar detalhes:", error));
-        }
+            // Campos que queremos exibir
+            let camposDesejados = ["Código", "Produto", "Fornecedor", "Categoria", "Quantidade", "Preço de Custo", "Preço de Venda"];
+
+            camposDesejados.forEach((campo, index) => {
+                let valor = data[index]; // Assume que data é um array ordenado igual à planilha
+                let div = document.createElement("div");
+                div.innerHTML = `<strong>${campo}:</strong> <input type="text" id="campo_${campo}" value="${valor}">`;
+                detalhesDiv.appendChild(div);
+            });
+        })
+        .catch(error => console.error("Erro ao buscar detalhes:", error));
+}
+
 
         function atualizarProduto() {
             let produtoSelecionado = document.getElementById("listaProdutos").value;
