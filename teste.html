@@ -3,18 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selecionar Produto</title>
-     <script src="config.js"></script>
+    <title>Gerenciar Estoque</title>
 </head>
 <body>
 
     <h2>Selecione um Produto</h2>
-    <select id="listaProdutos">
+    <select id="listaProdutos" onchange="buscarProduto()">
         <option value="">Carregando...</option>
     </select>
 
+    <h3>Detalhes do Produto</h3>
+    <div id="detalhesProduto"></div>
+
+    <button onclick="atualizarProduto()">Atualizar</button>
+    <button onclick="excluirProduto()">Excluir</button>
+
     <script>
-       
+        
         function carregarProdutos() {
             fetch(URL_API)
                 .then(response => response.json())
@@ -24,12 +29,12 @@
                     }
                     
                     let select = document.getElementById("listaProdutos");
-                    select.innerHTML = ""; // Limpa opções antigas
+                    select.innerHTML = "<option value=''>Selecione...</option>";
 
                     data.dados.forEach((linha, index) => {
-                        if (index === 0) return; // Pula o cabeçalho da planilha
+                        if (index === 0) return;
 
-                        let produto = linha[1]; // Assume que a coluna A tem os produtos
+                        let produto = linha[0]; 
                         if (produto) {
                             let option = document.createElement("option");
                             option.value = produto;
@@ -41,9 +46,84 @@
                 .catch(error => console.error("Erro ao buscar produtos:", error));
         }
 
+        function buscarProduto() {
+            let produtoSelecionado = document.getElementById("listaProdutos").value;
+            if (!produtoSelecionado) return;
+
+            fetch(`${URL_API}?produto=${encodeURIComponent(produtoSelecionado)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
+                        return;
+                    }
+
+                    let detalhesDiv = document.getElementById("detalhesProduto");
+                    detalhesDiv.innerHTML = "";
+
+                    Object.keys(data).forEach((campo) => {
+                        let div = document.createElement("div");
+                        div.innerHTML = `<strong>${campo}:</strong> <input type="text" id="campo_${campo}" value="${data[campo]}">`;
+                        detalhesDiv.appendChild(div);
+                    });
+                })
+                .catch(error => console.error("Erro ao buscar detalhes:", error));
+        }
+
+        function atualizarProduto() {
+            let produtoSelecionado = document.getElementById("listaProdutos").value;
+            if (!produtoSelecionado) return alert("Selecione um produto!");
+
+            let inputs = document.querySelectorAll("#detalhesProduto input");
+            let dadosAtualizados = {};
+
+            inputs.forEach(input => {
+                let campo = input.id.replace("campo_", "");
+                dadosAtualizados[campo] = input.value;
+            });
+
+            fetch(URL_API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ produto: produtoSelecionado, dados: dadosAtualizados })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    alert("Produto atualizado com sucesso!");
+                } else {
+                    alert("Erro ao atualizar produto.");
+                }
+            })
+            .catch(error => console.error("Erro ao atualizar produto:", error));
+        }
+
+        function excluirProduto() {
+            let produtoSelecionado = document.getElementById("listaProdutos").value;
+            if (!produtoSelecionado) return alert("Selecione um produto!");
+
+            if (!confirm("Tem certeza que deseja excluir este produto?")) return;
+
+            fetch(`${URL_API}?produto=${encodeURIComponent(produtoSelecionado)}`, {
+                method: "DELETE"
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    alert("Produto excluído com sucesso!");
+                    carregarProdutos();
+                    document.getElementById("detalhesProduto").innerHTML = "";
+                } else {
+                    alert("Erro ao excluir produto.");
+                }
+            })
+            .catch(error => console.error("Erro ao excluir produto:", error));
+        }
+
         carregarProdutos();
     </script>
 
 </body>
 </html>
+
 
