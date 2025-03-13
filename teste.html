@@ -56,10 +56,10 @@
     
     <script>
 
-        let carrinho = [];
-        let subtotal = 0;
+let carrinho = [];
+let subtotal = 0;
 
-   function incluirProdutoNoCarrinho() {
+function incluirProdutoNoCarrinho() {
     let codigo = document.getElementById("listaProdutos").value || document.getElementById("codigoProdutoInput").value.trim();
     let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
     
@@ -101,28 +101,41 @@
         })
         .catch(error => console.error("Erro ao buscar produto:", error));
 }
-        function atualizarCarrinho() {
+        
+       function atualizarCarrinho() {
     let lista = document.getElementById("listaCarrinho");
     lista.innerHTML = "";
     subtotal = 0;
 
-    carrinho.forEach(item => {
+    carrinho.forEach((item, index) => {
         let li = document.createElement("li");
         li.textContent = `${item.produto} - ${item.quantidade}x - ${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+
+        // Criando botão de remover
+        let botaoRemover = document.createElement("button");
+        botaoRemover.textContent = "Remover";
+        botaoRemover.style.marginLeft = "10px";
+        botaoRemover.onclick = () => removerDoCarrinho(index);
+
+        li.appendChild(botaoRemover);
         lista.appendChild(li);
         subtotal += item.total;
     });
-
-    document.getElementById("subtotal").textContent = subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        document.getElementById("subtotal").textContent = subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     atualizarTotal();
 }
-
-       function atualizarTotal() {
+           
+function atualizarTotal() {
     let desconto = parseFloat(document.getElementById("desconto").value) || 0;
     let total = subtotal - desconto;
     document.getElementById("totalVenda").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
+        function removerDoCarrinho(index) {
+    carrinho.splice(index, 1); // Remove o item do array
+    atualizarCarrinho(); // Atualiza a exibição
+}
+        
         function atualizarParcelas(total) {
             let selectParcelas = document.getElementById("parcelas");
             selectParcelas.innerHTML = "";
