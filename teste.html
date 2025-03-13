@@ -71,7 +71,7 @@ function incluirProdutoNoCarrinho() {
     fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
         .then(response => response.json())
         .then(data => {
-            if (!data || data.error) {
+             if (!data || data.error) {
                 alert("Produto não encontrado.");
                 return;
             }
@@ -241,42 +241,43 @@ function incluirProdutoNoCarrinho() {
             buscarDetalhesProduto(codigo);
         }
 
-        function buscarDetalhesProduto(codigo) {
-            fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
+       function buscarDetalhesProduto(codigo) {
+    fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Resposta da API:", data); // <-- ADICIONE ESTA LINHA
 
-                    if (data.error) {
-                        document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
-                        return;
-                    }
+            if (data.error) {
+                document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
+                return;
+            }
 
-                    let detalhesDiv = document.getElementById("detalhesProduto");
-                    detalhesDiv.innerHTML = "";
+            let detalhesDiv = document.getElementById("detalhesProduto");
+            detalhesDiv.innerHTML = ''; // Limpar antes de adicionar novos dados
 
-                    let codigoProduto = data["Código"] || "Não encontrado";
-                    let nomeProduto = data["Produto"] || "Não encontrado";
-                    let precoVenda = data["Preço de Venda"] || "Não encontrado";
+            let codigoProduto = data["Código"] || "Não encontrado";
+            let nomeProduto = data["Produto"] || "Não encontrado";
+            let precoVenda = data["Preço de Venda"] || "Não encontrado";
 
-                    if (!isNaN(precoVenda) && precoVenda !== "Não encontrado" && precoVenda !== "") {
-                        precoVenda = Number(precoVenda).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-                    }
+            if (!isNaN(precoVenda) && precoVenda !== "") {
+                precoVenda = Number(precoVenda).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+            }
 
-                    let camposExibidos = {
-                        "Código": codigoProduto,
-                        "Produto": nomeProduto,
-                        "Preço": precoVenda
-                    };
+            let campos = {
+                "Código": codigoProduto,
+                "Produto": nomeProduto,
+                "Preço de Venda": precoVenda
+            };
 
-                    for (let chave in camposExibidos) {
-                        let div = document.createElement("div");
-                        div.innerHTML = `<strong>${chave}:</strong> <input type="text" id="campo_${chave}" value="${camposExibidos[chave]}" readonly>`;
-                        detalhesDiv.appendChild(div);
-                    }
-                })
-                .catch(error => console.error("Erro ao buscar produto:", error));
-        }
+            for (let chave in camposExibidos) {
+                let div = document.createElement("div");
+                div.innerHTML = `<strong>${chave}:</strong> <input type="text" id="campo_${chave}" value="${camposExibidos[chave]}" readonly>`;
+                detalhesDiv.appendChild(div);
+            }
+        })
+        .catch(error => console.error("Erro ao buscar os detalhes do produto:", error));
+}
+
 
         carregarClientes();
     </script>
