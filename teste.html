@@ -60,43 +60,45 @@ let carrinho = [];
 let subtotal = 0;
 
 function incluirProdutoNoCarrinho() {
-    let codigo = document.getElementById("listaProdutos").value || document.getElementById("quantidadeProduto").value.trim();
-    let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
+    let codigo = document.getElementById("listaProdutos").value;
+    let quantidade = parseInt(document.getElementById("quantidadeProduto").value, 10);
 
     if (!codigo || isNaN(quantidade) || quantidade <= 0) {
         alert("Informe um código válido e uma quantidade maior que zero.");
         return;
     }
 
-    fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
+    fetch(URL_API + "?codigo=" + codigo) // Certifique-se de que a URL da API está correta
         .then(response => response.json())
         .then(data => {
-             if (!data || data.error) {
+            console.log("Resposta da API:", data); // Para depuração
+
+            if (!data || !data["Código"]) { 
                 alert("Produto não encontrado.");
                 return;
             }
 
-            let precoVenda = parseFloat(data["Preço de Venda"].replace(",", "."));
-            
+            let precoVenda = parseFloat(data["Preço de Venda"]);
+
             if (isNaN(precoVenda)) {
                 alert("Erro ao obter o preço do produto.");
                 return;
             }
 
-            let produtoExistente = carrinho.find(item => item.codigo === codigo);
+            let produtoExistente = carrinho.find(item => item.codigo === data["Código"]);
 
             if (produtoExistente) {
                 produtoExistente.quantidade += quantidade;
-                produtoExistente.total = produtoExistente.quantidade * produtoExistente.preco;
+                produtoExistente.total += quantidade * preco;
             } else {
                 let novoProduto = {
-                    codigo: codigo,
+                    codigo: data["Código"],
                     produto: data["Produto"] || "Sem nome",
                     quantidade: quantidade,
                     preco: precoVenda,
                     total: quantidade * precoVenda
                 };
-                carrinho.push(novoProduto);
+                carrinho.push(produto);
             }
 
             atualizarCarrinho();
@@ -106,6 +108,7 @@ function incluirProdutoNoCarrinho() {
             alert("Erro ao buscar produto.");
         });
 }
+
 
         
 
