@@ -24,8 +24,100 @@
 
     <h3>Detalhes do Produto</h3>
     <div id="detalhesProduto"></div>
+    
+    <h3>Quantidade</h3>
+    <input type="number" id="quantidadeProduto" min="1" value="1">
+    <button onclick="incluirProdutoNoCarrinho()">Incluir Produto no Carrinho</button>
 
+    <h3>Carrinho</h3>
+    <ul id="carrinho"></ul>
+
+    <h3>Resumo da Venda</h3>
+    <p>Subtotal: <span id="subtotal">R$ 0,00</span></p>
+    <label for="formaPagamento">Forma de Pagamento:</label>
+    <select id="formaPagamento">
+        <option value="Dinheiro">Dinheiro</option>
+        <option value="PIX">PIX</option>
+        <option value="Cartão">Cartão</option>
+    </select>
+    
+    <h3>Desconto</h3>
+    <input type="number" id="desconto" min="0" value="0" oninput="atualizarTotal()">
+    <p>Total: <span id="total">R$ 0,00</span></p>
+
+    <h3>Parcelamento</h3>
+    <select id="parcelas"></select>
+    <p>Data 1ª Parcela: <input type="date" id="dataPrimeiraParcela"></p>
+    
+    <button onclick="registrarVenda()">Registrar Venda</button>
+    
     <script>
+
+        let carrinho = [];
+        let subtotal = 0;
+
+        function incluirProdutoNoCarrinho() {
+            let codigo = document.getElementById("campo_Código").value;
+            let produto = document.getElementById("campo_Produto").value;
+            let preco = parseFloat(document.getElementById("campo_Preço").value.replace("R$", "").replace(",", "."));
+            let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
+
+            if (!codigo || !produto || isNaN(preco) || isNaN(quantidade) || quantidade < 1) {
+                alert("Selecione um produto válido e informe a quantidade corretamente.");
+                return;
+            }
+
+            let item = { codigo, produto, preco, quantidade, total: preco * quantidade };
+            carrinho.push(item);
+            atualizarCarrinho();
+        }
+
+        function atualizarCarrinho() {
+            let lista = document.getElementById("carrinho");
+            lista.innerHTML = "";
+            subtotal = 0;
+
+            carrinho.forEach(item => {
+                let li = document.createElement("li");
+                li.textContent = `${item.produto} - ${item.quantidade}x - ${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+                lista.appendChild(li);
+                subtotal += item.total;
+            });
+
+            document.getElementById("subtotal").textContent = subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+            atualizarTotal();
+        }
+
+        function atualizarTotal() {
+            let desconto = parseFloat(document.getElementById("desconto").value) || 0;
+            let total = subtotal - desconto;
+            document.getElementById("total").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+            atualizarParcelas(total);
+        }
+
+        function atualizarParcelas(total) {
+            let selectParcelas = document.getElementById("parcelas");
+            selectParcelas.innerHTML = "";
+
+            for (let i = 1; i <= 12; i++) {
+                let valorParcela = total / i;
+                if (valorParcela >= 50) {
+                    let option = document.createElement("option");
+                    option.value = i;
+                    option.textContent = `${i}x de ${valorParcela.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+                    selectParcelas.appendChild(option);
+                } else {
+                    break;
+                }
+            }
+        }
+
+        function registrarVenda() {
+            alert("Venda registrada com sucesso!");
+            carrinho = [];
+            atualizarCarrinho();
+        }
+        
         function carregarClientes() {
             fetch(URL_API)
                 .then(response => response.json())
