@@ -13,16 +13,14 @@
         <option value="">Selecione um Cliente...</option>
     </select>
 
-    <h2>Selecione ou Digite um Código de Produto</h2>
-    <div>
-        <select id="listaProdutos" onchange="buscarProduto()">
-            <option value="">Selecione um Produto...</option>
-        </select>
-    </div>
-    <div>
-        <input type="text" id="codigoProduto" placeholder="Digite o código do produto">
-        <button onclick="buscarProduto()">Consultar</button>
-    </div>
+    <h2>Selecione um Produto</h2>
+    <select id="listaProdutos">
+        <option value="">Selecione um Produto...</option>
+    </select>
+
+    <h3>Ou digite o código do produto</h3>
+    <input type="text" id="codigoProdutoInput" placeholder="Digite o código">
+    <button onclick="consultarProdutoPorCodigo()">Consultar</button>
 
     <h3>Detalhes do Produto</h3>
     <div id="detalhesProduto"></div>
@@ -37,14 +35,12 @@
                         return;
                     }
 
-                    let cabecalho = data.clientes[0];
-                    let clientes = data.clientes.slice(1); 
-
+                    let clientes = data.clientes.slice(1);
                     let select = document.getElementById("listaClientes");
                     select.innerHTML = "<option value=''>Selecione um Cliente...</option>";
 
                     clientes.forEach(linha => {
-                        let nome = linha[0]; // Nome do cliente
+                        let nome = linha[0];
                         if (nome) {
                             let option = document.createElement("option");
                             option.value = nome;
@@ -65,15 +61,13 @@
                         return;
                     }
 
-                    let cabecalho = data.estoque[0];
-                    let produtos = data.estoque.slice(1); 
-
+                    let produtos = data.estoque.slice(1);
                     let select = document.getElementById("listaProdutos");
                     select.innerHTML = "<option value=''>Selecione um Produto...</option>";
 
                     produtos.forEach(linha => {
-                        let codigo = linha[0]; 
-                        let nomeProduto = linha[1]; 
+                        let codigo = linha[0];
+                        let nomeProduto = linha[1];
                         if (codigo && nomeProduto) {
                             let option = document.createElement("option");
                             option.value = codigo;
@@ -85,64 +79,52 @@
                 .catch(error => console.error("Erro ao buscar produtos:", error));
         }
 
-        function buscarProduto() {
-            let codigoSelecionado = document.getElementById("listaProdutos").value;
-            let codigoProdutoDigitado = document.getElementById("codigoProduto").value.trim();
-
-            // Se o código foi selecionado do select, usá-lo
-            if (codigoSelecionado) {
-                buscarDetalhesProduto(codigoSelecionado);
-            }
-            // Se o usuário digitou um código, usá-lo
-            else if (codigoProdutoDigitado) {
-                buscarDetalhesProduto(codigoProdutoDigitado);
-            }
-        }
-
-     function buscarDetalhesProduto(codigo) {
-    fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);  // Log para verificar a estrutura
-
-            if (data.error) {
-                document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
+        function consultarProdutoPorCodigo() {
+            let codigo = document.getElementById("codigoProdutoInput").value.trim();
+            if (!codigo) {
+                alert("Digite um código válido.");
                 return;
             }
+            buscarDetalhesProduto(codigo);
+        }
 
-            let detalhesDiv = document.getElementById("detalhesProduto");
-            detalhesDiv.innerHTML = "";
+        function buscarDetalhesProduto(codigo) {
+            fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
 
-            let codigoProduto = data["Código"] || "Não encontrado";
-            let nomeProduto = data["Produto"] || "Não encontrado";
-            let precoVenda = data["Preço de Venda"] || "Não encontrado";
+                    if (data.error) {
+                        document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
+                        return;
+                    }
 
-            // Converter para número e formatar como moeda, se houver um valor válido
-            if (!isNaN(precoVenda) && precoVenda !== "Não encontrado" && precoVenda !== "") {
-                precoVenda = Number(precoVenda).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-            }
+                    let detalhesDiv = document.getElementById("detalhesProduto");
+                    detalhesDiv.innerHTML = "";
 
-            // Exibir apenas os campos Código, Produto e Preço (formatado corretamente)
-            let camposExibidos = {
-                "Código": codigoProduto,
-                "Produto": nomeProduto,
-                "Preço": precoVenda
-            };
+                    let codigoProduto = data["Código"] || "Não encontrado";
+                    let nomeProduto = data["Produto"] || "Não encontrado";
+                    let precoVenda = data["Preço de Venda"] || "Não encontrado";
 
-            for (let chave in camposExibidos) {
-                let div = document.createElement("div");
-                div.innerHTML = `<strong>${chave}:</strong> <input type="text" id="campo_${chave}" value="${camposExibidos[chave]}" readonly>`;
-                detalhesDiv.appendChild(div);
-            }
-        })
-        .catch(error => console.error("Erro ao buscar produto:", error));
-}
+                    if (!isNaN(precoVenda) && precoVenda !== "Não encontrado" && precoVenda !== "") {
+                        precoVenda = Number(precoVenda).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                    }
 
+                    let camposExibidos = {
+                        "Código": codigoProduto,
+                        "Produto": nomeProduto,
+                        "Preço": precoVenda
+                    };
 
+                    for (let chave in camposExibidos) {
+                        let div = document.createElement("div");
+                        div.innerHTML = `<strong>${chave}:</strong> <input type="text" id="campo_${chave}" value="${camposExibidos[chave]}" readonly>`;
+                        detalhesDiv.appendChild(div);
+                    }
+                })
+                .catch(error => console.error("Erro ao buscar produto:", error));
+        }
 
-
-
-        // Carregar os clientes ao abrir a página
         carregarClientes();
     </script>
 
