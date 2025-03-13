@@ -60,87 +60,86 @@ let carrinho = [];
 let subtotal = 0;
 
 function incluirProdutoNoCarrinho() {
-    let codigo = document.getElementById("listaProdutos").value || document.getElementById("codigoProdutoInput").value.trim();
-    let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
-    
-    if (!codigo || isNaN(quantidade) || quantidade <= 0) {
-        alert("Selecione um produto válido e informe uma quantidade corretamente.");
-        return;
+        let codigo = document.getElementById("listaProdutos").value || document.getElementById("quantidadeProduto").value.trim();
+        let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
+
+        if (!codigo || isNaN(quantidade) || quantidade <= 0) {
+            alert("Selecione um produto e informe uma quantidade válida.");
+            return;
+        }
+
+        fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert("Produto não encontrado.");
+                    return;
+                }
+
+                let precoVenda = parseFloat(data["Preço de Venda"]); 
+                if (isNaN(precoVenda)) {
+                    alert("Erro ao obter o preço do produto.");
+                    return;
+                }
+
+                let produtoExistente = carrinho.find(item => item.codigo === codigo);
+
+                if (produtoExistente) {
+                    produtoExistente.quantidade += quantidade;
+                    produtoExistente.total = produtoExistente.quantidade * produtoExistente.preco;
+                } else {
+                    carrinho.push({
+                        codigo,
+                        produto: data["Produto"] || "Sem nome",
+                        quantidade: quantidade,
+                        preco: precoVenda,
+                        total: quantidade * precoVenda 
+                    });
+                }
+
+                atualizarCarrinho();
+            })
+            .catch(error => console.error("Erro ao buscar produto:", error));
     }
-
-    // Buscar informações do produto selecionado
-    fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert("Produto não encontrado.");
-                return;
-            }
-
-            let nomeProduto = data["Produto"] || "Sem nome";
-            let precoVenda = parseFloat(data["Preço de Venda"]); 
-
-            if (isNaN(precoVenda) || precoVenda <= 0) {
-                alert("Erro ao obter o preço do produto.");
-                return;
-            }
-
-            // Verifica se o produto já está no carrinho
-            let produtoExistente = carrinho.find(item => item.codigo === codigo);
-
-            if (produtoExistente) {
-                produtoExistente.quantidade += quantidade;
-                produtoExistente.total = produtoExistente.quantidade * produtoExistente.preco;
-            } else {
-                let item = {
-                    codigo: codigo,
-                    produto: nomeProduto,
-                    quantidade: quantidade,
-                    preco: precoVenda, 
-                    total: quantidade * precoVenda 
-                };
-                carrinho.push(item);
-            }
-
-            atualizarCarrinho();
-        })
-        .catch(error => console.error("Erro ao buscar produto:", error));
-}
         
 function atualizarCarrinho() {
-    let lista = document.getElementById("listaCarrinho");
-    lista.innerHTML = "";
-    subtotal = 0;
+        let lista = document.getElementById("listaCarrinho");
+        lista.innerHTML = "";
+        subtotal = 0;
 
-    carrinho.forEach((item, index) => {
-        let li = document.createElement("li");
-        li.textContent = `${item.produto} - ${item.quantidade}x - ${(item.quantidade * item.preco).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+        carrinho.forEach((item, index) => {
+            let li = document.createElement("li");
+            let totalItem = item.quantidade * item.preco;
+            li.textContent = `${item.produto} - ${item.quantidade}x - ${totalItem.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
 
-        // Criando botão de remover
-        let botaoRemover = document.createElement("button");
-        botaoRemover.textContent = "Remover";
-        botaoRemover.style.marginLeft = "10px";
-        botaoRemover.onclick = () => removerDoCarrinho(index);
+            // Criar botão de remover
+            let botaoRemover = document.createElement("button");
+            botaoRemover.textContent = "Remover";
+            botaoRemover.style.marginLeft = "10px";
+            botaoRemover.onclick = () => removerDoCarrinho(index);
 
-        li.appendChild(botaoRemover);
-        lista.appendChild(li);
-        subtotal += item.total;
-    });
+            li.appendChild(botaoRemover);
+            lista.appendChild(li);
 
-    document.getElementById("subtotal").textContent = subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-    atualizarTotal();
-}
+            subtotal += totalItem;
+        });
+
+        document.getElementById("subtotal").textContent = subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        atualizarTotal();
+    }
            
-function atualizarTotal() {
-    let desconto = parseFloat(document.getElementById("desconto").value) || 0;
-    let total = subtotal - desconto;
-    document.getElementById("totalVenda").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-}
+    function atualizarTotal() {
+        let desconto = parseFloat(document.getElementById("desconto").value) || 0;
+        let total = subtotal - desconto;
+        document.getElementById("total").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        atualizarParcelas(total);
+    }
 
-        function removerDoCarrinho(index) {
-    carrinho.splice(index, 1); // Remove o item do array
-    atualizarCarrinho(); // Atualiza a exibição
-}
+    function removerDoCarrinho(index) {
+        let itemRemovido = carrinho.splice(index, 1)[0];
+        subtotal -= itemRemovido.total;
+        atualizarCarrinho();
+    }
         
         function atualizarParcelas(total) {
             let selectParcelas = document.getElementById("parcelas");
