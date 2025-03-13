@@ -78,7 +78,12 @@ function incluirProdutoNoCarrinho() {
             }
 
             let nomeProduto = data["Produto"] || "Sem nome";
-            let precoVenda = parseFloat(data["Preço de Venda"]) || 0;
+            let precoVenda = parseFloat(data["Preço de Venda"]); 
+
+            if (isNaN(precoVenda) || precoVenda <= 0) {
+                alert("Erro ao obter o preço do produto.");
+                return;
+            }
 
             // Verifica se o produto já está no carrinho
             let produtoExistente = carrinho.find(item => item.codigo === codigo);
@@ -91,8 +96,8 @@ function incluirProdutoNoCarrinho() {
                     codigo: codigo,
                     produto: nomeProduto,
                     quantidade: quantidade,
-                    preco: precoVenda,
-                    total: quantidade * precoVenda
+                    preco: precoVenda, 
+                    total: quantidade * precoVenda 
                 };
                 carrinho.push(item);
             }
@@ -102,14 +107,14 @@ function incluirProdutoNoCarrinho() {
         .catch(error => console.error("Erro ao buscar produto:", error));
 }
         
-       function atualizarCarrinho() {
+function atualizarCarrinho() {
     let lista = document.getElementById("listaCarrinho");
     lista.innerHTML = "";
     subtotal = 0;
 
     carrinho.forEach((item, index) => {
         let li = document.createElement("li");
-        li.textContent = `${item.produto} - ${item.quantidade}x - ${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+        li.textContent = `${item.produto} - ${item.quantidade}x - ${(item.quantidade * item.preco).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
 
         // Criando botão de remover
         let botaoRemover = document.createElement("button");
@@ -121,7 +126,8 @@ function incluirProdutoNoCarrinho() {
         lista.appendChild(li);
         subtotal += item.total;
     });
-        document.getElementById("subtotal").textContent = subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+    document.getElementById("subtotal").textContent = subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     atualizarTotal();
 }
            
