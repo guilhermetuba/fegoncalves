@@ -14,7 +14,7 @@
     </select>
 
     <h2>Selecione um Produto</h2>
-    <select id="listaProdutos">
+    <select id="listaProdutos" onchange="buscarProdutoPorSelect()">
         <option value="">Selecione um Produto...</option>
     </select>
 
@@ -77,6 +77,13 @@
                     });
                 })
                 .catch(error => console.error("Erro ao buscar produtos:", error));
+        }
+
+        function buscarProdutoPorSelect() {
+            let codigo = document.getElementById("listaProdutos").value;
+            if (codigo) {
+                buscarDetalhesProduto(codigo);
+            }
         }
 
         function consultarProdutoPorCodigo() {
