@@ -103,7 +103,7 @@
     fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
         .then(response => response.json())
         .then(data => {
-            console.log(data);  // Adicionando um log para ver a estrutura do retorno
+            console.log(data);  // Log para verificar a estrutura
 
             if (data.error) {
                 document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
@@ -113,16 +113,16 @@
             let detalhesDiv = document.getElementById("detalhesProduto");
             detalhesDiv.innerHTML = "";
 
-            // Verificando a estrutura dos dados no log
-            let codigoProduto = data.codigo || "Não encontrado";
-            let nomeProduto = data.nomeProduto || "Não encontrado";
-            let precoVenda = data.precoVenda || "Não encontrado";
+            // Acessando os dados corretamente com colchetes, pois os nomes das propriedades têm espaços
+            let codigoProduto = data["Código"] || "Não encontrado";
+            let nomeProduto = data["Produto"] || "Não encontrado";
+            let precoVenda = data["Preço de Venda"] || "Não encontrado";
 
-            // Exibir apenas os campos Código, Produto e Preço de Venda
+            // Exibir apenas os campos Código, Produto e Preço de Venda (como "Preço")
             let camposExibidos = {
                 "Código": codigoProduto,
                 "Produto": nomeProduto,
-                "Preço": precoVenda // Modificado para mostrar como "Preço"
+                "Preço": precoVenda // Alterado o rótulo para "Preço"
             };
 
             for (let chave in camposExibidos) {
@@ -133,6 +133,7 @@
         })
         .catch(error => console.error("Erro ao buscar produto:", error));
 }
+
 
 
 
