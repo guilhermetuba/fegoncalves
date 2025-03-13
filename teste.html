@@ -269,11 +269,11 @@ function incluirProdutoNoCarrinho() {
                 "Preço de Venda": precoVenda
             };
 
-            for (let chave in camposExibidos) {
-                let div = document.createElement("div");
-                div.innerHTML = `<strong>${chave}:</strong> <input type="text" id="campo_${chave}" value="${camposExibidos[chave]}" readonly>`;
-                detalhesDiv.appendChild(div);
-            }
+            for (let chave in campos) {  // Alterado 'camposExibidos' para 'campos'
+    let div = document.createElement("div");
+    div.innerHTML = `<strong>${chave}:</strong> ${campos[chave]}`;
+    detalhesDiv.appendChild(div);
+}
         })
         .catch(error => console.error("Erro ao buscar os detalhes do produto:", error));
 }
