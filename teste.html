@@ -60,11 +60,11 @@ let carrinho = [];
 let subtotal = 0;
 
 function incluirProdutoNoCarrinho() {
-        let codigo = document.getElementById("listaProdutos").value || document.getElementById("quantidadeProduto").value.trim();
+        let codigo = document.getElementById("listaProdutos").value || document.getElementById("codigoProdutoInput").value.trim();
         let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
 
         if (!codigo || isNaN(quantidade) || quantidade <= 0) {
-            alert("Selecione um produto e informe uma quantidade válida.");
+            alert("Informe um código válido e uma quantidade maior que zero.");
             return;
         }
 
@@ -76,7 +76,7 @@ function incluirProdutoNoCarrinho() {
                     return;
                 }
 
-                let precoVenda = parseFloat(data["Preço de Venda"]); 
+                let precoVenda = parseFloat(data["preco"]);  
                 if (isNaN(precoVenda)) {
                     alert("Erro ao obter o preço do produto.");
                     return;
@@ -90,10 +90,10 @@ function incluirProdutoNoCarrinho() {
                 } else {
                     carrinho.push({
                         codigo,
-                        produto: data["Produto"] || "Sem nome",
+                        produto: data.nome || "Sem nome",
                         quantidade: quantidade,
                         preco: precoVenda,
-                        total: quantidade * precoVenda 
+                        total: quantidade * precoVenda,
                     });
                 }
 
@@ -101,43 +101,46 @@ function incluirProdutoNoCarrinho() {
             })
             .catch(error => console.error("Erro ao buscar produto:", error));
     }
+
         
-function atualizarCarrinho() {
+
+    function atualizarCarrinho() {
         let lista = document.getElementById("listaCarrinho");
         lista.innerHTML = "";
         subtotal = 0;
 
         carrinho.forEach((item, index) => {
             let li = document.createElement("li");
-            let totalItem = item.quantidade * item.preco;
-            li.textContent = `${item.produto} - ${item.quantidade}x - ${totalItem.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+            li.textContent = `${item.nome} - ${item.quantidade}x - ${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
 
             // Criar botão de remover
             let botaoRemover = document.createElement("button");
             botaoRemover.textContent = "Remover";
             botaoRemover.style.marginLeft = "10px";
-            botaoRemover.onclick = () => removerDoCarrinho(index);
+            botaoRemover.onclick = function () {
+                removerDoCarrinho(index);
+            };
 
             li.appendChild(botaoRemover);
             lista.appendChild(li);
 
-            subtotal += totalItem;
+            subtotal += item.total;
         });
 
         document.getElementById("subtotal").textContent = subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
         atualizarTotal();
     }
-           
+
+        
     function atualizarTotal() {
         let desconto = parseFloat(document.getElementById("desconto").value) || 0;
         let total = subtotal - desconto;
         document.getElementById("total").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-        atualizarParcelas(total);
     }
 
     function removerDoCarrinho(index) {
         let itemRemovido = carrinho.splice(index, 1)[0];
-        subtotal -= itemRemovido.total;
+        subtotal -= item.total;
         atualizarCarrinho();
     }
         
