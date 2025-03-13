@@ -99,7 +99,7 @@
             }
         }
 
-      function buscarDetalhesProduto(codigo) {
+     function buscarDetalhesProduto(codigo) {
     fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
         .then(response => response.json())
         .then(data => {
@@ -113,16 +113,20 @@
             let detalhesDiv = document.getElementById("detalhesProduto");
             detalhesDiv.innerHTML = "";
 
-            // Acessando os dados corretamente com colchetes, pois os nomes das propriedades têm espaços
             let codigoProduto = data["Código"] || "Não encontrado";
             let nomeProduto = data["Produto"] || "Não encontrado";
             let precoVenda = data["Preço de Venda"] || "Não encontrado";
 
-            // Exibir apenas os campos Código, Produto e Preço de Venda (como "Preço")
+            // Converter para número e formatar como moeda, se houver um valor válido
+            if (!isNaN(precoVenda) && precoVenda !== "Não encontrado" && precoVenda !== "") {
+                precoVenda = Number(precoVenda).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+            }
+
+            // Exibir apenas os campos Código, Produto e Preço (formatado corretamente)
             let camposExibidos = {
                 "Código": codigoProduto,
                 "Produto": nomeProduto,
-                "Preço": precoVenda // Alterado o rótulo para "Preço"
+                "Preço": precoVenda
             };
 
             for (let chave in camposExibidos) {
@@ -133,6 +137,7 @@
         })
         .catch(error => console.error("Erro ao buscar produto:", error));
 }
+
 
 
 
