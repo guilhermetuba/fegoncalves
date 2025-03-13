@@ -30,7 +30,7 @@
     <button onclick="incluirProdutoNoCarrinho()">Incluir Produto no Carrinho</button>
 
     <h3>Carrinho</h3>
-    <ul id="carrinho"></ul>
+    <ul id="listaCarrinho"></ul>
 
     <h3>Resumo da Venda</h3>
     <p>Subtotal: <span id="subtotal">R$ 0,00</span></p>
@@ -43,12 +43,15 @@
     
     <h3>Desconto</h3>
     <input type="number" id="desconto" min="0" value="0" oninput="atualizarTotal()">
-    <p>Total: <span id="total">R$ 0,00</span></p>
+    <p><strong>Total:</strong> <span id="totalVenda">R$ 0,00</span></p>
 
-    <h3>Parcelamento</h3>
+       <h3>Parcelamento</h3>
     <select id="parcelas"></select>
-    <p>Data 1ª Parcela: <input type="date" id="dataPrimeiraParcela"></p>
-    
+    <p id="valorParcela"></p>
+
+    <h3>Data 1ª Parcela</h3>
+    <input type="date" id="dataPrimeiraParcela">
+        
     <button onclick="registrarVenda()">Registrar Venda</button>
     
     <script>
@@ -56,22 +59,17 @@
         let carrinho = [];
         let subtotal = 0;
 
-        function incluirProdutoNoCarrinho() {
-            let codigo = document.getElementById("campo_Código").value;
-            let produto = document.getElementById("campo_Produto").value;
-            let preco = parseFloat(document.getElementById("campo_Preço").value.replace("R$", "").replace(",", "."));
+        function incluirNoCarrinho() {
+            let codigo = document.getElementById("listaProdutos").value || document.getElementById("codigoProdutoInput").value.trim();
             let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
-
-            if (!codigo || !produto || isNaN(preco) || isNaN(quantidade) || quantidade < 1) {
-                alert("Selecione um produto válido e informe a quantidade corretamente.");
+            
+            if (!codigo || isNaN(quantidade) || quantidade <= 0) {
+                alert("Selecione um produto válido e informe uma quantidade corretamente.");
                 return;
             }
 
-            let item = { codigo, produto, preco, quantidade, total: preco * quantidade };
-            carrinho.push(item);
-            atualizarCarrinho();
+            buscarDetalhesProduto(codigo);
         }
-
         function atualizarCarrinho() {
             let lista = document.getElementById("carrinho");
             lista.innerHTML = "";
