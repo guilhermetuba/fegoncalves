@@ -99,38 +99,42 @@
             }
         }
 
-        function buscarDetalhesProduto(codigo) {
-            fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
-                        return;
-                    }
+      function buscarDetalhesProduto(codigo) {
+    fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);  // Adicionando um log para ver a estrutura do retorno
 
-                    let detalhesDiv = document.getElementById("detalhesProduto");
-                    detalhesDiv.innerHTML = "";
+            if (data.error) {
+                document.getElementById("detalhesProduto").innerHTML = "<p>Produto não encontrado.</p>";
+                return;
+            }
 
-                    // Verificando se os campos existem nos dados antes de tentar acessá-los
-                    let codigoProduto = data.codigo || "Não encontrado";
-                    let nomeProduto = data.nomeProduto || "Não encontrado";
-                    let precoVenda = data.precoVenda || "Não encontrado";
+            let detalhesDiv = document.getElementById("detalhesProduto");
+            detalhesDiv.innerHTML = "";
 
-                    // Exibir apenas os campos Código, Produto e Preço de Venda
-                    let camposExibidos = {
-                        "Código": codigoProduto,
-                        "Produto": nomeProduto,
-                        "Preço": precoVenda // Modificado para mostrar como "Preço"
-                    };
+            // Verificando a estrutura dos dados no log
+            let codigoProduto = data.codigo || "Não encontrado";
+            let nomeProduto = data.nomeProduto || "Não encontrado";
+            let precoVenda = data.precoVenda || "Não encontrado";
 
-                    for (let chave in camposExibidos) {
-                        let div = document.createElement("div");
-                        div.innerHTML = `<strong>${chave}:</strong> <input type="text" id="campo_${chave}" value="${camposExibidos[chave]}" readonly>`;
-                        detalhesDiv.appendChild(div);
-                    }
-                })
-                .catch(error => console.error("Erro ao buscar produto:", error));
-        }
+            // Exibir apenas os campos Código, Produto e Preço de Venda
+            let camposExibidos = {
+                "Código": codigoProduto,
+                "Produto": nomeProduto,
+                "Preço": precoVenda // Modificado para mostrar como "Preço"
+            };
+
+            for (let chave in camposExibidos) {
+                let div = document.createElement("div");
+                div.innerHTML = `<strong>${chave}:</strong> <input type="text" id="campo_${chave}" value="${camposExibidos[chave]}" readonly>`;
+                detalhesDiv.appendChild(div);
+            }
+        })
+        .catch(error => console.error("Erro ao buscar produto:", error));
+}
+
+
 
         // Carregar os clientes ao abrir a página
         carregarClientes();
