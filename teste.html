@@ -72,6 +72,8 @@ function incluirProdutoNoCarrinho() {
     fetch(URL_API)
         .then(response => response.json())
         .then(data => {
+            console.log("Resposta da API:", data);  // Verificando o retorno da API
+
             if (!data.estoque || data.estoque.length < 2) {
                 alert("Nenhum produto encontrado.");
                 return;
@@ -99,7 +101,7 @@ function incluirProdutoNoCarrinho() {
             } else {
                 let novoProduto = {
                     codigo: produtoEncontrado[0],
-                    produto: produtoEncontrado[1] || "Sem nome", // Verifique se está atribuindo corretamente
+                    produto: produtoEncontrado[1] || "Sem nome",  // Certifique-se de que o nome está sendo atribuído corretamente
                     quantidade: quantidade,
                     preco: precoVenda,
                     total: quantidade * precoVenda
@@ -118,6 +120,7 @@ function incluirProdutoNoCarrinho() {
             alert("Erro ao buscar produto.");
         });
 }
+
 
         
 
