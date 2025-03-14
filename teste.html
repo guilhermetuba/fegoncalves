@@ -77,10 +77,7 @@ function incluirProdutoNoCarrinho() {
                 return;
             }
 
-            // Ignorar a linha de cabeçalho
             let estoque = data.estoque.slice(1);
-
-            // Procurar o produto pelo código
             let produtoEncontrado = estoque.find(produto => produto[0].toString() == codigo.toString());
 
             if (!produtoEncontrado) {
@@ -89,7 +86,6 @@ function incluirProdutoNoCarrinho() {
             }
 
             let precoVenda = parseFloat((produtoEncontrado[6] || "0").toString().replace(",", "."));
-
             if (isNaN(precoVenda) || precoVenda <= 0) {
                 alert("Erro ao obter o preço do produto.");
                 return;
@@ -103,7 +99,7 @@ function incluirProdutoNoCarrinho() {
             } else {
                 let novoProduto = {
                     codigo: produtoEncontrado[0],
-                    produto: produtoEncontrado[1] || "Sem nome",
+                    produto: produtoEncontrado[1] || "Sem nome", // Verifique se está atribuindo corretamente
                     quantidade: quantidade,
                     preco: precoVenda,
                     total: quantidade * precoVenda
@@ -111,7 +107,6 @@ function incluirProdutoNoCarrinho() {
                 carrinho.push(novoProduto);
             }
 
-            // Verificar se atualizarCarrinho pode ser chamado
             if (typeof atualizarCarrinho === "function") {
                 atualizarCarrinho();
             } else {
