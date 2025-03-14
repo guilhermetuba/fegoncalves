@@ -59,6 +59,7 @@
 let carrinho = [];
 let subtotal = 0;
 
+
 function incluirProdutoNoCarrinho() {
     let codigo = document.getElementById("listaProdutos").value || document.getElementById("codigoProdutoInput").value.trim();
     let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
@@ -76,29 +77,32 @@ function incluirProdutoNoCarrinho() {
                 return;
             }
 
-            // Procurando o produto dentro do array estoque
-            let produtoEncontrado = data.estoque.find(produto => produto[0] === codigo);
-            
+            // Ignorando a linha de cabeçalho
+            let estoque = data.estoque.slice(1);
+
+            // Procurando o produto pelo código
+            let produtoEncontrado = estoque.find(produto => produto[0] == codigo);
+
             if (!produtoEncontrado) {
                 alert("Produto não encontrado.");
                 return;
             }
 
-            let precoVenda = parseFloat(produtoEncontrado[2].replace(",", "."));
-            
-            if (isNaN(precoVenda)) {
+            let precoVenda = parseFloat((produtoEncontrado[6] || "0").toString().replace(",", "."));
+
+            if (isNaN(precoVenda) || precoVenda <= 0) {
                 alert("Erro ao obter o preço do produto.");
                 return;
             }
 
-            let produtoExistente = carrinho.find(item => item.codigo === codigo);
+            let produtoExistente = carrinho.find(item => item.codigo == codigo);
 
             if (produtoExistente) {
                 produtoExistente.quantidade += quantidade;
                 produtoExistente.total = produtoExistente.quantidade * produtoExistente.preco;
             } else {
                 let novoProduto = {
-                    codigo: codigo,
+                    codigo: produtoEncontrado[0],
                     produto: produtoEncontrado[1] || "Sem nome",
                     quantidade: quantidade,
                     preco: precoVenda,
