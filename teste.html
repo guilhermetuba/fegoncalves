@@ -77,11 +77,11 @@ function incluirProdutoNoCarrinho() {
                 return;
             }
 
-            // Ignorando a linha de cabeçalho
+            // Ignorar a linha de cabeçalho
             let estoque = data.estoque.slice(1);
 
-            // Procurando o produto pelo código
-            let produtoEncontrado = estoque.find(produto => produto[0] == codigo);
+            // Procurar o produto pelo código
+            let produtoEncontrado = estoque.find(produto => produto[0].toString() == codigo.toString());
 
             if (!produtoEncontrado) {
                 alert("Produto não encontrado.");
@@ -111,7 +111,12 @@ function incluirProdutoNoCarrinho() {
                 carrinho.push(novoProduto);
             }
 
-            atualizarCarrinho();
+            // Verificar se atualizarCarrinho pode ser chamado
+            if (typeof atualizarCarrinho === "function") {
+                atualizarCarrinho();
+            } else {
+                console.warn("Função atualizarCarrinho não encontrada.");
+            }
         })
         .catch(error => {
             console.error("Erro ao buscar produto:", error);
