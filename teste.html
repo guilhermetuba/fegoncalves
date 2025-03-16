@@ -60,96 +60,98 @@ let carrinho = [];
 let subtotal = 0;
 
 
-function incluirProdutoNoCarrinho() {
-    let codigo = document.getElementById("listaProdutos").value || document.getElementById("codigoProdutoInput").value.trim();
-    let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
+async function incluirProdutoNoCarrinho(codigo, quantidade) {
+    console.log("Iniciando inclusão do produto no carrinho...");
+    console.log("Código do produto:", codigo);
+    console.log("Quantidade:", quantidade);
 
-    if (!codigo || isNaN(quantidade) || quantidade <= 0) {
-        alert("Informe um código válido e uma quantidade maior que zero.");
-        return;
+    try {
+        let response = await fetch("URL_DA_API"); // Substitua pela URL correta
+        let data = await response.json();
+        console.log("Resposta da API:", data);
+
+        if (!data.estoque || !Array.isArray(data.estoque) || data.estoque.length < 2) {
+            console.error("Erro: Estoque inválido ou vazio", data.estoque);
+            alert("Nenhum produto encontrado.");
+            return;
+        }
+
+        let estoque = data.estoque.slice(1);
+        console.log("Estoque filtrado:", estoque);
+
+        let produtoEncontrado = estoque.find(produto => produto[0].toString() == codigo.toString());
+        console.log("Produto encontrado:", produtoEncontrado);
+
+        if (!produtoEncontrado) {
+            console.error("Erro: Produto não encontrado no estoque.");
+            alert("Produto não encontrado.");
+            return;
+        }
+
+        let precoVenda = parseFloat(produtoEncontrado[4]);
+        let nomeProduto = produtoEncontrado[1] || "Produto sem nome";
+
+        console.log("Nome do Produto:", nomeProduto);
+        console.log("Preço de Venda:", precoVenda);
+
+        if (isNaN(precoVenda)) {
+            console.error("Erro: Preço inválido", produtoEncontrado[4]);
+            alert("Erro ao processar o preço do produto.");
+            return;
+        }
+
+        let novoProduto = {
+            codigo: produtoEncontrado[0],
+            produto: nomeProduto,
+            quantidade: quantidade,
+            preco: precoVenda,
+            total: quantidade * precoVenda
+        };
+
+        console.log("Novo produto adicionado ao carrinho:", novoProduto);
+
+        // Adicionando ao carrinho
+        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+        let produtoExistente = carrinho.find(item => item.codigo == codigo);
+
+        if (produtoExistente) {
+            produtoExistente.quantidade += quantidade;
+            produtoExistente.total = produtoExistente.quantidade * precoVenda;
+            console.log("Produto já existente atualizado:", produtoExistente);
+        } else {
+            carrinho.push(novoProduto);
+            console.log("Produto novo adicionado:", novoProduto);
+        }
+
+        localStorage.setItem("carrinho", JSON.stringify(carrinho));
+        atualizarCarrinho();
+    } catch (error) {
+        console.error("Erro ao incluir produto no carrinho:", error);
+        alert("Erro ao adicionar o produto. Verifique o console para mais detalhes.");
     }
-
-    fetch(URL_API)
-        .then(response => response.json())
-        .then(data => {
-            console.log("Resposta da API:", data);  // Verificando o retorno da API
-
-            if (!data.estoque || data.estoque.length < 2) {
-                alert("Nenhum produto encontrado.");
-                return;
-            }
-
-            let estoque = data.estoque.slice(1);
-            let produtoEncontrado = estoque.find(produto => produto[0].toString() == codigo.toString());
-
-            if (!produtoEncontrado) {
-                alert("Produto não encontrado.");
-                return;
-            }
-
-            let precoVenda = parseFloat((produtoEncontrado[6] || "0").toString().replace(",", "."));
-            if (isNaN(precoVenda) || precoVenda <= 0) {
-                alert("Erro ao obter o preço do produto.");
-                return;
-            }
-
-            let produtoExistente = carrinho.find(item => item.codigo == codigo);
-
-            if (produtoExistente) {
-                produtoExistente.quantidade += quantidade;
-                produtoExistente.total = produtoExistente.quantidade * produtoExistente.preco;
-            } else {
-                let novoProduto = {
-                    codigo: produtoEncontrado[0],
-                    produto: produtoEncontrado[1] || "Sem nome",  // Certifique-se de que o nome está sendo atribuído corretamente
-                    quantidade: quantidade,
-                    preco: precoVenda,
-                    total: quantidade * precoVenda
-                };
-                carrinho.push(novoProduto);
-            }
-
-            if (typeof atualizarCarrinho === "function") {
-                atualizarCarrinho();
-            } else {
-                console.warn("Função atualizarCarrinho não encontrada.");
-            }
-        })
-        .catch(error => {
-            console.error("Erro ao buscar produto:", error);
-            alert("Erro ao buscar produto.");
-        });
 }
+
 
 
         
 
-    function atualizarCarrinho() {
-        let lista = document.getElementById("listaCarrinho");
-        lista.innerHTML = "";
-        subtotal = 0;
+function atualizarCarrinho() {
+    console.log("Atualizando carrinho...");
+    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    console.log("Carrinho carregado:", carrinho);
 
-        carrinho.forEach((item, index) => {
-            let li = document.createElement("li");
-            li.textContent = `${item.nome} - ${item.quantidade}x - ${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+    let total = carrinho.reduce((sum, item) => sum + item.total, 0);
+    console.log("Total calculado:", total);
 
-            // Criar botão de remover
-            let botaoRemover = document.createElement("button");
-            botaoRemover.textContent = "Remover";
-            botaoRemover.style.marginLeft = "10px";
-            botaoRemover.onclick = function () {
-                removerDoCarrinho(index);
-            };
-
-            li.appendChild(botaoRemover);
-            lista.appendChild(li);
-
-            subtotal += item.total;
-        });
-
-        document.getElementById("subtotal").textContent = subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-        atualizarTotal();
+    let totalElement = document.getElementById("totalVenda");
+    if (!totalElement) {
+        console.error("Erro: Elemento 'totalVenda' não encontrado no DOM.");
+        return;
     }
+
+    totalElement.textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    console.log("Total atualizado no DOM.");
+}
 
         
     function atualizarTotal() {
