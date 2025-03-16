@@ -150,6 +150,8 @@ function atualizarCarrinho() {
 
         let btnRemover = document.createElement("button");
         btnRemover.textContent = "Remover";
+        
+        // Passa o índice corretamente para a função removerDoCarrinho
         btnRemover.onclick = function () {
             removerDoCarrinho(index);
         };
@@ -164,6 +166,7 @@ function atualizarCarrinho() {
 
     console.log("Carrinho atualizado no DOM.");
 }
+
 
         
     function atualizarTotal() {
