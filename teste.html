@@ -56,6 +56,11 @@
     <button onclick="registrarVenda()">Registrar Venda</button>
     
     <script>
+// Limpa o carrinho ao carregar a página
+    window.onload = function() {
+    localStorage.removeItem("carrinho"); // Limpa o carrinho
+    atualizarCarrinho(); // Atualiza o carrinho na interface
+};
 
 let carrinho = [];
 let subtotal = 0;
