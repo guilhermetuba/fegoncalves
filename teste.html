@@ -175,11 +175,15 @@ function atualizarCarrinho() {
         document.getElementById("total").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     }
 
-    function removerDoCarrinho(index) {
-        let itemRemovido = carrinho.splice(index, 1)[0];
-        subtotal -= item.total;
-        atualizarCarrinho();
-    }
+function removerDoCarrinho(index) {
+    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    let itemRemovido = carrinho.splice(index, 1)[0]; // Remove o item correto
+    localStorage.setItem("carrinho", JSON.stringify(carrinho)); // Atualiza o carrinho no localStorage
+
+    // Atualiza o carrinho na interface
+    atualizarCarrinho();
+}
+
         
         function atualizarParcelas(total) {
             let selectParcelas = document.getElementById("parcelas");
