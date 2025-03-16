@@ -27,6 +27,7 @@
     
     <h3>Quantidade</h3>
     <input type="number" id="quantidadeProduto" min="1" value="1">
+
     <button onclick="incluirProdutoNoCarrinho()">Incluir Produto no Carrinho</button>
 
     <h3>Carrinho</h3>
@@ -76,7 +77,7 @@ async function incluirProdutoNoCarrinho(codigo, quantidade) {
     try {
         let url = URL_API; // Corrigir a URL aqui
         console.log("Buscando dados da API em:", url);
-        
+        console.log("Resposta completa da API:", data);
         let response = await fetch(url);
         if (!response.ok) {
             console.error(`Erro na requisição: ${response.status} - ${response.statusText}`);
