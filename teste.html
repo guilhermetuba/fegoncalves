@@ -61,23 +61,29 @@ let carrinho = [];
 let subtotal = 0;
 
 
-async function incluirProdutoNoCarrinho(codigo, quantidade) {
+async function incluirProdutoNoCarrinho() {
     console.log("Iniciando inclusão do produto no carrinho...");
-    
-    // Verifica se os parâmetros estão corretos
-    if (!codigo || !quantidade) {
+
+    // Captura o código do produto de duas formas possíveis
+    let codigo = document.getElementById("listaProdutos").value || 
+                 document.getElementById("codigoProdutoInput").value.trim();
+
+    let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
+
+    console.log("Código do produto selecionado:", codigo);
+    console.log("Quantidade selecionada:", quantidade);
+
+    // Valida se o código e a quantidade são válidos
+    if (!codigo || isNaN(quantidade) || quantidade <= 0) {
         console.error("Erro: Código ou quantidade inválidos.");
         alert("Erro ao adicionar produto: Código ou quantidade inválidos.");
         return;
     }
 
-    console.log("Código do produto:", codigo);
-    console.log("Quantidade:", quantidade);
-
     try {
-        let url = URL_API; // Corrigir a URL aqui
+        let url = `${URL_API}?produto=${encodeURIComponent(codigo)}`;
         console.log("Buscando dados da API em:", url);
-        console.log("Resposta completa da API:", data);
+
         let response = await fetch(url);
         if (!response.ok) {
             console.error(`Erro na requisição: ${response.status} - ${response.statusText}`);
@@ -88,18 +94,15 @@ async function incluirProdutoNoCarrinho(codigo, quantidade) {
         let data = await response.json();
         console.log("Resposta da API:", data);
 
-        if (!data || typeof data !== "object") {
+        if (!data || typeof data !== "object" || !data["Código"]) {
             console.error("Erro: Resposta da API inválida.", data);
             alert("Erro ao buscar produto.");
             return;
         }
 
-        console.log("Produto recebido:", data);
-
-        // Simula a estrutura esperada
         let novoProduto = {
-            codigo: data.Código,
-            produto: data.Produto,
+            codigo: data["Código"],
+            produto: data["Produto"],
             quantidade: quantidade,
             preco: data["Preço de Venda"],
             total: quantidade * data["Preço de Venda"]
@@ -107,7 +110,7 @@ async function incluirProdutoNoCarrinho(codigo, quantidade) {
 
         console.log("Novo produto a ser adicionado:", novoProduto);
 
-        // Adiciona ao carrinho
+        // Adiciona ao carrinho no Local Storage
         let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
         carrinho.push(novoProduto);
         localStorage.setItem("carrinho", JSON.stringify(carrinho));
@@ -118,6 +121,7 @@ async function incluirProdutoNoCarrinho(codigo, quantidade) {
         alert("Erro ao adicionar o produto. Verifique o console para mais detalhes.");
     }
 }
+
 
 
 
