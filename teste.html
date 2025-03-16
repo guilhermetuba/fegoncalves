@@ -62,68 +62,55 @@ let subtotal = 0;
 
 async function incluirProdutoNoCarrinho(codigo, quantidade) {
     console.log("Iniciando inclusão do produto no carrinho...");
+    
+    // Verifica se os parâmetros estão corretos
+    if (!codigo || !quantidade) {
+        console.error("Erro: Código ou quantidade inválidos.");
+        alert("Erro ao adicionar produto: Código ou quantidade inválidos.");
+        return;
+    }
+
     console.log("Código do produto:", codigo);
     console.log("Quantidade:", quantidade);
 
     try {
-        let response = await fetch("URL_DA_API"); // Substitua pela URL correta
+        let url = URL_API; // Corrigir a URL aqui
+        console.log("Buscando dados da API em:", url);
+        
+        let response = await fetch(url);
+        if (!response.ok) {
+            console.error(`Erro na requisição: ${response.status} - ${response.statusText}`);
+            alert("Erro ao buscar produto: API indisponível.");
+            return;
+        }
+
         let data = await response.json();
         console.log("Resposta da API:", data);
 
-        if (!data.estoque || !Array.isArray(data.estoque) || data.estoque.length < 2) {
-            console.error("Erro: Estoque inválido ou vazio", data.estoque);
-            alert("Nenhum produto encontrado.");
+        if (!data || typeof data !== "object") {
+            console.error("Erro: Resposta da API inválida.", data);
+            alert("Erro ao buscar produto.");
             return;
         }
 
-        let estoque = data.estoque.slice(1);
-        console.log("Estoque filtrado:", estoque);
+        console.log("Produto recebido:", data);
 
-        let produtoEncontrado = estoque.find(produto => produto[0].toString() == codigo.toString());
-        console.log("Produto encontrado:", produtoEncontrado);
-
-        if (!produtoEncontrado) {
-            console.error("Erro: Produto não encontrado no estoque.");
-            alert("Produto não encontrado.");
-            return;
-        }
-
-        let precoVenda = parseFloat(produtoEncontrado[4]);
-        let nomeProduto = produtoEncontrado[1] || "Produto sem nome";
-
-        console.log("Nome do Produto:", nomeProduto);
-        console.log("Preço de Venda:", precoVenda);
-
-        if (isNaN(precoVenda)) {
-            console.error("Erro: Preço inválido", produtoEncontrado[4]);
-            alert("Erro ao processar o preço do produto.");
-            return;
-        }
-
+        // Simula a estrutura esperada
         let novoProduto = {
-            codigo: produtoEncontrado[0],
-            produto: nomeProduto,
+            codigo: data.Código,
+            produto: data.Produto,
             quantidade: quantidade,
-            preco: precoVenda,
-            total: quantidade * precoVenda
+            preco: data["Preço de Venda"],
+            total: quantidade * data["Preço de Venda"]
         };
 
-        console.log("Novo produto adicionado ao carrinho:", novoProduto);
+        console.log("Novo produto a ser adicionado:", novoProduto);
 
-        // Adicionando ao carrinho
+        // Adiciona ao carrinho
         let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-        let produtoExistente = carrinho.find(item => item.codigo == codigo);
-
-        if (produtoExistente) {
-            produtoExistente.quantidade += quantidade;
-            produtoExistente.total = produtoExistente.quantidade * precoVenda;
-            console.log("Produto já existente atualizado:", produtoExistente);
-        } else {
-            carrinho.push(novoProduto);
-            console.log("Produto novo adicionado:", novoProduto);
-        }
-
+        carrinho.push(novoProduto);
         localStorage.setItem("carrinho", JSON.stringify(carrinho));
+
         atualizarCarrinho();
     } catch (error) {
         console.error("Erro ao incluir produto no carrinho:", error);
