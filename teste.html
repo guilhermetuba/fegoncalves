@@ -330,6 +330,49 @@ function removerDoCarrinho(index) {
         });
 }
 
+        // Função para mostrar ou ocultar o campo Data 1ª Parcela
+function atualizarCampoDataPrimeiraParcela() {
+    let selectCondições = document.getElementById("parcelas");
+    let dataPrimeiraParcela = document.getElementById("dataPrimeiraParcela");
+
+    // Verifica se a condição selecionada é parcelada
+    if (selectCondições.value && selectCondições.value !== "À Vista") {
+        dataPrimeiraParcela.style.display = "block"; // Exibe o campo
+        preencherDataPrimeiraParcela(); // Preenche a data automaticamente
+    } else {
+        dataPrimeiraParcela.style.display = "none"; // Oculta o campo
+    }
+}
+
+        // Função para preencher a Data 1ª Parcela com o mesmo dia do mês, 30 dias após a data de hoje
+function preencherDataPrimeiraParcela() {
+    let hoje = new Date(); // Data de hoje
+    let mes = hoje.getMonth(); // Mês atual
+    let dia = hoje.getDate(); // Dia atual
+
+    // Define a data como o mesmo dia do mês seguinte
+    hoje.setMonth(mes + 1);
+
+    // Caso o mês seguinte não tenha o mesmo dia (ex: 31 de janeiro para fevereiro), ajusta o dia
+    if (hoje.getDate() !== dia) {
+        hoje.setDate(0); // Define o último dia do mês anterior (para ajustar o número de dias)
+    }
+
+    // Formata a data no formato YYYY-MM-DD
+    let diaFormatado = hoje.getDate().toString().padStart(2, '0');
+    let mesFormatado = (hoje.getMonth() + 1).toString().padStart(2, '0');
+    let ano = hoje.getFullYear();
+
+    // Define o valor do campo Data 1ª Parcela
+    document.getElementById("dataPrimeiraParcela").value = `${ano}-${mesFormatado}-${diaFormatado}`;
+}
+
+// Chama a função para atualizar a visibilidade do campo ao carregar a página
+document.getElementById("parcelas").addEventListener("change", atualizarCampoDataPrimeiraParcela);
+
+// Chama a função inicial para garantir que o campo esteja correto ao carregar a página
+atualizarCampoDataPrimeiraParcela();
+
 
         carregarClientes();
     </script>
