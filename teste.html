@@ -69,63 +69,43 @@ let subtotal = 0;
 async function incluirProdutoNoCarrinho() {
     console.log("Iniciando inclusão do produto no carrinho...");
 
-    // Captura o código do produto de duas formas possíveis
-    let codigo = document.getElementById("listaProdutos").value || 
-                 document.getElementById("codigoProdutoInput").value.trim();
-
+    // Captura os detalhes do produto exibido na seção de detalhes
+    let codigo = document.getElementById("detalhesProduto").querySelector("#campo_Código") ? 
+                 document.getElementById("detalhesProduto").querySelector("#campo_Código").textContent.trim() : "";
+    let nomeProduto = document.getElementById("detalhesProduto").querySelector("#campo_Produto") ? 
+                      document.getElementById("detalhesProduto").querySelector("#campo_Produto").textContent.trim() : "";
+    let preco = parseFloat(document.getElementById("detalhesProduto").querySelector("#campo_Preço") ? 
+                           document.getElementById("detalhesProduto").querySelector("#campo_Preço").textContent.trim().replace("R$", "").trim().replace(",", ".") : 0);
     let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
 
-    console.log("Código do produto selecionado:", codigo);
-    console.log("Quantidade selecionada:", quantidade);
+    console.log("Produto exibido nos detalhes:", { codigo, nomeProduto, preco, quantidade });
 
     // Valida se o código e a quantidade são válidos
-    if (!codigo || isNaN(quantidade) || quantidade <= 0) {
-        console.error("Erro: Código ou quantidade inválidos.");
-        alert("Erro ao adicionar produto: Código ou quantidade inválidos.");
+    if (!codigo || !nomeProduto || isNaN(preco) || isNaN(quantidade) || quantidade <= 0) {
+        console.error("Erro: Código, nome ou quantidade inválidos.");
+        alert("Erro ao adicionar produto: Código, nome ou quantidade inválidos.");
         return;
     }
 
-    try {
-        let url = `${URL_API}?produto=${encodeURIComponent(codigo)}`;
-        console.log("Buscando dados da API em:", url);
+    // Criação do produto a ser adicionado ao carrinho
+    let novoProduto = {
+        codigo: codigo,
+        produto: nomeProduto,
+        quantidade: quantidade,
+        preco: preco,
+        total: quantidade * preco
+    };
 
-        let response = await fetch(url);
-        if (!response.ok) {
-            console.error(`Erro na requisição: ${response.status} - ${response.statusText}`);
-            alert("Erro ao buscar produto: API indisponível.");
-            return;
-        }
+    console.log("Novo produto a ser adicionado:", novoProduto);
 
-        let data = await response.json();
-        console.log("Resposta da API:", data);
+    // Adiciona ao carrinho no Local Storage
+    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    carrinho.push(novoProduto);
+    localStorage.setItem("carrinho", JSON.stringify(carrinho));
 
-        if (!data || typeof data !== "object" || !data["Código"]) {
-            console.error("Erro: Resposta da API inválida.", data);
-            alert("Erro ao buscar produto.");
-            return;
-        }
-
-        let novoProduto = {
-            codigo: data["Código"],
-            produto: data["Produto"],
-            quantidade: quantidade,
-            preco: data["Preço de Venda"],
-            total: quantidade * data["Preço de Venda"]
-        };
-
-        console.log("Novo produto a ser adicionado:", novoProduto);
-
-        // Adiciona ao carrinho no Local Storage
-        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-        carrinho.push(novoProduto);
-        localStorage.setItem("carrinho", JSON.stringify(carrinho));
-
-        atualizarCarrinho();
-    } catch (error) {
-        console.error("Erro ao incluir produto no carrinho:", error);
-        alert("Erro ao adicionar o produto. Verifique o console para mais detalhes.");
-    }
+    atualizarCarrinho();
 }
+
 
 
 function atualizarCarrinho() {
