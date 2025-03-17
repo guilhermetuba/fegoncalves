@@ -85,6 +85,22 @@ button:hover {
 .produtos-lista li button:hover {
     background-color: darkred !important; /* Forçando a cor de fundo mais escura ao passar o mouse */
 }
+    
+          .excluir-produto {
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    padding: 0;
+    margin-left: 10px;
+    border-radius: 50%;
+}
+
 
   #quantidadeProduto {
     width: 50px; /* Define uma largura menor */
@@ -247,14 +263,7 @@ function atualizarCarrinho() {
 
         let btnRemover = document.createElement("button");
         btnRemover.textContent = "X";
-        btnRemover.style.backgroundColor = "red";
-        btnRemover.style.color = "white";
-        btnRemover.style.border = "none";
-        btnRemover.style.padding = "2px 2px";
-        btnRemover.style.marginLeft = "4px";
-        btnRemover.style.cursor = "pointer";
-        btnRemover.style.fontSize = "10px";
-        btnRemover.style.borderRadius = "4px";
+        btnRemover.classList.add("excluir-produto");
         btnRemover.onclick = function () {
             removerDoCarrinho(index);
         };
