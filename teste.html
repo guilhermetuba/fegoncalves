@@ -46,7 +46,7 @@
     <input type="number" id="desconto" min="0" value="0" oninput="atualizarTotal()">
     <p><strong>Total:</strong> <span id="totalVenda">R$ 0,00</span></p>
 
-       <h3>Parcelamento</h3>
+       <h3>Condições</h3>
     <select id="parcelas"></select>
     <p id="valorParcela"></p>
 
@@ -147,7 +147,7 @@ function atualizarCarrinho() {
     atualizarTotal();
 
         // Atualiza as opções de parcelamento
-    atualizarParcelas(total);
+    atualizarCondicoes(total);
 
     console.log("Carrinho atualizado no DOM.");
 }
@@ -181,33 +181,31 @@ function removerDoCarrinho(index) {
     atualizarCarrinho();
 }
 
-        function atualizarParcelas(total) {
-    let selectParcelas = document.getElementById("parcelas");
-    selectParcelas.innerHTML = "";  // Limpar as opções existentes
+       function atualizarCondições(total) {
+    let selectCondicoes = document.getElementById("parcelas");
+    selectCondicoes.innerHTML = "";
 
-    // A lógica para determinar o número máximo de parcelas
-    let maxParcelas = Math.floor(total / 40);  // Número máximo de parcelas (parcelas de pelo menos 40)
-    
-    if (maxParcelas < 1) {
-        console.error("O valor total é muito baixo para parcelar.");
-        return;
-    }
+    // Adiciona a opção "À Vista"
+    let optionAVista = document.createElement("option");
+    optionAVista.value = "À Vista";
+    optionAVista.textContent = `À Vista ${total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+    selectCondicoes.appendChild(optionAVista);
 
     // Adiciona as opções de parcelamento
-    for (let i = 1; i <= maxParcelas; i++) {
+    let parcelasMaximas = Math.floor(total / 40); // Dividido por 40 para garantir o mínimo
+    for (let i = 1; i <= parcelasMaximas; i++) {
         let valorParcela = total / i;
-        if (valorParcela >= 50) {
+        if (valorParcela >= 40) {
             let option = document.createElement("option");
             option.value = i;
             option.textContent = `${i}x de ${valorParcela.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
-            selectParcelas.appendChild(option);
+            selectCondicoes.appendChild(option);
         } else {
-            break;  // Se a parcela for menor que 50, para a adição de novas opções
+            break;
         }
     }
-
-    console.log("Parcelas atualizadas.");
 }
+
 
 
         function registrarVenda() {
