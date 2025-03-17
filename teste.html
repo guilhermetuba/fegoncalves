@@ -146,6 +146,9 @@ function atualizarCarrinho() {
     // Chama a função para atualizar o total
     atualizarTotal();
 
+        // Atualiza as opções de parcelamento
+    atualizarParcelas(total);
+
     console.log("Carrinho atualizado no DOM.");
 }
 
