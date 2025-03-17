@@ -181,7 +181,7 @@ function removerDoCarrinho(index) {
     atualizarCarrinho();
 }
 
-       function atualizarCondicoes(total) {
+      function atualizarCondições(total) {
     let selectCondicoes = document.getElementById("parcelas");
     selectCondicoes.innerHTML = "";
 
@@ -191,9 +191,15 @@ function removerDoCarrinho(index) {
     optionAVista.textContent = `À Vista ${total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
     selectCondicoes.appendChild(optionAVista);
 
-    // Adiciona as opções de parcelamento
+    // Sempre adiciona a opção "1x"
+    let option1x = document.createElement("option");
+    option1x.value = 1;
+    option1x.textContent = `1x de ${total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+    selectCondicoes.appendChild(option1x);
+
+    // Adiciona as opções de parcelamento, a partir de 2x
     let parcelasMaximas = Math.floor(total / 40); // Dividido por 40 para garantir o mínimo
-    for (let i = 1; i <= parcelasMaximas; i++) {
+    for (let i = 2; i <= parcelasMaximas; i++) {
         let valorParcela = total / i;
         if (valorParcela >= 40) {
             let option = document.createElement("option");
