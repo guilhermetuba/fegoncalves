@@ -24,6 +24,15 @@
       margin-top: 10px;
       display: block;
     }
+    label[for="detalhesProduto"] {
+    margin-bottom: 15px; /* Aumenta o espaço abaixo do label */
+    display: block; /* Garante que o label ocupe a largura total */
+}
+
+#detalhesProduto {
+    margin-top: 15px; /* Espaço acima da div de detalhes do produto */
+}
+
     input, textarea, select {
       width: 100%;
       padding: 8px;
@@ -66,10 +75,11 @@ button:hover {
     border: none;
     color: white;
     cursor: pointer;
-    padding: 3px 8px;
-    font-size: 12px;
+    padding: 3px 6px;
+    font-size: 10px;
     border-radius: 4px;
     width: auto;
+    margin-left: 10px;
 }
 
 .produtos-lista li button:hover {
@@ -103,7 +113,6 @@ button:hover {
     <button onclick="consultarProdutoPorCodigo()">Consultar</button>
     <hr>
     <label for="detalhesProduto">Detalhes dos Produtos</label>
-        <hr>
     <div id="detalhesProduto"></div>
     
     <label for="quantidadeProduto">Quantidade</label>
