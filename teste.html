@@ -31,17 +31,18 @@
 .campo-produto {
     display: flex;
     align-items: center; /* Alinha verticalmente */
-    gap: 10px; /* Espaço entre os elementos */
+    gap: 5px; /* Espaço entre os elementos */
+    white-space: nowrap; /* Garante que o texto não quebre */
 }
 
 #codigoProdutoInput {
-    flex: 1; /* Ocupa o espaço disponível */
-    max-width: 200px; /* Ajuste conforme necessário */
+    flex-grow: 1; /* Faz o input crescer e ocupar mais espaço */
+    min-width: 150px; /* Ajuste conforme necessário */
     padding: 5px;
 }
 
 #consultarProduto {
-    padding: 5px 10px;
+    padding: 2px 6px;
     cursor: pointer;
 }
 
@@ -166,7 +167,7 @@ label[for="formaPagamento"] {
     <div class="campo-produto">
     <label for="codigoProdutoInput">Código do produto</label>
     <input type="text" id="codigoProdutoInput" placeholder="Digite o código">
-    <button onclick="consultarProdutoPorCodigo()">Consultar</button>
+    <button onclick="consultarProdutoPorCodigo()">🔍</button>
     </div>
     <hr>
     <label for="detalhesProduto">Detalhes dos Produtos</label>
