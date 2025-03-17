@@ -151,10 +151,19 @@ function atualizarCarrinho() {
 
         
     function atualizarTotal() {
-        let desconto = parseFloat(document.getElementById("desconto").value) || 0;
-        let total = subtotal - desconto;
-        document.getElementById("total").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-    }
+    let desconto = parseFloat(document.getElementById("desconto").value) || 0;
+    
+    // Recupera o subtotal da função atualizarCarrinho
+    let subtotal = parseFloat(document.getElementById("subtotal").textContent.replace("R$", "").replace(",", ".").trim()) || 0;
+    
+    let total = subtotal - desconto;
+
+    // Atualiza o campo total na página
+    document.getElementById("totalVenda").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+    console.log("Total atualizado:", total);
+}
+
 
 function removerDoCarrinho(index) {
     let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
