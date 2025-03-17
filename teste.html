@@ -31,18 +31,27 @@
 .campo-produto {
     display: flex;
     align-items: center; /* Alinha verticalmente */
-    gap: 5px; /* Espaço entre os elementos */
+    gap: 10px; /* Espaço entre os elementos */
     white-space: nowrap; /* Garante que o texto não quebre */
 }
-
+label[for="codigoProdutoInput"] {
+    display: flex;
+    align-items: center; /* Alinha verticalmente */
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap; /* Evita quebra de linha */
+}
 #codigoProdutoInput {
-    flex-grow: 1; /* Faz o input crescer e ocupar mais espaço */
-    min-width: 150px; /* Ajuste conforme necessário */
+    height: 30px; /* Mantém a altura uniforme */
     padding: 5px;
+    min-width: 200px; /* Tamanho adequado para não ficar muito pequeno */
+    font-size: 14px;
 }
 
 #consultarProduto {
-    padding: 2px 6px;
+    height: 32px; /* Ajusta para alinhar com o input */
+    padding: 5px 12px; /* Deixa o botão menor e ajustado */
+    font-size: 14px;
     cursor: pointer;
 }
 
@@ -194,7 +203,7 @@ label[for="formaPagamento"] {
 </div>
     <label for="desconto">Desconto</label>
     <input type="number" id="desconto" min="0" value="0" oninput="atualizarTotal()">
-    <label for="totalVenda"><strong>Total:</strong> <span id="totalVenda">R$ 0,00</span></p>
+    <label for="totalVenda"><strong>Total da Venda:</strong> <span id="totalVenda">R$ 0,00</span></p>
 
     <label for="condicoes">Condições</label>
     <select id="parcelas"></select>
