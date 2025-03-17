@@ -146,10 +146,7 @@ function atualizarCarrinho() {
     // Chama a função para atualizar o total
     atualizarTotal();
 
-        // Atualiza as opções de parcelamento
-    atualizarCondicoes(total);
-
-    console.log("Carrinho atualizado no DOM.");
+     console.log("Carrinho atualizado no DOM.");
 }
 
 
@@ -166,8 +163,11 @@ function atualizarCarrinho() {
 
     // Atualiza o total na tela
     document.getElementById("totalVenda").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
-    console.log("Total atualizado:", total);
+ 
+     // Atualiza as opções de parcelamento
+    atualizarCondicoes(total);
+    
+     console.log("Total atualizado:", total);
 }
 
 
