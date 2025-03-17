@@ -338,7 +338,7 @@ function atualizarCarrinho() {
     // Recupera o valor do subtotal exibido na tela
     let subtotal = parseFloat(document.getElementById("subtotal").textContent.replace("R$", "").replace(",", ".").trim()) || 0;
     
-    let desconto = parseFloat(document.getElementById("desconto").value) || 0;
+    let desconto = parseFloat(document.getElementById("desconto-reais").value) || 0;
     
     // Calcula o total
     let total = subtotal - desconto;
