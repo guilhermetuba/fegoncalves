@@ -178,23 +178,34 @@ function removerDoCarrinho(index) {
     atualizarCarrinho();
 }
 
-        
         function atualizarParcelas(total) {
-            let selectParcelas = document.getElementById("parcelas");
-            selectParcelas.innerHTML = "";
+    let selectParcelas = document.getElementById("parcelas");
+    selectParcelas.innerHTML = "";  // Limpar as opções existentes
 
-            for (let i = 1; i <= 12; i++) {
-                let valorParcela = total / i;
-                if (valorParcela >= 50) {
-                    let option = document.createElement("option");
-                    option.value = i;
-                    option.textContent = `${i}x de ${valorParcela.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
-                    selectParcelas.appendChild(option);
-                } else {
-                    break;
-                }
-            }
+    // A lógica para determinar o número máximo de parcelas
+    let maxParcelas = Math.floor(total / 50);  // Número máximo de parcelas (parcelas de pelo menos 50)
+    
+    if (maxParcelas < 1) {
+        console.error("O valor total é muito baixo para parcelar.");
+        return;
+    }
+
+    // Adiciona as opções de parcelamento
+    for (let i = 1; i <= maxParcelas; i++) {
+        let valorParcela = total / i;
+        if (valorParcela >= 50) {
+            let option = document.createElement("option");
+            option.value = i;
+            option.textContent = `${i}x de ${valorParcela.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+            selectParcelas.appendChild(option);
+        } else {
+            break;  // Se a parcela for menor que 50, para a adição de novas opções
         }
+    }
+
+    console.log("Parcelas atualizadas.");
+}
+
 
         function registrarVenda() {
             alert("Venda registrada com sucesso!");
