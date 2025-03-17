@@ -111,7 +111,6 @@ async function incluirProdutoNoCarrinho() {
 function atualizarCarrinho() {
     console.log("Atualizando carrinho...");
 
-    // Recupera o carrinho do Local Storage
     let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
     console.log("Carrinho carregado:", carrinho);
 
@@ -123,7 +122,7 @@ function atualizarCarrinho() {
 
     listaCarrinho.innerHTML = ""; // Limpa a lista antes de atualizar
 
-    let total = 0; // Inicializa o total (subtotal)
+    let total = 0;
 
     carrinho.forEach((item, index) => {
         let li = document.createElement("li");
@@ -138,11 +137,14 @@ function atualizarCarrinho() {
         li.appendChild(btnRemover);
         listaCarrinho.appendChild(li);
 
-        total += item.total; // Soma o valor total do produto no carrinho
+        total += item.total;
     });
 
-    // Atualiza o campo subtotal no DOM
+    // Atualiza o subtotal no campo correspondente
     document.getElementById("subtotal").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+    // Chama a função para atualizar o total
+    atualizarTotal();
 
     console.log("Carrinho atualizado no DOM.");
 }
@@ -150,19 +152,21 @@ function atualizarCarrinho() {
 
 
         
-    function atualizarTotal() {
-    let desconto = parseFloat(document.getElementById("desconto").value) || 0;
-    
-    // Recupera o subtotal da função atualizarCarrinho
+ function atualizarTotal() {
+    // Recupera o valor do subtotal exibido na tela
     let subtotal = parseFloat(document.getElementById("subtotal").textContent.replace("R$", "").replace(",", ".").trim()) || 0;
     
+    let desconto = parseFloat(document.getElementById("desconto").value) || 0;
+    
+    // Calcula o total
     let total = subtotal - desconto;
 
-    // Atualiza o campo total na página
+    // Atualiza o total na tela
     document.getElementById("totalVenda").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
     console.log("Total atualizado:", total);
 }
+
 
 
 function removerDoCarrinho(index) {
