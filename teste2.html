@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venda</title>
+    <script src="config.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f0f4f8;
+        }
+        h2, h3 {
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        select {
+            background-color: #fafafa;
+        }
+        .product-details div {
+            margin-bottom: 10px;
+        }
+        .product-details strong {
+            color: #555;
+        }
+        .carrinho-list {
+            margin-top: 10px;
+        }
+        .carrinho-list li {
+            margin-bottom: 8px;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .carrinho-list button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .carrinho-list button:hover {
+            background-color: #c0392b;
+        }
+        .total-section {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        .total-section p {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Selecione um Cliente</h2>
+        <select id="listaClientes" onchange="carregarProdutos()">
+            <option value="">Selecione um Cliente...</option>
+        </select>
+
+        <h2>Selecione um Produto</h2>
+        <select id="listaProdutos" onchange="buscarProdutoPorSelect()">
+            <option value="">Selecione um Produto...</option>
+        </select>
+
+        <h3>Ou digite o código do produto</h3>
+        <input type="text" id="codigoProdutoInput" placeholder="Digite o código">
+        <button onclick="consultarProdutoPorCodigo()">Consultar</button>
+
+        <h3>Detalhes do Produto</h3>
+        <div id="detalhesProduto" class="product-details"></div>
+
+        <h3>Quantidade</h3>
+        <input type="number" id="quantidadeProduto" min="1" value="1">
+
+        <button onclick="incluirProdutoNoCarrinho()">Incluir Produto no Carrinho</button>
+
+        <h3>Carrinho</h3>
+        <ul id="listaCarrinho" class="carrinho-list"></ul>
+
+        <h3>Resumo da Venda</h3>
+        <p>Subtotal: <span id="subtotal">R$ 0,00</span></p>
+        <label for="formaPagamento">Forma de Pagamento:</label>
+        <select id="formaPagamento">
+            <option value="Dinheiro">Dinheiro</option>
+            <option value="PIX">PIX</option>
+            <option value="Cartão">Cartão</option>
+        </select>
+
+        <h3>Desconto</h3>
+        <input type="number" id="desconto" min="0" value="0" oninput="atualizarTotal()">
+        <div class="total-section">
+            <p><strong>Total:</strong> <span id="totalVenda">R$ 0,00</span></p>
+        </div>
+
+        <h3>Condições</h3>
+        <select id="parcelas"></select>
+        <p id="valorParcela"></p>
+
+        <label id="descricaoDataPrimeiraParcela" for="dataPrimeiraParcela"><h3>Data 1ª Parcela</h3></label>
+        <input type="date" id="dataPrimeiraParcela">
+
+        <button onclick="registrarVenda()">Registrar Venda</button>
+    </div>
+
+    <script>
+// Limpa o carrinho ao carregar a página
+    window.onload = function() {
+        localStorage.removeItem("carrinho"); // Limpa o carrinho
+        atualizarCarrinho(); // Atualiza o carrinho na interface
+    };
+
+    let carrinho = [];
+    let subtotal = 0;
+
+
+    async function incluirProdutoNoCarrinho() {
+        console.log("Iniciando inclusão do produto no carrinho...");
+
+        // Captura os detalhes do produto exibido na seção de detalhes
+        let codigo = document.getElementById("detalhesProduto").querySelector("#campo_Código") ? 
+                    document.getElementById("detalhesProduto").querySelector("#campo_Código").textContent.trim() : "";
+        let nomeProduto = document.getElementById("detalhesProduto").querySelector("#campo_Produto") ? 
+                          document.getElementById("detalhesProduto").querySelector("#campo_Produto").textContent.trim() : "";
+        let preco = parseFloat(document.getElementById("detalhesProduto").querySelector("#campo_Preço") ? 
+                               document.getElementById("detalhesProduto").querySelector("#campo_Preço").textContent.trim().replace("R$", "").trim().replace(",", ".") : 0);
+        let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
+
+        console.log("Produto exibido nos detalhes:", { codigo, nomeProduto, preco, quantidade });
+
+        // Valida se o código e a quantidade são válidos
+        if (!codigo || !nomeProduto || isNaN(preco) || isNaN(quantidade) || quantidade <= 0) {
+            console.error("Erro: Código, nome ou quantidade inválidos.");
+            alert("Erro ao adicionar produto: Código, nome ou quantidade inválidos.");
+            return;
+        }
+
+        // Criação do produto a ser adicionado ao carrinho
+        let novoProduto = {
+            codigo: codigo,
+            produto: nomeProduto,
+            quantidade: quantidade,
+            preco: preco,
+            total: quantidade * preco
+        };
+
+        console.log("Novo produto a ser adicionado:", novoProduto);
+
+        // Adiciona ao carrinho no Local Storage
+        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+        carrinho.push(novoProduto);
+        localStorage.setItem("carrinho", JSON.stringify(carrinho));
+
+        atualizarCarrinho();
+    }
+
+
+    function atualizarCarrinho() {
+        console.log("Atualizando carrinho...");
+
+        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+        console.log("Carrinho carregado:", carrinho);
+
+        let listaCarrinho = document.getElementById("listaCarrinho");
+        if (!listaCarrinho) {
+            console.error("Erro: Elemento 'listaCarrinho' não encontrado no DOM.");
+            return;
+        }
+
+        listaCarrinho.innerHTML = ""; // Limpa a lista antes de atualizar
+
+        let total = 0;
+
+        carrinho.forEach((item, index) => {
+            let li = document.createElement("li");
+            li.textContent = `${item.produto} - ${item.quantidade}x (${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}) = ${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+
+            let btnRemover = document.createElement("button");
+            btnRemover.textContent = "Remover";
+            btnRemover.onclick = function () {
+                removerDoCarrinho(index);
+            };
+
+            li.appendChild(btnRemover);
+            listaCarrinho.appendChild(li);
+
+            total += item.total;
+        });
+
+        // Atualiza o subtotal no campo correspondente
+        document.getElementById("subtotal").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+        // Chama a função para atualizar o total
+        atualizarTotal();
+
+        console.log("Carrinho atualizado no DOM.");
+    }
+
+
+    function atualizarTotal() {
+        // Recupera o valor do subtotal exibido na tela
+        let subtotal = parseFloat(document.getElementById("subtotal").textContent.replace("R$", "").replace(",", ".").trim()) || 0;
+        
+        let desconto = parseFloat(document.getElementById("desconto").value) || 0;
+        
+        // Calcula o total
+        let total = subtotal - desconto;
+
+        // Atualiza o total na tela
+        document.getElementById("totalVenda").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    
+         // Atualiza as opções de parcelamento
+        atualizarCondicoes(total);
+        
+         console.log("Total atualizado:", total);
+    }
+
+
+    function removerDoCarrinho(index) {
+        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+        let itemRemovido = carrinho.splice(index, 1); // Remove o item do carrinho
+
+        console.log("Item removido:", itemRemovido);
+
+        // Atualiza o carrinho no Local Storage
+        localStorage.setItem("carrinho", JSON.stringify(carrinho));
+
+        // Atualiza o carrinho na interface
+        atualizarCarrinho();
+    }
+
+    </script>
+</body>
+</html>
