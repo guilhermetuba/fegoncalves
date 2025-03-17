@@ -32,6 +32,15 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
+   input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
     button {
   width: 100%;
   padding: 10px;
@@ -44,37 +53,69 @@
 button:hover {
   background: #5a32a3; /* Cor roxa mais escura ao passar o mouse */
 }
+.produtos-lista {
+      margin-top: 20px;
+    }
+ .produtos-lista ul {
+      list-style-type: none;
+      padding: 0;
+    }
+ .produtos-lista li {
+      padding: 8px;
+      background-color: #f1f1f1;
+      margin-bottom: 5px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+ .produtos-lista li button {
+      margin-left: 10px;
+      background-color: red;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+ hr {
+      border: 0;
+      border-top: 1px solid #ccc;
+      margin-top: 30px;
+    }
+
   </style>
 </head>
 <body>
-
-    <h2>Selecione um Cliente</h2>
-    <select id="listaClientes" onchange="carregarProdutos()">
+    <div class="container">
+        <h2>Vendas</h2>
+        <label for="cliente">Cliente</label>
+      <select id="listaClientes" onchange="carregarProdutos()">
         <option value="">Selecione um Cliente...</option>
     </select>
 
-    <h2>Selecione um Produto</h2>
+    <label for="produto">Produto (Selecione ou digite o código)</label>
     <select id="listaProdutos" onchange="buscarProdutoPorSelect()">
         <option value="">Selecione um Produto...</option>
     </select>
 
-    <h3>Ou digite o código do produto</h3>
+    <label for="ccodigoProdutoInput">Código do produto</label>
     <input type="text" id="codigoProdutoInput" placeholder="Digite o código">
     <button onclick="consultarProdutoPorCodigo()">Consultar</button>
 
-    <h3>Detalhes do Produto</h3>
+    <label for="detalhesProduto">Detalhes do Produto</label>
     <div id="detalhesProduto"></div>
     
-    <h3>Quantidade</h3>
+    <label for="quantidadeProduto">Quantidade</label>
     <input type="number" id="quantidadeProduto" min="1" value="1">
 
     <button onclick="incluirProdutoNoCarrinho()">Incluir Produto no Carrinho</button>
 
-    <h3>Carrinho</h3>
+    <label for="listaCarrinho">Carrinho</label>
     <ul id="listaCarrinho"></ul>
 
-    <h3>Resumo da Venda</h3>
-    <p>Subtotal: <span id="subtotal">R$ 0,00</span></p>
+    <label for="resumoVenda">Resumo da Venda</label>
+    <label for="subtotal">Subtotal: <span id="subtotal">R$ 0,00</span></label>
     <label for="formaPagamento">Forma de Pagamento:</label>
     <select id="formaPagamento">
         <option value="Dinheiro">Dinheiro</option>
@@ -82,11 +123,11 @@ button:hover {
         <option value="Cartão">Cartão</option>
     </select>
     
-    <h3>Desconto</h3>
+    <label for="desconto">Desconto</label>
     <input type="number" id="desconto" min="0" value="0" oninput="atualizarTotal()">
-    <p><strong>Total:</strong> <span id="totalVenda">R$ 0,00</span></p>
+    <label for="totalVenda"><strong>Total:</strong> <span id="totalVenda">R$ 0,00</span></p>
 
-       <h3>Condições</h3>
+    <label for="condicoes">Condições</label>
     <select id="parcelas"></select>
     <p id="valorParcela"></p>
 
@@ -94,6 +135,7 @@ button:hover {
     <input type="date" id="dataPrimeiraParcela">
         
     <button onclick="registrarVenda()">Registrar Venda</button>
+    </div>
     
     <script>
 // Limpa o carrinho ao carregar a página
