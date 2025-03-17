@@ -50,7 +50,7 @@
     <select id="parcelas"></select>
     <p id="valorParcela"></p>
 
-    <h3>Data 1ª Parcela</h3>
+    <label id="descricaoDataPrimeiraParcela" for="dataPrimeiraParcela"><h3>Data 1ª Parcela</h3></label>
     <input type="date" id="dataPrimeiraParcela">
         
     <button onclick="registrarVenda()">Registrar Venda</button>
@@ -330,21 +330,24 @@ function removerDoCarrinho(index) {
         });
 }
 
-        // Função para mostrar ou ocultar o campo Data 1ª Parcela
+  // Função para mostrar ou ocultar o campo e a descrição da Data 1ª Parcela
 function atualizarCampoDataPrimeiraParcela() {
     let selectCondições = document.getElementById("parcelas");
     let dataPrimeiraParcela = document.getElementById("dataPrimeiraParcela");
+    let descricaoDataPrimeiraParcela = document.getElementById("descricaoDataPrimeiraParcela");
 
     // Verifica se a condição selecionada é parcelada
     if (selectCondições.value && selectCondições.value !== "À Vista") {
         dataPrimeiraParcela.style.display = "block"; // Exibe o campo
+        descricaoDataPrimeiraParcela.style.display = "block"; // Exibe a descrição
         preencherDataPrimeiraParcela(); // Preenche a data automaticamente
     } else {
         dataPrimeiraParcela.style.display = "none"; // Oculta o campo
+        descricaoDataPrimeiraParcela.style.display = "none"; // Oculta a descrição
     }
 }
 
-        // Função para preencher a Data 1ª Parcela com o mesmo dia do mês, 30 dias após a data de hoje
+// Função para preencher a Data 1ª Parcela com o mesmo dia do mês, 30 dias após a data de hoje
 function preencherDataPrimeiraParcela() {
     let hoje = new Date(); // Data de hoje
     let mes = hoje.getMonth(); // Mês atual
@@ -372,6 +375,7 @@ document.getElementById("parcelas").addEventListener("change", atualizarCampoDat
 
 // Chama a função inicial para garantir que o campo esteja correto ao carregar a página
 atualizarCampoDataPrimeiraParcela();
+
 
 
         carregarClientes();
