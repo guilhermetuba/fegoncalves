@@ -219,8 +219,8 @@ label[for="formaPagamento"] {
     <div class="desconto">
     <label for="descontos">Desconto</label>
     <div class="desconto-inputs">
-        <input type="text" id="desconto-reais" name="desconto-reais" placeholder="R$ 0,00" oninput="formatarReais(this)";"atualizarTotal()">
-        <input type="text" id="desconto-percentual" name="desconto-percentual" placeholder="%" oninput="formatarPercentual(this)";"atualizarTotal()">
+        <input type="text" id="desconto-reais" name="desconto-reais" inputmode="numeric" placeholder="R$ 0,00" oninput="aplicarMascaraMoeda(event), atualizarTotal()">
+        <input type="text" id="desconto-percentual" name="desconto-percentual" placeholder="%" inputmode="numeric" oninput="aplicarMascaraMoeda(event),atualizarTotal()">
     </div>
     </div>
     
@@ -512,25 +512,15 @@ function removerDoCarrinho(index) {
         });
 }
 
-         // Função para formatar o campo de desconto em reais
-  function formatarReais(input) {
-    let valor = parseFloat(input.value.replace('R$', '').replace(',', '.'));
-    if (!isNaN(valor)) {
-      input.value = 'R$ ' + valor.toFixed(2);
-    } else {
-      input.value = 'R$ 0.00';
-    }
-  }
 
-  // Função para formatar o campo de desconto percentual
-  function formatarPercentual(input) {
-    let valor = parseInt(input.value.replace('%', ''));
-    if (!isNaN(valor)) {
-      input.value = valor + '%';
-    } else {
-      input.value = '0%';
+    function aplicarMascaraMoeda(event) {
+      var valor = event.target.value.replace(/\D/g, '');
+      valor = valor.replace(/(\d)(\d{8})$/, '$1.$2');
+      valor = valor.replace(/(\d)(\d{5})$/, '$1.$2');
+      valor = valor.replace(/(\d)(\d{2})$/, '$1,$2');
+      event.target.value = valor;
     }
-  }
+
         
   // Função para mostrar ou ocultar o campo e a descrição da Data 1ª Parcela
 function atualizarCampoDataPrimeiraParcela() {
