@@ -149,11 +149,7 @@
     let carrinho = [];
     let subtotal = 0;
 
-
     async function incluirProdutoNoCarrinho() {
-        console.log("Iniciando inclusão do produto no carrinho...");
-
-        // Captura os detalhes do produto exibido na seção de detalhes
         let codigo = document.getElementById("detalhesProduto").querySelector("#campo_Código") ? 
                     document.getElementById("detalhesProduto").querySelector("#campo_Código").textContent.trim() : "";
         let nomeProduto = document.getElementById("detalhesProduto").querySelector("#campo_Produto") ? 
@@ -162,16 +158,11 @@
                                document.getElementById("detalhesProduto").querySelector("#campo_Preço").textContent.trim().replace("R$", "").trim().replace(",", ".") : 0);
         let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
 
-        console.log("Produto exibido nos detalhes:", { codigo, nomeProduto, preco, quantidade });
-
-        // Valida se o código e a quantidade são válidos
         if (!codigo || !nomeProduto || isNaN(preco) || isNaN(quantidade) || quantidade <= 0) {
-            console.error("Erro: Código, nome ou quantidade inválidos.");
             alert("Erro ao adicionar produto: Código, nome ou quantidade inválidos.");
             return;
         }
 
-        // Criação do produto a ser adicionado ao carrinho
         let novoProduto = {
             codigo: codigo,
             produto: nomeProduto,
@@ -180,9 +171,6 @@
             total: quantidade * preco
         };
 
-        console.log("Novo produto a ser adicionado:", novoProduto);
-
-        // Adiciona ao carrinho no Local Storage
         let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
         carrinho.push(novoProduto);
         localStorage.setItem("carrinho", JSON.stringify(carrinho));
@@ -190,18 +178,9 @@
         atualizarCarrinho();
     }
 
-
     function atualizarCarrinho() {
-        console.log("Atualizando carrinho...");
-
         let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-        console.log("Carrinho carregado:", carrinho);
-
         let listaCarrinho = document.getElementById("listaCarrinho");
-        if (!listaCarrinho) {
-            console.error("Erro: Elemento 'listaCarrinho' não encontrado no DOM.");
-            return;
-        }
 
         listaCarrinho.innerHTML = ""; // Limpa a lista antes de atualizar
 
@@ -223,48 +202,30 @@
             total += item.total;
         });
 
-        // Atualiza o subtotal no campo correspondente
         document.getElementById("subtotal").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-        // Chama a função para atualizar o total
         atualizarTotal();
-
-        console.log("Carrinho atualizado no DOM.");
     }
-
 
     function atualizarTotal() {
-        // Recupera o valor do subtotal exibido na tela
         let subtotal = parseFloat(document.getElementById("subtotal").textContent.replace("R$", "").replace(",", ".").trim()) || 0;
-        
         let desconto = parseFloat(document.getElementById("desconto").value) || 0;
-        
-        // Calcula o total
         let total = subtotal - desconto;
 
-        // Atualiza o total na tela
         document.getElementById("totalVenda").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     
-         // Atualiza as opções de parcelamento
         atualizarCondicoes(total);
-        
-         console.log("Total atualizado:", total);
     }
-
 
     function removerDoCarrinho(index) {
         let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
         let itemRemovido = carrinho.splice(index, 1); // Remove o item do carrinho
 
-        console.log("Item removido:", itemRemovido);
-
-        // Atualiza o carrinho no Local Storage
         localStorage.setItem("carrinho", JSON.stringify(carrinho));
 
-        // Atualiza o carrinho na interface
         atualizarCarrinho();
     }
-
     </script>
 </body>
 </html>
+
