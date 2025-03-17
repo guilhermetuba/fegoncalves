@@ -186,7 +186,7 @@ function removerDoCarrinho(index) {
     selectParcelas.innerHTML = "";  // Limpar as opções existentes
 
     // A lógica para determinar o número máximo de parcelas
-    let maxParcelas = Math.floor(total / 50);  // Número máximo de parcelas (parcelas de pelo menos 50)
+    let maxParcelas = Math.floor(total / 40);  // Número máximo de parcelas (parcelas de pelo menos 40)
     
     if (maxParcelas < 1) {
         console.error("O valor total é muito baixo para parcelar.");
