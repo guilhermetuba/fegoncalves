@@ -28,6 +28,22 @@
     margin-bottom: 15px; /* Aumenta o espaço abaixo do label */
     display: block; /* Garante que o label ocupe a largura total */
 }
+.campo-produto {
+    display: flex;
+    align-items: center; /* Alinha verticalmente */
+    gap: 10px; /* Espaço entre os elementos */
+}
+
+#codigoProdutoInput {
+    flex: 1; /* Ocupa o espaço disponível */
+    max-width: 200px; /* Ajuste conforme necessário */
+    padding: 5px;
+}
+
+#consultarProduto {
+    padding: 5px 10px;
+    cursor: pointer;
+}
 
 #detalhesProduto {
     margin-top: 15px; /* Espaço acima da div de detalhes do produto */
@@ -147,10 +163,11 @@ label[for="formaPagamento"] {
     <select id="listaProdutos" onchange="buscarProdutoPorSelect()">
         <option value="">Selecione um Produto...</option>
     </select>
-
-    <label for="ccodigoProdutoInput">Código do produto</label>
+    <div class="campo-produto">
+    <label for="codigoProdutoInput">Código do produto</label>
     <input type="text" id="codigoProdutoInput" placeholder="Digite o código">
     <button onclick="consultarProdutoPorCodigo()">Consultar</button>
+    </div>
     <hr>
     <label for="detalhesProduto">Detalhes dos Produtos</label>
     <div id="detalhesProduto"></div>
@@ -182,7 +199,7 @@ label[for="formaPagamento"] {
     <select id="parcelas"></select>
     <p id="valorParcela"></p>
 
-    <label id="descricaoDataPrimeiraParcela" for="dataPrimeiraParcela"><h3>Data 1ª Parcela</h3></label>
+    <label id="descricaoDataPrimeiraParcela" for="dataPrimeiraParcela">Data 1ª Parcela</label>
     <input type="date" id="dataPrimeiraParcela">
         
     <button onclick="registrarVenda()">Registrar Venda</button>
