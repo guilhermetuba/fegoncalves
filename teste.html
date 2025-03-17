@@ -111,6 +111,7 @@ async function incluirProdutoNoCarrinho() {
 function atualizarCarrinho() {
     console.log("Atualizando carrinho...");
 
+    // Recupera o carrinho do Local Storage
     let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
     console.log("Carrinho carregado:", carrinho);
 
@@ -122,7 +123,7 @@ function atualizarCarrinho() {
 
     listaCarrinho.innerHTML = ""; // Limpa a lista antes de atualizar
 
-    let total = 0;
+    let total = 0; // Inicializa o total (subtotal)
 
     carrinho.forEach((item, index) => {
         let li = document.createElement("li");
@@ -130,8 +131,6 @@ function atualizarCarrinho() {
 
         let btnRemover = document.createElement("button");
         btnRemover.textContent = "Remover";
-        
-        // Passa o índice corretamente para a função removerDoCarrinho
         btnRemover.onclick = function () {
             removerDoCarrinho(index);
         };
@@ -139,13 +138,15 @@ function atualizarCarrinho() {
         li.appendChild(btnRemover);
         listaCarrinho.appendChild(li);
 
-        total += item.total;
+        total += item.total; // Soma o valor total do produto no carrinho
     });
 
-    document.getElementById("totalVenda").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    // Atualiza o campo subtotal no DOM
+    document.getElementById("subtotal").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
     console.log("Carrinho atualizado no DOM.");
 }
+
 
 
         
