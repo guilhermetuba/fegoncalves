@@ -147,7 +147,7 @@ label[for="formaPagamento"] {
     <label for="listaCarrinho">Carrinho</label>
     <ul id="listaCarrinho"></ul>
 
-    
+    <hr>
     <label for="subtotal">Subtotal: <span id="subtotal">R$ 0,00</span></label>
 
     <div class="forma-pagamento-container">
@@ -158,7 +158,10 @@ label[for="formaPagamento"] {
     <option value="pix">Pix</option>
   </select>
 </div>
-    
+    <div class="desconto-container">
+  <label for="desconto">Desconto</label>
+  <input type="text" id="desconto" />
+</div>
     <label for="desconto">Desconto</label>
     <input type="number" id="desconto" min="0" value="0" oninput="atualizarTotal()">
     <label for="totalVenda"><strong>Total:</strong> <span id="totalVenda">R$ 0,00</span></p>
