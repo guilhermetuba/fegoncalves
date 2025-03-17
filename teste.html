@@ -103,6 +103,7 @@ button:hover {
     <button onclick="consultarProdutoPorCodigo()">Consultar</button>
     <hr>
     <label for="detalhesProduto">Detalhes dos Produtos</label>
+        <hr>
     <div id="detalhesProduto"></div>
     
     <label for="quantidadeProduto">Quantidade</label>
@@ -211,6 +212,7 @@ function atualizarCarrinho() {
 
         let btnRemover = document.createElement("button");
         btnRemover.textContent = "Remover";
+        btnRemover.style.backgroundColor = "red";
         btnRemover.onclick = function () {
             removerDoCarrinho(index);
         };
