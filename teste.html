@@ -24,7 +24,7 @@
       margin-top: 10px;
       display: block;
     }
-    input, textarea {
+    input, textarea, select {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
@@ -32,15 +32,6 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-   input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
     button {
   width: 100%;
   padding: 10px;
@@ -60,24 +51,27 @@ button:hover {
       list-style-type: none;
       padding: 0;
     }
- .produtos-lista li {
-      padding: 8px;
-      background-color: #f1f1f1;
-      margin-bottom: 5px;
-      border-radius: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
- .produtos-lista li button {
-      margin-left: 10px;
-      background-color: red;
-      border: none;
-      color: white;
-      cursor: pointer;
-      padding: 5px 10px;
-      border-radius: 4px;
-    }
+.produtos-lista li {
+    padding: 8px;
+    background-color: #f1f1f1;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.produtos-lista li button {
+    margin-left: 10px;
+    background-color: red;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 3px 8px; /* Diminuindo o tamanho do botão */
+    font-size: 12px; /* Font-size menor */
+    border-radius: 4px;
+    width: auto; /* Deixa o tamanho do botão conforme o conteúdo */
+}
  hr {
       border: 0;
       border-top: 1px solid #ccc;
@@ -102,8 +96,8 @@ button:hover {
     <label for="ccodigoProdutoInput">Código do produto</label>
     <input type="text" id="codigoProdutoInput" placeholder="Digite o código">
     <button onclick="consultarProdutoPorCodigo()">Consultar</button>
-
-    <label for="detalhesProduto">Detalhes do Produto</label>
+    <hr>
+    <label for="detalhesProduto">Detalhes dos Produtos</label>
     <div id="detalhesProduto"></div>
     
     <label for="quantidadeProduto">Quantidade</label>
@@ -114,7 +108,7 @@ button:hover {
     <label for="listaCarrinho">Carrinho</label>
     <ul id="listaCarrinho"></ul>
 
-    <label for="resumoVenda">Resumo da Venda</label>
+    
     <label for="subtotal">Subtotal: <span id="subtotal">R$ 0,00</span></label>
     <label for="formaPagamento">Forma de Pagamento:</label>
     <select id="formaPagamento">
