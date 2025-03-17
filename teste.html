@@ -86,6 +86,18 @@ button:hover {
     background-color: darkred !important; /* Forçando a cor de fundo mais escura ao passar o mouse */
 }
 
+  #quantidadeProduto {
+    width: 50px; /* Define uma largura menor */
+    padding: 5px; /* Ajusta o preenchimento interno */
+    text-align: center; /* Centraliza o número digitado */
+    margin-left: 10px; /* Dá um pequeno espaço entre o label e o input */
+}
+
+.label-quantidade {
+    display: inline-block; /* Mantém o label na mesma linha */
+    font-weight: bold; /* Deixa o texto do label mais destacado */
+}
+
 
  hr {
       border: 0;
@@ -115,7 +127,7 @@ button:hover {
     <label for="detalhesProduto">Detalhes dos Produtos</label>
     <div id="detalhesProduto"></div>
     
-    <label for="quantidadeProduto">Quantidade</label>
+     <label for="quantidadeProduto" class="label-quantidade">Quantidade:</label>
     <input type="number" id="quantidadeProduto" min="1" value="1">
 
     <button onclick="incluirProdutoNoCarrinho()">Incluir Produto no Carrinho</button>
