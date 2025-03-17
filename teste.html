@@ -44,12 +44,12 @@ label[for="codigoProdutoInput"] {
 #codigoProdutoInput {
     height: 30px; /* Mantém a altura uniforme */
     padding: 5px;
-    min-width: 200px; /* Tamanho adequado para não ficar muito pequeno */
+    min-width: 150px; /* Tamanho adequado para não ficar muito pequeno */
     font-size: 14px;
 }
 
 #consultarProduto {
-    height: 32px; /* Ajusta para alinhar com o input */
+    height: 30px; /* Ajusta para alinhar com o input */
     padding: 5px 12px; /* Deixa o botão menor e ajustado */
     font-size: 14px;
     cursor: pointer;
@@ -174,7 +174,7 @@ label[for="formaPagamento"] {
         <option value="">Selecione um Produto...</option>
     </select>
     <div class="campo-produto">
-    <label for="codigoProdutoInput">Código do produto:  </label>
+    <label for="codigoProdutoInput">Código:  </label>
     <input type="text" id="codigoProdutoInput" placeholder="Digite o código">
     <button onclick="consultarProdutoPorCodigo()">Consultar</button>
     </div>
