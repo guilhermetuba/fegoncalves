@@ -167,6 +167,15 @@ label[for="formaPagamento"] {
     font-size: 1rem;
 }
 
+@keyframes highlight {
+    0% { background-color: #ffebee; }
+    50% { background-color: #ffccbc; }
+    100% { background-color: #ffebee; }
+}
+
+.destacado {
+    animation: highlight 0.8s ease;
+}
 
  hr {
       border: 0;
@@ -350,7 +359,9 @@ function atualizarCarrinho() {
     if (total < 0) total = 0;
     // Atualiza o total na tela
     document.getElementById("totalVenda").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
- 
+     // Adiciona a classe de destaque e remove depois de 1s
+    totalVenda.classList.add("destacado");
+    setTimeout(() => totalVenda.classList.remove("destacado"), 1000);
      // Atualiza as opções de parcelamento
     atualizarCondicoes(total);
     
