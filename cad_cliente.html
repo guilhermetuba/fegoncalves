@@ -104,17 +104,17 @@ button:hover {
       }
 
        // Enviando o formulário via fetch
-      fetch(URL_API, {
-      method: "POST",
-      body: JSON.stringify(Object.fromEntries(new FormData(form))),
-      headers: { "Content-Type": "application/json" }
-      })
-      .then(response => response.json())
-      .then(data => {
-        alert(data.message);
-        if (data.result === "success") form.reset();
-      })
-      .catch(() => alert("Erro ao cadastrar. Tente novamente."))
+     fetch(URL_API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(Object.fromEntries(new FormData(form)))
+    })
+    .then(response => response.json())
+    .then(data => {
+    alert(data.message);
+    if (data.status === "success") form.reset();
+    })
+    .catch(() => alert("Erro ao cadastrar. Tente novamente."));
       
     }
     
