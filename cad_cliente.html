@@ -104,7 +104,7 @@ button:hover {
       }
 
        // Enviando o formulário via fetch
-     fetch("https://cors-anywhere.herokuapp.com/"+URL_API, {
+     fetch(URL_API, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(Object.fromEntries(new FormData(form)))
