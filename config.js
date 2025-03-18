@@ -1,3 +1,3 @@
 // config.js
-const URL_API = "https://script.google.com/macros/s/AKfycby3rXyolwyRVH5w2vumFx5nSygVBLNl3pN6AoMhjDa376p0iT-QI__BP-nkyEArHYb5/exec";
+const URL_API = "https://script.google.com/macros/s/AKfycbwzwuCbEJegB8a2uKnO3v7kVUEpg1b7AvOPU9nMqwRiuPxb8d5KVCxjNB7YZ6KdQSqu/exec";
 console.log("Config.js carregado! URL_API:", URL_API);
