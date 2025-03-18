@@ -211,16 +211,17 @@ label[for="formaPagamento"] {
     <div class="forma-pagamento-container">
   <label for="formaPagamento">Forma de Pagamento:</label>
   <select id="formaPagamento">
-    <option value="cartao">Cartão</option>
-    <option value="boleto">Boleto</option>
-    <option value="pix">Pix</option>
+    <option value="cartao">Pix</option>
+    <option value="boleto">Cartão</option>
+    <option value="pix">Dinheiro</option>
   </select>
 </div>
     <div class="desconto">
     <label for="descontos">Desconto</label>
     <div class="desconto-inputs">
-        <input type="text" id="desconto-reais" name="desconto-reais" inputmode="numeric" placeholder="R$ 0,00" oninput="aplicarMascaraMoeda(event), atualizarTotal()">
-        <input type="text" id="desconto-percentual" name="desconto-percentual" placeholder="%" inputmode="numeric" oninput="aplicarMascaraMoeda(event),atualizarTotal()">
+       R$ <input type="text" id="desconto-reais" name="desconto-reais" inputmode="numeric" placeholder="R$ 0,00" oninput="aplicarMascaraMoeda(event), atualizarTotal()">
+       ou <input type="text" id="desconto-percentual" name="desconto-percentual" placeholder="%" inputmode="numeric" oninput="aplicarMascaraMoeda(event),atualizarTotal()">
+    %
     </div>
     </div>
     
