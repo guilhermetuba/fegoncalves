@@ -338,11 +338,16 @@ function atualizarCarrinho() {
  function atualizarTotal() {
     // Recupera o valor do subtotal exibido na tela
     let subtotal = parseFloat(document.getElementById("subtotal").textContent.replace("R$", "").replace(/\./g, "").replace(",", ".").trim()) || 0;
-    let desconto = parseFloat(document.getElementById("desconto-reais").value.replace(",", ".")) || 0;
-    
+    let descontoReais = parseFloat(document.getElementById("desconto-reais").value.replace(",", ".")) || 0;
+    // Recupera o desconto percentual e calcula o valor correspondente em reais
+    let descontoPercentual = parseFloat(document.getElementById("desconto-percentual").value.replace(",", ".")) || 0;
+    let descontoPorcentagemValor = (subtotal * descontoPercentual) / 100;
+    // Soma os dois descontos
+    let totalDesconto = descontoReais + descontoPorcentagemValor;
     // Calcula o total
-    let total = subtotal - desconto;
-
+    let total = subtotal - totalDesconto;
+    // Evita valores negativos
+    if (total < 0) total = 0;
     // Atualiza o total na tela
     document.getElementById("totalVenda").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
  
