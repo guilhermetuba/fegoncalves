@@ -103,23 +103,21 @@ button:hover {
         return;
       }
 
-      // Desabilitar o botão de envio enquanto processa
-      let button = document.querySelector('button');
-      button.disabled = true;
-
-      // Enviando o formulário via fetch
-      fetch(URL_API, { method: "POST", body: formData })
+       // Enviando o formulário via fetch
+      fetch(URL_API, {
+      method: "POST",
+      body: JSON.stringify(Object.fromEntries(new FormData(form))),
+      headers: { "Content-Type": "application/json" }
+      })
       .then(response => response.json())
       .then(data => {
         alert(data.message);
         if (data.result === "success") form.reset();
       })
       .catch(() => alert("Erro ao cadastrar. Tente novamente."))
-      .finally(() => {
-        // Reabilitar o botão após a resposta
-        button.disabled = false;
-      });
+      
     }
+    
   </script>
 </head>
 <body>
