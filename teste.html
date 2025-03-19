@@ -12,34 +12,36 @@
     <script>
         const apiKey = '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'; // Substitua com a sua chave de API
         const spreadsheetId = '1-r5uYv0yTB3__2rrHNLiosd2mFHHCdJAjwMdvxUKXRQ'; // Substitua com o ID da sua planilha
-        const range = 'Sheet1!A1:D10'; // Altere o intervalo conforme necessário
+        const range = 'Clientes!A1:B5'; // Altere o intervalo conforme necessário
 
-        function getData() {
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    const resultDiv = document.getElementById('result');
-                    if (data.values) {
-                        let htmlContent = '<table border="1">';
-                        data.values.forEach(row => {
-                            htmlContent += '<tr>';
-                            row.forEach(cell => {
-                                htmlContent += `<td>${cell}</td>`;
-                            });
-                            htmlContent += '</tr>';
-                        });
-                        htmlContent += '</table>';
-                        resultDiv.innerHTML = htmlContent;
-                    } else {
-                        resultDiv.innerHTML = 'Nenhum dado encontrado!';
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro ao acessar a planilha:', error);
-                    document.getElementById('result').innerHTML = 'Erro ao carregar os dados.';
+       function getData() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+    console.log("URL da requisição: ", url);  // Para ver a URL da requisição no console
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const resultDiv = document.getElementById('result');
+            if (data.values) {
+                let htmlContent = '<table border="1">';
+                data.values.forEach(row => {
+                    htmlContent += '<tr>';
+                    row.forEach(cell => {
+                        htmlContent += `<td>${cell}</td>`;
+                    });
+                    htmlContent += '</tr>';
                 });
-        }
+                htmlContent += '</table>';
+                resultDiv.innerHTML = htmlContent;
+            } else {
+                resultDiv.innerHTML = 'Nenhum dado encontrado!';
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao acessar a planilha:', error);
+            document.getElementById('result').innerHTML = 'Erro ao carregar os dados.';
+        });
+}
+
 
         // Chama a função para pegar os dados quando o site carregar
         window.onload = getData;
