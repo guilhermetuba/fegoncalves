@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Venda</title>
-    <script src="config.js"></script>
-      <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Clientes</title>
+  <script src="config.js"></script>
+  <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
@@ -24,42 +24,7 @@
       margin-top: 10px;
       display: block;
     }
-    label[for="detalhesProduto"] {
-    margin-bottom: 15px; /* Aumenta o espaço abaixo do label */
-    display: block; /* Garante que o label ocupe a largura total */
-}
-.campo-produto {
-    display: flex;
-    align-items: center; /* Alinha verticalmente */
-    gap: 10px; /* Espaço entre os elementos */
-    white-space: nowrap; /* Garante que o texto não quebre */
-}
-label[for="codigoProdutoInput"] {
-    display: flex;
-    align-items: center; /* Alinha verticalmente */
-    font-size: 14px;
-    font-weight: bold;
-    white-space: nowrap; /* Evita quebra de linha */
-}
-#codigoProdutoInput {
-    height: 25px; /* Mantém a altura uniforme */
-    padding: 5px;
-    min-width: 100px; /* Tamanho adequado para não ficar muito pequeno */
-    font-size: 14px;
-}
-
-#consultarProduto {
-    height: 30px; /* Ajusta para alinhar com o input */
-    padding: 5px 12px; /* Deixa o botão menor e ajustado */
-    font-size: 14px;
-    cursor: pointer;
-}
-
-#detalhesProduto {
-    margin-top: 15px; /* Espaço acima da div de detalhes do produto */
-}
-
-    input, textarea, select {
+    input, textarea {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
@@ -79,513 +44,159 @@ label[for="codigoProdutoInput"] {
 button:hover {
   background: #5a32a3; /* Cor roxa mais escura ao passar o mouse */
 }
-.produtos-lista {
-      margin-top: 20px;
-    }
- .produtos-lista ul {
-      list-style-type: none;
-      padding: 0;
-    }
-.produtos-lista li {
-    padding: 8px;
-    background-color: #f1f1f1;
-    margin-bottom: 5px;
-    border-radius: 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.produtos-lista li button {
-    background-color: red !important; /* Forçando a cor vermelha */
-    border: none;
-    color: white;
-    cursor: pointer;
-    padding: 3px 6px;
-    font-size: 10px;
-    border-radius: 4px;
-    width: auto;
-    margin-left: 10px;
-}
-
-.produtos-lista li button:hover {
-    background-color: darkred !important; /* Forçando a cor de fundo mais escura ao passar o mouse */
-}
-    
-          .excluir-produto {
-    background-color: red;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    text-align: center;
-    padding: 0;
-    margin-left: 10px;
-    border-radius: 50%;
-}
-
-
-  #quantidadeProduto {
-    width: 50px; /* Define uma largura menor */
-    padding: 5px; /* Ajusta o preenchimento interno */
-    text-align: center; /* Centraliza o número digitado */
-    margin-left: 10px; /* Dá um pequeno espaço entre o label e o input */
-}
-
-.label-quantidade {
-    display: inline-block; /* Mantém o label na mesma linha */
-    font-weight: bold; /* Deixa o texto do label mais destacado */
-}
-          
-.forma-pagamento-container {
-  display: flex;
-  align-items: center; /* Alinha verticalmente o label e o select */
-}
-
-label[for="formaPagamento"] {
-  margin-right: 10px; /* Espaço entre o label e o select */
-}
-
-#formaPagamento {
-  width: 150px; /* Ajuste o tamanho do select conforme necessário */
-}
-.desconto {
-    margin: 10px 0;
-}
-
-.desconto-inputs {
-    display: flex;
-    gap: 10px;
-}
-
-.desconto-inputs input {
-    width: 100px;
-    padding: 5px;
-    font-size: 1rem;
-}
-#totalVenda {
-    font-size: 1.8rem;  /* Aumenta o tamanho */
-    font-weight: bold;   /* Deixa em negrito */
-    color: #0d47a1;      /* Azul escuro para destacar */
-    background-color: #e3f2fd; /* Fundo azul claro */
-    padding: 10px;       /* Espaçamento interno */
-    border-radius: 8px;  /* Bordas arredondadas */
-    display: inline-block;
-    margin-top: 10px;
-}
-
- hr {
-      border: 0;
-      border-top: 1px solid #ccc;
-      margin-top: 30px;
-    }
-
   </style>
+  <script>
+    const apiKey = 'AIzaSyDmAzDeFQv1DeMwSMKJuTz0c224kI74Mo8';  // Substitua com sua chave de API
+    const spreadsheetId = '1-r5uYv0yTB3__2rrHNLiosd2mFHHCdJAjwMdvxUKXRQ';  // Substitua com o ID da sua planilha
+    const range = 'Clientes!A2:F';  // Altere se a aba "Clientes" tiver outro nome ou se quiser inserir em outro intervalo
+      
+    // Função para aplicar a máscara no CPF
+    function aplicarMascaraCPF() {
+      let cpf = document.getElementById("cpf");
+      cpf.value = cpf.value.replace(/\D/g, '').slice(0, 11);
+      cpf.value = cpf.value.replace(/(\d{3})(\d)/, '$1.$2')
+                           .replace(/(\d{3})(\d)/, '$1.$2')
+                           .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    }
+
+    // Função para aplicar a máscara no telefone
+    function aplicarMascaraTelefone() {
+      let telefone = document.getElementById("telefone");
+      telefone.value = telefone.value.replace(/\D/g, '').slice(0, 11);
+      telefone.value = telefone.value.length <= 10
+        ? telefone.value.replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{4})(\d{1,4})$/, '$1-$2')
+        : telefone.value.replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d{1,4})$/, '$1-$2');
+    }
+
+    // Função para validar o CPF
+    function validarCPF(cpf) {
+      cpf = cpf.replace(/\D/g, '');
+      if (cpf.length !== 11) return false;
+
+      // Verificação do CPF
+      let soma = 0;
+      let resto;
+      for (let i = 1; i <= 9; i++) {
+        soma += parseInt(cpf.charAt(i - 1)) * (11 - i);
+      }
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.charAt(9))) return false;
+
+      soma = 0;
+      for (let i = 1; i <= 10; i++) {
+        soma += parseInt(cpf.charAt(i - 1)) * (12 - i);
+      }
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.charAt(10))) return false;
+
+      return true;
+    }
+
+    // Função para validar o formulário antes de enviar
+    function validarFormulario(event) {
+      event.preventDefault();
+      let form = document.getElementById("clienteForm");
+      let formData = new FormData(form);
+
+      // Verificando se o CPF é válido
+      let cpf = formData.get('cpf');
+      if (!validarCPF(cpf)) {
+        alert("CPF inválido.");
+        return;
+      }
+
+       // Função para capturar o formulário e enviar os dados
+        document.getElementById('formCliente').addEventListener('submit', function(event) {
+            event.preventDefault();  // Evita o envio do formulário de forma tradicional
+
+            const nome = document.getElementById('nome').value;
+            const cpf = document.getElementById('cpf').value;
+            const telefone = document.getElementById('telefone').value;
+            const email = document.getElementById('email').value;
+            const endereco = document.getElementById('endereco').value;
+            const observacoes = document.getElementById('observacoes').value;
+
+            const cliente = {
+                nome,
+                cpf,
+                telefone,
+                email,
+                endereco,
+                observacoes
+            };
+
+            // Chama a função para adicionar o cliente na planilha
+            adicionarCliente(cliente);
+
+            // Limpar o formulário após o envio
+            document.getElementById('formCliente').reset();
+        });
+      
+    }
+     // Função para adicionar um novo cliente
+        function adicionarCliente(cliente) {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=RAW&key=${apiKey}`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    values: [
+                        [
+                            cliente.nome,
+                            cliente.cpf,
+                            cliente.telefone,
+                            cliente.email,
+                            cliente.endereco,
+                            cliente.observacoes,
+                        ]
+                    ]
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = 'Cliente cadastrado com sucesso!';
+                console.log(data);
+            })
+            .catch(error => {
+                document.getElementById('result').innerHTML = 'Erro ao cadastrar o cliente.';
+                console.error('Erro:', error);
+            });
+        }
+  </script>
 </head>
 <body>
-    <div class="container">
-        <h2>Vendas</h2>
-        <label for="cliente">Cliente</label>
-      <select id="listaClientes" onchange="carregarProdutos()">
-        <option value="">Selecione um Cliente...</option>
-    </select>
 
-    <label for="produto">Produto (Selecione ou digite o código)</label>
-    <select id="listaProdutos" onchange="buscarProdutoPorSelect()">
-        <option value="">Selecione um Produto...</option>
-    </select>
-    <div class="campo-produto">
-    <label for="codigoProdutoInput">Código:  </label>
-    <input type="text" id="codigoProdutoInput" placeholder="Digite o código">
-    <button onclick="consultarProdutoPorCodigo()">Consultar</button>
-    </div>
-    <hr>
-    <label for="detalhesProduto">Detalhes dos Produtos</label>
-    <div id="detalhesProduto"></div>
-    
-     <label for="quantidadeProduto" class="label-quantidade">Quantidade:</label>
-    <input type="number" id="quantidadeProduto" min="1" value="1">
+  <div class="container">
+    <h2>Cadastro de Clientes</h2>
+    <form id="clienteForm" onsubmit="validarFormulario(event)">
+      <input type="hidden" name="tipo" value="cliente">
 
-    <button onclick="incluirProdutoNoCarrinho()">Incluir Produto no Carrinho</button>
+      <label for="nome">Nome:</label>
+      <input type="text" id="nome" name="nome" required>
 
-    <label for="listaCarrinho">Carrinho</label>
-    <ul id="listaCarrinho"></ul>
+      <label for="cpf">CPF:</label>
+      <input type="text" id="cpf" name="cpf" required oninput="aplicarMascaraCPF()" inputmode="numeric">
 
-    <hr>
-    <label for="subtotal">Subtotal: <span id="subtotal">R$ 0,00</span></label>
+      <label for="telefone">Telefone:</label>
+      <input type="text" id="telefone" name="telefone" oninput="aplicarMascaraTelefone()" inputmode="numeric">
 
-    <div class="forma-pagamento-container">
-  <label for="formaPagamento">Forma de Pagamento:</label>
-  <select id="formaPagamento">
-    <option value="cartao">Pix</option>
-    <option value="boleto">Cartão</option>
-    <option value="pix">Dinheiro</option>
-  </select>
-</div>
-    <div class="desconto">
-    <label for="descontos">Desconto</label>
-    <div class="desconto-inputs">
-       R$ <input type="text" id="desconto-reais" name="desconto-reais" inputmode="numeric" placeholder="R$ 0,00" oninput="aplicarMascaraMoeda(event), atualizarTotal()">
-       ou <input type="text" id="desconto-percentual" name="desconto-percentual" placeholder="%" inputmode="numeric" oninput="aplicarMascaraMoeda(event),atualizarTotal()">
-    %
-    </div>
-    </div>
-    
-    <label for="totalVenda"><strong>Total da Venda:</strong> <span id="totalVenda">R$ 0,00</span></p>
+      <label for="email">E-mail:</label>
+      <input type="email" id="email" name="email">
 
-    <label for="condicoes">Condições</label>
-    <select id="parcelas"></select>
-    <p id="valorParcela"></p>
+      <label for="endereco">Endereço:</label>
+      <input type="text" id="endereco" name="endereco">
 
-    <label id="descricaoDataPrimeiraParcela" for="dataPrimeiraParcela">Data 1ª Parcela</label>
-    <input type="date" id="dataPrimeiraParcela">
-        
-    <button onclick="registrarVenda()">Registrar Venda</button>
-    </div>
-    
-    <script>
-// Limpa o carrinho ao carregar a página
-    window.onload = function() {
-    localStorage.removeItem("carrinho"); // Limpa o carrinho
-    atualizarCarrinho(); // Atualiza o carrinho na interface
-};
+      <label for="observacoes">Observações:</label>
+      <textarea id="observacoes" name="observacoes"></textarea>
 
-let carrinho = [];
-let subtotal = 0;
-
-
-async function incluirProdutoNoCarrinho() {
-    console.log("Iniciando inclusão do produto no carrinho...");
-
-    // Captura os detalhes do produto exibido na seção de detalhes
-    let codigo = document.getElementById("detalhesProduto").querySelector("#campo_Código") ? 
-                 document.getElementById("detalhesProduto").querySelector("#campo_Código").textContent.trim() : "";
-    let nomeProduto = document.getElementById("detalhesProduto").querySelector("#campo_Produto") ? 
-                      document.getElementById("detalhesProduto").querySelector("#campo_Produto").textContent.trim() : "";
-    let preco = parseFloat(document.getElementById("detalhesProduto").querySelector("#campo_Preço") ? 
-                           document.getElementById("detalhesProduto").querySelector("#campo_Preço").textContent.trim().replace("R$", "").trim().replace(",", ".") : 0);
-    let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
-
-    console.log("Produto exibido nos detalhes:", { codigo, nomeProduto, preco, quantidade });
-
-    // Valida se o código e a quantidade são válidos
-    if (!codigo || !nomeProduto || isNaN(preco) || isNaN(quantidade) || quantidade <= 0) {
-        console.error("Erro: Código, nome ou quantidade inválidos.");
-        alert("Erro ao adicionar produto: Código, nome ou quantidade inválidos.");
-        return;
-    }
-
-    // Criação do produto a ser adicionado ao carrinho
-    let novoProduto = {
-        codigo: codigo,
-        produto: nomeProduto,
-        quantidade: quantidade,
-        preco: preco,
-        total: quantidade * preco
-    };
-
-    console.log("Novo produto a ser adicionado:", novoProduto);
-
-    // Adiciona ao carrinho no Local Storage
-    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-    carrinho.push(novoProduto);
-    localStorage.setItem("carrinho", JSON.stringify(carrinho));
-
-    atualizarCarrinho();
-}
-
-
-
-function atualizarCarrinho() {
-    console.log("Atualizando carrinho...");
-
-    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-    console.log("Carrinho carregado:", carrinho);
-
-    let listaCarrinho = document.getElementById("listaCarrinho");
-    if (!listaCarrinho) {
-        console.error("Erro: Elemento 'listaCarrinho' não encontrado no DOM.");
-        return;
-    }
-
-    listaCarrinho.innerHTML = ""; // Limpa a lista antes de atualizar
-
-    let total = 0;
-
-    carrinho.forEach((item, index) => {
-        let li = document.createElement("li");
-        li.textContent = `${item.produto} - ${item.quantidade}x (${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}) = ${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
-
-        let btnRemover = document.createElement("button");
-        btnRemover.textContent = "X";
-        btnRemover.classList.add("excluir-produto");
-        btnRemover.onclick = function () {
-            removerDoCarrinho(index);
-        };
-
-        li.appendChild(btnRemover);
-        listaCarrinho.appendChild(li);
-
-        total += item.total;
-    });
-
-    // Atualiza o subtotal no campo correspondente
-    document.getElementById("subtotal").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
-    // Chama a função para atualizar o total
-    atualizarTotal();
-
-     console.log("Carrinho atualizado no DOM.");
-}
-
-
-
-        
- function atualizarTotal() {
-    // Recupera o valor do subtotal exibido na tela
-    let subtotal = parseFloat(document.getElementById("subtotal").textContent.replace("R$", "").replace(/\./g, "").replace(",", ".").trim()) || 0;
-    let descontoReais = parseFloat(document.getElementById("desconto-reais").value.replace(",", ".")) || 0;
-    // Recupera o desconto percentual e calcula o valor correspondente em reais
-    let descontoPercentual = parseFloat(document.getElementById("desconto-percentual").value.replace(",", ".")) || 0;
-    let descontoPorcentagemValor = (subtotal * descontoPercentual) / 100;
-    // Soma os dois descontos
-    let totalDesconto = descontoReais + descontoPorcentagemValor;
-    // Calcula o total
-    let total = subtotal - totalDesconto;
-    // Evita valores negativos
-    if (total < 0) total = 0;
-    // Atualiza o total na tela
-    document.getElementById("totalVenda").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
-     // Atualiza as opções de parcelamento
-    atualizarCondicoes(total);
-    
-     console.log("Total atualizado:", total);
-}
-
-
-
-function removerDoCarrinho(index) {
-    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-    let itemRemovido = carrinho.splice(index, 1)[0]; // Remove o item correto
-    localStorage.setItem("carrinho", JSON.stringify(carrinho)); // Atualiza o carrinho no localStorage
-
-    // Atualiza o carrinho na interface
-    atualizarCarrinho();
-}
-
-      function atualizarCondicoes(total) {
-    let selectCondicoes = document.getElementById("parcelas");
-    selectCondicoes.innerHTML = "";
-
-    // Adiciona a opção "À Vista"
-    let optionAVista = document.createElement("option");
-    optionAVista.value = "À Vista";
-    optionAVista.textContent = `À Vista ${total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
-    selectCondicoes.appendChild(optionAVista);
-
-    // Sempre adiciona a opção "1x"
-    let option1x = document.createElement("option");
-    option1x.value = 1;
-    option1x.textContent = `1x de ${total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
-    selectCondicoes.appendChild(option1x);
-
-    // Adiciona as opções de parcelamento, a partir de 2x
-    let parcelasMaximas = Math.floor(total / 40); // Dividido por 40 para garantir o mínimo
-    for (let i = 2; i <= parcelasMaximas; i++) {
-        let valorParcela = total / i;
-        if (valorParcela >= 40) {
-            let option = document.createElement("option");
-            option.value = i;
-            option.textContent = `${i}x de ${valorParcela.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
-            selectCondicoes.appendChild(option);
-        } else {
-            break;
-        }
-    }
-}
-
-
-
-        function registrarVenda() {
-            alert("Venda registrada com sucesso!");
-            carrinho = [];
-            atualizarCarrinho();
-        }
-        
-        function carregarClientes() {
-            fetch(URL_API)
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.clientes || data.clientes.length < 2) {
-                        console.error("Nenhum cliente encontrado.");
-                        return;
-                    }
-
-                    let clientes = data.clientes.slice(1);
-                    let select = document.getElementById("listaClientes");
-                    select.innerHTML = "<option value=''>Selecione um Cliente...</option>";
-
-                    clientes.forEach(linha => {
-                        let nome = linha[0];
-                        if (nome) {
-                            let option = document.createElement("option");
-                            option.value = nome;
-                            option.textContent = nome;
-                            select.appendChild(option);
-                        }
-                    });
-                })
-                .catch(error => console.error("Erro ao buscar clientes:", error));
-        }
-
-        function carregarProdutos() {
-            fetch(URL_API)
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.estoque || data.estoque.length < 2) {
-                        console.error("Nenhum produto encontrado.");
-                        return;
-                    }
-
-                    let produtos = data.estoque.slice(1);
-                    let select = document.getElementById("listaProdutos");
-                    select.innerHTML = "<option value=''>Selecione um Produto...</option>";
-
-                    produtos.forEach(linha => {
-                        let codigo = linha[0];
-                        let nomeProduto = linha[1];
-                        if (codigo && nomeProduto) {
-                            let option = document.createElement("option");
-                            option.value = codigo;
-                            option.textContent = nomeProduto;
-                            select.appendChild(option);
-                        }
-                    });
-                })
-                .catch(error => console.error("Erro ao buscar produtos:", error));
-        }
-
-        function buscarProdutoPorSelect() {
-            let codigo = document.getElementById("listaProdutos").value;
-            if (codigo) {
-                buscarDetalhesProduto(codigo);
-            }
-        }
-
-        function consultarProdutoPorCodigo() {
-            let codigo = document.getElementById("codigoProdutoInput").value.trim();
-            if (!codigo) {
-                alert("Digite um código válido.");
-                return;
-            }
-            buscarDetalhesProduto(codigo);
-        }
-
-      function buscarDetalhesProduto(codigo) {
-    fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log("Resposta da API:", data); // Adicionando log para verificar resposta da API
-            if (data && data["Código"]) {
-                let detalhesDiv = document.getElementById("detalhesProduto");
-                detalhesDiv.innerHTML = "";
-
-                let codigoProduto = data["Código"] || "Não encontrado";
-                let nomeProduto = data["Produto"] || "Não encontrado";
-                let precoVenda = parseFloat(data["Preço de Venda"] || 0);
-
-                if (!isNaN(precoVenda)) {
-                    precoVenda = precoVenda.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-                } else {
-                    console.error("Erro ao converter preço do produto:", data["Preço de Venda"]);
-                }
-
-                let camposExibidos = {
-                    "Código": codigoProduto,
-                    "Produto": nomeProduto,
-                    "Preço": precoVenda
-                };
-
-                for (let chave in camposExibidos) {
-                    let div = document.createElement("div");
-                    div.innerHTML = `<strong>${chave}:</strong> <span id="campo_${chave}">${camposExibidos[chave]}</span>`;
-                    detalhesDiv.appendChild(div);
-                }
-            } else {
-                console.error("Erro ao buscar produto:", data);
-                alert("Erro ao obter os detalhes do produto.");
-            }
-        })
-        .catch(error => {
-            console.error("Erro ao buscar produto:", error);
-            alert("Erro ao buscar produto. Verifique o código e tente novamente.");
-        });
-}
-
-
-    function aplicarMascaraMoeda(event) {
-      var valor = event.target.value.replace(/\D/g, '');
-      valor = valor.replace(/(\d)(\d{8})$/, '$1.$2');
-      valor = valor.replace(/(\d)(\d{5})$/, '$1.$2');
-      valor = valor.replace(/(\d)(\d{2})$/, '$1,$2');
-      event.target.value = valor;
-    }
-
-        
-  // Função para mostrar ou ocultar o campo e a descrição da Data 1ª Parcela
-function atualizarCampoDataPrimeiraParcela() {
-    let selectCondições = document.getElementById("parcelas");
-    let dataPrimeiraParcela = document.getElementById("dataPrimeiraParcela");
-    let descricaoDataPrimeiraParcela = document.getElementById("descricaoDataPrimeiraParcela");
-
-    // Verifica se a condição selecionada é parcelada
-    if (selectCondições.value && selectCondições.value !== "À Vista") {
-        dataPrimeiraParcela.style.display = "block"; // Exibe o campo
-        descricaoDataPrimeiraParcela.style.display = "block"; // Exibe a descrição
-        preencherDataPrimeiraParcela(); // Preenche a data automaticamente
-    } else {
-        dataPrimeiraParcela.style.display = "none"; // Oculta o campo
-        descricaoDataPrimeiraParcela.style.display = "none"; // Oculta a descrição
-    }
-}
-
-// Função para preencher a Data 1ª Parcela com o mesmo dia do mês, 30 dias após a data de hoje
-function preencherDataPrimeiraParcela() {
-    let hoje = new Date(); // Data de hoje
-    let mes = hoje.getMonth(); // Mês atual
-    let dia = hoje.getDate(); // Dia atual
-
-    // Define a data como o mesmo dia do mês seguinte
-    hoje.setMonth(mes + 1);
-
-    // Caso o mês seguinte não tenha o mesmo dia (ex: 31 de janeiro para fevereiro), ajusta o dia
-    if (hoje.getDate() !== dia) {
-        hoje.setDate(0); // Define o último dia do mês anterior (para ajustar o número de dias)
-    }
-
-    // Formata a data no formato YYYY-MM-DD
-    let diaFormatado = hoje.getDate().toString().padStart(2, '0');
-    let mesFormatado = (hoje.getMonth() + 1).toString().padStart(2, '0');
-    let ano = hoje.getFullYear();
-
-    // Define o valor do campo Data 1ª Parcela
-    document.getElementById("dataPrimeiraParcela").value = `${ano}-${mesFormatado}-${diaFormatado}`;
-}
-
-// Chama a função para atualizar a visibilidade do campo ao carregar a página
-document.getElementById("parcelas").addEventListener("change", atualizarCampoDataPrimeiraParcela);
-
-// Chama a função inicial para garantir que o campo esteja correto ao carregar a página
-atualizarCampoDataPrimeiraParcela();
-
-
-
-        carregarClientes();
-    </script>
+      <button type="submit">Cadastrar</button>
+    </form>
+  </div>
 
 </body>
 </html>
