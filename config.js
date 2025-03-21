@@ -1,7 +1,6 @@
 // config.js
 const URL_API = "https://script.google.com/macros/s/AKfycbyFQTDC6M7dvWxp-YXi8YbLMkaoha_-sRUfBHLsH12dajjvsTlf8sDfZmc5WdwxDhXl/exec";
 console.log("Config.js carregado! URL_API:", URL_API);
-  <script>
     const apiKey = 'AIzaSyDmAzDeFQv1DeMwSMKJuTz0c224kI74Mo8';  // Substitua com sua chave de API
     const spreadsheetId = '1-r5uYv0yTB3__2rrHNLiosd2mFHHCdJAjwMdvxUKXRQ';  // Substitua com o ID da sua planilha
     const range = 'Clientes!A2:F';  // Altere se a aba "Clientes" tiver outro nome ou se quiser inserir em outro intervalo
@@ -143,4 +142,4 @@ console.log("Config.js carregado! URL_API:", URL_API);
     form.reset();
   }
     
-  </script>
+
