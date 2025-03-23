@@ -10,18 +10,15 @@ console.log("Config.js carregado! URL_API:", URL_API);
   }
 
 function initClient() {
-  gapi.client.init({
-    apiKey: 'AIzaSyDmAzDeFQv1DeMwSMKJuTz0c224kI74Mo8',
-    clientId: '725223031596-4eq0aunstjfpdtmti9il6v7paou8fs7t.apps.googleusercontent.com',
+  google.accounts.oauth2.initTokenClient({
+    client_id: '725223031596-4eq0aunstjfpdtmti9il6v7paou8fs7t.apps.googleusercontent.com',
     scope: 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email',
-    discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-  }).then(() => {
-    console.log('Cliente OAuth inicializado');
-    gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
-    updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-  }).catch(error => {
-    console.error('Erro ao inicializar cliente OAuth:', error);
-  });
+    callback: (tokenResponse) => {
+      console.log('Usuário autenticado:', tokenResponse);
+      document.getElementById('loginButton').style.display = 'none'; // Esconde o botão de login
+      gapi.client.setToken(tokenResponse);
+    }
+  }).requestAccessToken();
 }
 
 function updateSignInStatus(isSignedIn) {
@@ -32,19 +29,17 @@ function updateSignInStatus(isSignedIn) {
     console.log('Usuário não autenticado');
   }
 }
-    function signIn() {
-    gapi.auth2.getAuthInstance().signIn().then(function() {
-      console.log('Usuário autenticado');
-      document.getElementById('loginButton').style.display = 'none'; // Oculta o botão após login
 
-      // Solicitar permissão para acessar a planilha
-      gapi.client.request({
-        path: 'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId
-      }).then(function(response) {
-        console.log("Permissões concedidas:", response);
-        });
-    });
-  }
+  function signIn() {
+  google.accounts.oauth2.initTokenClient({
+    client_id: '725223031596-4eq0aunstjfpdtmti9il6v7paou8fs7t.apps.googleusercontent.com',
+    scope: 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email',
+    callback: (tokenResponse) => {
+      console.log('Token recebido:', tokenResponse);
+      gapi.client.setToken(tokenResponse);
+    }
+  }).requestAccessToken();
+}
 
    
   function checkAuthStatus() {
