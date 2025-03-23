@@ -9,19 +9,29 @@ console.log("Config.js carregado! URL_API:", URL_API);
     gapi.load('client:auth2', initClient);
   }
 
-  function initClient() {
-    gapi.client.init({
-      apiKey: 'AIzaSyDmAzDeFQv1DeMwSMKJuTz0c224kI74Mo8',  // Coloque sua API Key aqui (do passo 1)
-      clientId: '725223031596-4eq0aunstjfpdtmti9il6v7paou8fs7t.apps.googleusercontent.com',  // Coloque seu ID do Cliente OAuth aqui
-      scope: 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email',
-      discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-    }).then(function () {
-      console.log('Cliente OAuth inicializado');
-    }, function(error) {
-      console.log('Erro ao inicializar cliente OAuth:', error);
-    });
-  }
+function initClient() {
+  gapi.client.init({
+    apiKey: 'AIzaSyDmAzDeFQv1DeMwSMKJuTz0c224kI74Mo8',
+    clientId: '725223031596-4eq0aunstjfpdtmti9il6v7paou8fs7t.apps.googleusercontent.com',
+    scope: 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email',
+    discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+  }).then(() => {
+    console.log('Cliente OAuth inicializado');
+    gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+    updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+  }).catch(error => {
+    console.error('Erro ao inicializar cliente OAuth:', error);
+  });
+}
 
+function updateSignInStatus(isSignedIn) {
+  if (isSignedIn) {
+    console.log('Usuário autenticado!');
+    document.getElementById('loginButton').style.display = 'none';
+  } else {
+    console.log('Usuário não autenticado');
+  }
+}
     function signIn() {
     gapi.auth2.getAuthInstance().signIn().then(function() {
       console.log('Usuário autenticado');
