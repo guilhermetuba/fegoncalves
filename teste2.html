@@ -1,11 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro de Clientes</title>
-  <script src="https://apis.google.com/js/api.js" async defer></script>
-  <script src="client.js"></script>
+  <script src="config.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -34,23 +34,98 @@
       border-radius: 4px;
     }
     button {
-      width: 100%;
-      padding: 10px;
-      background: #6f42c1; /* Cor roxa */
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #5a32a3; /* Cor roxa mais escura ao passar o mouse */
-    }
+  width: 100%;
+  padding: 10px;
+  background: #6f42c1; /* Cor roxa */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button:hover {
+  background: #5a32a3; /* Cor roxa mais escura ao passar o mouse */
+}
   </style>
+  <script>
+    // Função para aplicar a máscara no CPF
+    function aplicarMascaraCPF() {
+      let cpf = document.getElementById("cpf");
+      cpf.value = cpf.value.replace(/\D/g, '').slice(0, 11);
+      cpf.value = cpf.value.replace(/(\d{3})(\d)/, '$1.$2')
+                           .replace(/(\d{3})(\d)/, '$1.$2')
+                           .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    }
+
+    // Função para aplicar a máscara no telefone
+    function aplicarMascaraTelefone() {
+      let telefone = document.getElementById("telefone");
+      telefone.value = telefone.value.replace(/\D/g, '').slice(0, 11);
+      telefone.value = telefone.value.length <= 10
+        ? telefone.value.replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{4})(\d{1,4})$/, '$1-$2')
+        : telefone.value.replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d{1,4})$/, '$1-$2');
+    }
+
+    // Função para validar o CPF
+    function validarCPF(cpf) {
+      cpf = cpf.replace(/\D/g, '');
+      if (cpf.length !== 11) return false;
+
+      // Verificação do CPF
+      let soma = 0;
+      let resto;
+      for (let i = 1; i <= 9; i++) {
+        soma += parseInt(cpf.charAt(i - 1)) * (11 - i);
+      }
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.charAt(9))) return false;
+
+      soma = 0;
+      for (let i = 1; i <= 10; i++) {
+        soma += parseInt(cpf.charAt(i - 1)) * (12 - i);
+      }
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.charAt(10))) return false;
+
+      return true;
+    }
+
+    // Função para validar o formulário antes de enviar
+    function validarFormulario(event) {
+      event.preventDefault();
+      let form = document.getElementById("clienteForm");
+      let formData = new FormData(form);
+
+      // Verificando se o CPF é válido
+      let cpf = formData.get('cpf');
+      if (!validarCPF(cpf)) {
+        alert("CPF inválido.");
+        return;
+      }
+
+       // Enviando o formulário via fetch
+     fetch("https://meu-backend-xi.vercel.app/dados", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(Object.fromEntries(new FormData(form)))
+    })
+    .then(response => response.json())
+    .then(data => {
+    alert(data.message);
+    if (data.status === "success") form.reset();
+    })
+    .catch(() => alert("Erro ao cadastrar. Tente novamente."));
+      
+    }
+    
+  </script>
 </head>
 <body>
+
   <div class="container">
     <h2>Cadastro de Clientes</h2>
-    <form id="clienteForm" onsubmit="validarFormulario(event)">
+    <form id="clienteForm" method="POST" onsubmit="validarFormulario(event)">
       <input type="hidden" name="tipo" value="cliente">
 
       <label for="nome">Nome:</label>
@@ -73,7 +148,8 @@
 
       <button type="submit">Cadastrar</button>
     </form>
-    <div id="result"></div>
   </div>
+
 </body>
 </html>
+
