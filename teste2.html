@@ -3,16 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="
-  script-src 'self' 'unsafe-inline' 'unsafe-eval' 
-  https://www.gstatic.com https://accounts.google.com https://apis.google.com;
-  frame-src 'self' https://accounts.google.com;
-  connect-src 'self' https://www.googleapis.com https://script.google.com;
-">
   <title>Cadastro de Clientes</title>
-  <script src="config.js"></script>
   <script src="https://apis.google.com/js/api.js" async defer></script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="client.js"></script>
   <style>
     body {
@@ -56,7 +48,6 @@
   </style>
 </head>
 <body>
-  <button id="loginButton" onclick="signIn()">Login com Google</button>
   <div class="container">
     <h2>Cadastro de Clientes</h2>
     <form id="clienteForm" onsubmit="validarFormulario(event)">
@@ -84,6 +75,5 @@
     </form>
     <div id="result"></div>
   </div>
-   </body>
+</body>
 </html>
-
