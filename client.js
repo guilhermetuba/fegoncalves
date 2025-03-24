@@ -11,7 +11,7 @@ function validarFormulario(event) {
   const observacoes = document.getElementById('observacoes').value;
 
   // Envia os dados via POST para a API
-  fetch('https://meu-backend-blsexovwn-guilherme-da-silvas-projects-fad92003.vercel.app/adicionar-cliente', {
+  fetch('meu-backend-xi.vercel.app', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
