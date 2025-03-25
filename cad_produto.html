@@ -46,6 +46,8 @@
     }
   </style>
   <script>
+    const URL_API = "https://meu-backend-xi.vercel.app/api/cadastro_produto"; // URL do endpoint de cadastro de produto
+
     function aplicarMascaraMoeda(event) {
       var valor = event.target.value.replace(/\D/g, '');
       valor = valor.replace(/(\d)(\d{8})$/, '$1.$2');
@@ -73,18 +75,27 @@
       let form = document.getElementById("produtoForm");
       let formData = new FormData(form);
 
+      // Desabilitar o botão durante o envio
       let button = document.querySelector('button');
       button.disabled = true;
 
-      fetch(URL_API, { method: "POST", body: formData })
+      // Converte os dados do formulário para JSON
+      const data = Object.fromEntries(formData.entries());
+
+      // Envia os dados do formulário para a API
+      fetch("https://meu-backend-xi.vercel.app/api/cadastro_produto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
       .then(response => response.json())
       .then(data => {
         alert(data.message);
-        if (data.result === "success") form.reset();
+        if (data.status === "success") form.reset();  // Reseta o formulário se sucesso
       })
       .catch(() => alert("Erro ao cadastrar. Tente novamente."))
       .finally(() => {
-        button.disabled = false;
+        button.disabled = false;  // Reabilita o botão após a resposta
       });
     }
   </script>
@@ -122,12 +133,10 @@
       <input type="text" id="precoCusto" name="precoCusto" inputmode="numeric" oninput="aplicarMascaraMoeda(event), validarPreco(event)">
 
       <label for="precoVenda">Preço de Venda:</label>
-      <input type="text" id="precoVenda" name="precoVenda"  inputmode="numeric" oninput="aplicarMascaraMoeda(event), validarPreco(event)">
+      <input type="text" id="precoVenda" name="precoVenda" inputmode="numeric" oninput="aplicarMascaraMoeda(event), validarPreco(event)">
 
       <button type="submit">Cadastrar</button>
     </form>
   </div>
 </body>
 </html>
-
-
