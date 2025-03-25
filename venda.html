@@ -432,6 +432,7 @@ function removerDoCarrinho(index) {
                     clientes.forEach(linha => {
                         let nome = linha[0];
                         if (nome) {
+                            console.log("Nome do Cliente:", nome);
                             let option = document.createElement("option");
                             option.value = nome;
                             option.textContent = nome;
