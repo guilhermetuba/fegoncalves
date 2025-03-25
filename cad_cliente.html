@@ -97,25 +97,35 @@ button:hover {
       let formData = new FormData(form);
 
       // Verificando se o CPF é válido
-      let cpf = formData.get('cpf');
+      let cpf = formData.get('cpf')
       if (!validarCPF(cpf)) {
         alert("CPF inválido.");
         return;
       }
 
        // Enviando o formulário via fetch
-     fetch("https://meu-backend-xi.vercel.app/dados", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(Object.fromEntries(new FormData(form)))
-    })
-    .then(response => response.json())
-    .then(data => {
-    alert(data.message);
-    if (data.status === "success") form.reset();
-    })
-    .catch(() => alert("Erro ao cadastrar. Tente novamente."));
-      
+   fetch("https://meu-backend-xi.vercel.app/api/cadastro", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(Object.fromEntries(new FormData(form)))
+})
+.then(response => {
+  if (!response.ok) {
+    return response.json().then(data => {
+      throw new Error(data.message);  // Lança o erro com a mensagem do backend
+    });
+  }
+  return response.json();  // Se for sucesso, continua com o processamento
+})
+.then(data => {
+  alert(data.message);
+  if (data.message === "Cliente cadastrado com sucesso!") {
+    form.reset();
+  }
+})
+.catch(error => {
+  alert(error.message);  // Exibe a mensagem de erro (por exemplo, "CPF já cadastrado")
+});
     }
     
   </script>
@@ -151,9 +161,3 @@ button:hover {
 
 </body>
 </html>
-
-
-
-
-
-
