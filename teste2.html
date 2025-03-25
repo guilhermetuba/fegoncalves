@@ -98,7 +98,8 @@ button:hover {
       let formData = new FormData(form);
 
       // Verificando se o CPF é válido
-      let cpf = formData.get('cpf');
+      let cpf = formData.get('cpf')
+        console.log(cpf);  // Verifica o valor do CPF
       if (!validarCPF(cpf)) {
         alert("CPF inválido.");
         return;
