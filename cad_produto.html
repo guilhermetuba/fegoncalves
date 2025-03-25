@@ -90,7 +90,9 @@
       .then(response => response.json())
       .then(data => {
         alert(data.message);
-        if (data.status === "success") form.reset();  // Reseta o formulário se sucesso
+        if (data.status === "success") {
+          form.reset();  // Reseta o formulário se sucesso
+        }
       })
       .catch(() => alert("Erro ao cadastrar. Tente novamente."))
       .finally(() => {
