@@ -419,6 +419,7 @@ function removerDoCarrinho(index) {
             fetch("https://meu-backend-xi.vercel.app/api/consulta_cliente")
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data); 
                     if (!data.clientes || data.clientes.length < 2) {
                         console.error("Nenhum cliente encontrado.");
                         return;
