@@ -500,11 +500,15 @@ function removerDoCarrinho(index) {
                 let nomeProduto = data["Produto"] || "Não encontrado";
                 let precoVenda = parseFloat(data["Preço de Venda"] || 0);
 
-                if (!isNaN(precoVenda)) {
-                    precoVenda = precoVenda.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-                } else {
-                    console.error("Erro ao converter preço do produto:", data["Preço de Venda"]);
-                }
+            if (!isNaN(precoVenda)) {
+    // Garante duas casas decimais exatas antes de formatar
+    precoVenda = precoVenda.toFixed(2);
+
+    // Formata corretamente como moeda brasileira
+    precoVenda = Number(precoVenda).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+} else {
+    console.error("Erro ao converter preço do produto:", data["Preço de Venda"]);
+}
 
                 let camposExibidos = {
                     "Código": codigoProduto,
