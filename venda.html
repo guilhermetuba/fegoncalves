@@ -431,7 +431,7 @@ function removerDoCarrinho(index) {
                     select.innerHTML = "<option value=''>Selecione um Cliente...</option>";
 
                     clientes.forEach(linha => {
-                        let nome = linha[0];
+                        let nome = linha;
                         if (nome) {
                             console.log("Nome do Cliente:", nome);
                             let option = document.createElement("option");
