@@ -425,7 +425,7 @@ function removerDoCarrinho(index) {
                         return;
                     }
 
-                    let clientes = data.clientes.slice(1);
+                    let clientes = data.clientes;
                     console.log(clientes);
                     let select = document.getElementById("listaClientes");
                     select.innerHTML = "<option value=''>Selecione um Cliente...</option>";
