@@ -487,7 +487,7 @@ function removerDoCarrinho(index) {
             buscarDetalhesProduto(codigo);
         }
 
-      function buscarDetalhesProduto(codigo) {
+         function buscarDetalhesProduto(codigo) {
     fetch(`${"https://meu-backend-xi.vercel.app/api/consulta_produto"}?produto=${encodeURIComponent(codigo)}`)
         .then(response => response.json())
         .then(data => {
@@ -499,12 +499,22 @@ function removerDoCarrinho(index) {
                 let codigoProduto = data["Código"] || "Não encontrado";
                 let nomeProduto = data["Produto"] || "Não encontrado";
                 console.log("Valor recebido da API:", data["Preço de Venda"]);
-                let precoVenda = data["Preço de Venda"].toString().replace(",", ".");
-                precoVenda = parseFloat(precoVenda).toFixed(2);
-               console.log("Valor corrigido:", precoVenda);
-                precoVenda = parseFloat(precoVenda).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-                console.log("Valor final formatado:", precoVenda);
-           
+                let precoVenda = parseFloat(data["Preço de Venda"] || 0);
+                console.log("Valor original do preçoVenda:", precoVenda); // Veja se o valor está correto antes da formatação
+
+            if (!isNaN(precoVenda)) {
+    // Garante duas casas decimais exatas antes de formatar
+    precoVenda = precoVenda.toFixed(2);
+                console.log("Após toFixed(2):", precoVenda); // Veja se o valor está certo aqui
+
+
+    // Formata corretamente como moeda brasileira
+    precoVenda = Number(precoVenda).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                  console.log("Após formatação para moeda:", precoVenda); // Veja se o valor foi alterado aqui
+} else {
+    console.error("Erro ao converter preço do produto:", data["Preço de Venda"]);
+}
+
                 let camposExibidos = {
                     "Código": codigoProduto,
                     "Produto": nomeProduto,
