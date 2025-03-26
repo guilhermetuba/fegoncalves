@@ -445,7 +445,7 @@ function removerDoCarrinho(index) {
         }
 
         function carregarProdutos() {
-            fetch(URL_API)
+            fetch("https://meu-backend-xi.vercel.app/api/consulta_produto")
                 .then(response => response.json())
                 .then(data => {
                     if (!data.estoque || data.estoque.length < 2) {
@@ -488,7 +488,7 @@ function removerDoCarrinho(index) {
         }
 
       function buscarDetalhesProduto(codigo) {
-    fetch(`${URL_API}?produto=${encodeURIComponent(codigo)}`)
+    fetch(`${"https://meu-backend-xi.vercel.app/api/consulta_produto"}?produto=${encodeURIComponent(codigo)}`)
         .then(response => response.json())
         .then(data => {
             console.log("Resposta da API:", data); // Adicionando log para verificar resposta da API
