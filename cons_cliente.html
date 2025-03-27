@@ -90,7 +90,7 @@
     observacoes: document.getElementById('observacoes').value,
   };
 
-  fetch(`${API_URL}/${clienteCpf}`, {
+  fetch(`${API_URL}?cpf=${clienteCpf}`), {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(formData)
