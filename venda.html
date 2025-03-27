@@ -487,29 +487,30 @@ function removerDoCarrinho(index) {
             buscarDetalhesProduto(codigo);
         }
 
-         function buscarDetalhesProduto(codigo) {
+        function buscarDetalhesProduto(codigo) {
     fetch(`${"https://meu-backend-xi.vercel.app/api/consulta_produto"}?produto=${encodeURIComponent(codigo)}`)
         .then(response => response.json())
         .then(data => {
-            console.log("Resposta da API:", data); // Adicionando log para verificar resposta da API
+            console.log("Resposta da API:", data); // Log da resposta
+
             if (data && data["Código"]) {
                 let detalhesDiv = document.getElementById("detalhesProduto");
                 detalhesDiv.innerHTML = "";
 
                 let codigoProduto = data["Código"] || "Não encontrado";
                 let nomeProduto = data["Produto"] || "Não encontrado";
-                console.log("Valor recebido da API:", data["Preço de Venda"]);
-                let precoVenda = data["Preço de Venda"].toString().replace(",", ".");
+                
+                let precoVenda = data["Preço de Venda"] !== undefined ? data["Preço de Venda"].toString().replace(",", ".") : "0.00";
                 precoVenda = parseFloat(precoVenda).toFixed(2);
-                console.log("Valor original do preçoVenda:", precoVenda); // Veja se o valor está correto antes da formatação
 
-            if (!isNaN(precoVenda)) {
+                console.log("Valor original do preçoVenda:", precoVenda);
 
-    // Formata corretamente como moeda brasileira
-    precoVenda = Number(precoVenda).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-      } else {
-    console.error("Erro ao converter preço do produto:", data["Preço de Venda"]);
-}
+                if (!isNaN(precoVenda)) {
+                    precoVenda = Number(precoVenda).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                } else {
+                    precoVenda = "R$ 0,00"; // Definindo um valor padrão caso seja inválido
+                    console.error("Erro ao converter preço do produto:", data["Preço de Venda"]);
+                }
 
                 let camposExibidos = {
                     "Código": codigoProduto,
@@ -532,6 +533,7 @@ function removerDoCarrinho(index) {
             alert("Erro ao buscar produto. Verifique o código e tente novamente.");
         });
 }
+
 
 
     function aplicarMascaraMoeda(event) {
