@@ -66,7 +66,7 @@
       const clienteCpf = document.getElementById('clientes').value;
       if (!clienteCpf) return;
 
-      fetch(`${API_URL}/${clienteCpf}`)
+      fetch(`${API_URL}?cpf=${clienteCpf}`)
         .then(response => response.json())
         .then(cliente => {
           document.getElementById('nome').value = cliente.nome;
@@ -103,8 +103,10 @@
     function excluirCliente() {
       const clienteCpf = document.getElementById('cpf').value;
       if (confirm("Tem certeza de que deseja excluir este cliente?")) {
-        fetch(`${API_URL}/${clienteCpf}`, {
-          method: 'DELETE'
+        fetch(API_URL, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cpf: clienteCpf })
         })
         .then(response => response.json())
         .then(data => {
