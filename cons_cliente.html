@@ -49,7 +49,7 @@
 
 // Função para carregar os clientes na lista suspensa
 function carregarClientes() {
-  fetch(URL_API)
+  fetch("https://meu-backend-xi.vercel.app/api/consulta_cliente")
     .then(response => response.json())
     .then(data => {
       const select = document.getElementById('clientes');
@@ -67,7 +67,7 @@ function carregarClientes() {
       const clienteId = document.getElementById('clientes').value;
       if (!clienteId) return;
 
-      fetch(`${URL_API}/${clienteId}`)
+      fetch(`${"https://meu-backend-xi.vercel.app/api/consulta_cliente"}/${clienteId}`)
         .then(response => response.json())
         .then(cliente => {
           document.getElementById('nome').value = cliente.nome;
