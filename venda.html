@@ -449,32 +449,38 @@ function removerDoCarrinho(index) {
 
         
 
-        function carregarProdutos() {
-            fetch("https://meu-backend-xi.vercel.app/api/consulta_produto")
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.estoque || data.estoque.length < 2) {
-                        console.error("Nenhum produto encontrado.");
-                        return;
-                    }
+       function carregarProdutos() {
+    fetch("https://meu-backend-xi.vercel.app/api/consulta_produto")
+        .then(response => response.json())
+        .then(data => {
+            if (!data.estoque || data.estoque.length < 2) {
+                console.error("Nenhum produto encontrado.");
+                return;
+            }
 
-                    let produtos = data.estoque.slice(1);
-                    let select = document.getElementById("listaProdutos");
-                    select.innerHTML = "<option value=''>Selecione um Produto...</option>";
+            let produtos = data.estoque.slice(1);
 
-                    produtos.forEach(linha => {
-                        let codigo = linha[0];
-                        let nomeProduto = linha[1];
-                        if (codigo && nomeProduto) {
-                            let option = document.createElement("option");
-                            option.value = codigo;
-                            option.textContent = nomeProduto;
-                            select.appendChild(option);
-                        }
-                    });
-                })
-                .catch(error => console.error("Erro ao buscar produtos:", error));
-        }
+            // Ordena os produtos em ordem alfabética pelo nome
+            produtos.sort((a, b) => a[1].localeCompare(b[1], "pt-BR"));
+
+            let select = document.getElementById("listaProdutos");
+            select.innerHTML = "<option value=''>Selecione um Produto...</option>";
+
+            produtos.forEach(linha => {
+                let codigo = linha[0];
+                let nomeProduto = linha[1];
+                if (codigo && nomeProduto) {
+                    let option = document.createElement("option");
+                    option.value = codigo;
+                    option.textContent = nomeProduto;
+                    select.appendChild(option);
+                }
+            });
+        })
+        .catch(error => console.error("Erro ao buscar produtos:", error));
+}
+
+        
 
         function buscarProdutoPorSelect() {
             let codigo = document.getElementById("listaProdutos").value;
