@@ -90,10 +90,12 @@
     observacoes: document.getElementById('observacoes').value,
   };
 
-  fetch(`${API_URL}?cpf=${clienteCpf}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(formData)
+ fetch(`${API_URL}/${clienteCpf}`, {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(formData)
+})
+
   })
   .then(response => {
     if (!response.ok) {
