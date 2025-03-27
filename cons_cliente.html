@@ -80,27 +80,36 @@
             });
     }
 
-    function atualizarCliente() {
-      const clienteCpf = document.getElementById('cpf').value;
-      const formData = {
-        nome: document.getElementById('nome').value,
-        telefone: document.getElementById('telefone').value,
-        email: document.getElementById('email').value,
-        endereco: document.getElementById('endereco').value,
-        observacoes: document.getElementById('observacoes').value,
-      };
-      
-      fetch(`${API_URL}/${clienteCpf}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
-      .then(response => response.json())
-      .then(data => {
-        alert(data.message);
-      })
-      .catch(() => alert("Erro ao atualizar. Tente novamente."));
+   function atualizarCliente() {
+  const clienteCpf = document.getElementById('cpf').value;
+  const formData = {
+    nome: document.getElementById('nome').value,
+    telefone: document.getElementById('telefone').value,
+    email: document.getElementById('email').value,
+    endereco: document.getElementById('endereco').value,
+    observacoes: document.getElementById('observacoes').value,
+  };
+
+  fetch(`${API_URL}/${clienteCpf}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(formData)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Erro na resposta: ${response.statusText}`);
     }
+    return response.json();
+  })
+  .then(data => {
+    alert(data.message);
+  })
+  .catch(error => {
+    console.error("Erro ao atualizar cliente:", error);
+    alert("Erro ao atualizar. Tente novamente.");
+  });
+}
+
 
     function excluirCliente() {
       const clienteCpf = document.getElementById('cpf').value;
