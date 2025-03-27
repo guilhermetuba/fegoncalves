@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Consulta de Clientes</title>
-  <script src="config.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -35,40 +34,39 @@
     button {
       width: 100%;
       padding: 10px;
-      background: #6f42c1; /* Cor roxa */
+      background: #6f42c1;
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
     }
     button:hover {
-      background: #5a32a3; /* Cor roxa mais escura ao passar o mouse */
+      background: #5a32a3;
     }
   </style>
   <script>
+    const API_URL = "https://meu-backend-xi.vercel.app/api/atualiza_cliente";
+    
+    function carregarClientes() {
+      fetch(API_URL)
+        .then(response => response.json())
+        .then(data => {
+          const select = document.getElementById('clientes');
+          select.innerHTML = '<option value="">Selecione</option>';
+          data.clientes.forEach(cliente => {
+            const option = document.createElement('option');
+            option.value = cliente.cpf;
+            option.textContent = cliente.nome;
+            select.appendChild(option);
+          });
+        });
+    }
 
-// Função para carregar os clientes na lista suspensa
-function carregarClientes() {
-  fetch("https://meu-backend-xi.vercel.app/api/consulta_cliente")
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-      const select = document.getElementById('clientes');
-      data.clientes.forEach(cliente => {
-        const option = document.createElement('option');
-        option.value = cliente.cpf; // Altere para cpf
-        option.textContent = cliente.nome;
-        select.appendChild(option);
-      });
-    });
-}
-
-    // Função para carregar os dados do cliente
     function carregarDadosCliente() {
-      const clienteId = document.getElementById('clientes').value;
-      if (!clienteId) return;
+      const clienteCpf = document.getElementById('clientes').value;
+      if (!clienteCpf) return;
 
-      fetch(`${"https://meu-backend-xi.vercel.app/api/consulta_cliente"}/${clienteId}`)
+      fetch(`${API_URL}/${clienteCpf}`)
         .then(response => response.json())
         .then(cliente => {
           document.getElementById('nome').value = cliente.nome;
@@ -80,45 +78,47 @@ function carregarClientes() {
         });
     }
 
-    // Função para atualizar os dados do cliente
     function atualizarCliente() {
-      const clienteId = document.getElementById('clientes').value;
-      const form = document.getElementById('clienteForm');
-      const formData = new FormData(form);
-      formData.append('id', clienteId);
-      fetch(`${URL_API}/${clienteId}`, {
+      const clienteCpf = document.getElementById('cpf').value;
+      const formData = {
+        nome: document.getElementById('nome').value,
+        telefone: document.getElementById('telefone').value,
+        email: document.getElementById('email').value,
+        endereco: document.getElementById('endereco').value,
+        observacoes: document.getElementById('observacoes').value,
+      };
+      
+      fetch(`${API_URL}/${clienteCpf}`, {
         method: 'PUT',
-        body: formData
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
       })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message);
+      })
+      .catch(() => alert("Erro ao atualizar. Tente novamente."));
+    }
+
+    function excluirCliente() {
+      const clienteCpf = document.getElementById('cpf').value;
+      if (confirm("Tem certeza de que deseja excluir este cliente?")) {
+        fetch(`${API_URL}/${clienteCpf}`, {
+          method: 'DELETE'
+        })
         .then(response => response.json())
         .then(data => {
           alert(data.message);
+          carregarClientes();
         })
-        .catch(() => alert("Erro ao atualizar. Tente novamente."));
-    }
-
-    // Função para excluir o cliente
-    function excluirCliente() {
-      const clienteId = document.getElementById('clientes').value;
-      if (confirm("Tem certeza de que deseja excluir este cliente?")) {
-        fetch(`${URL_API}/${clienteId}`, {
-          method: 'DELETE'
-        })
-          .then(response => response.json())
-          .then(data => {
-            alert(data.message);
-            carregarClientes();
-          })
-          .catch(() => alert("Erro ao excluir. Tente novamente."));
+        .catch(() => alert("Erro ao excluir. Tente novamente."));
       }
     }
-
-    // Carregar os clientes ao carregar a página
+    
     window.onload = carregarClientes;
   </script>
 </head>
 <body>
-
   <div class="container">
     <h2>Consulta de Clientes</h2>
     <form id="clienteForm">
@@ -128,27 +128,26 @@ function carregarClientes() {
       </select>
 
       <label for="nome">Nome:</label>
-      <input type="text" id="nome" name="nome" required readonly>
+      <input type="text" id="nome" name="nome" required>
 
       <label for="cpf">CPF:</label>
       <input type="text" id="cpf" name="cpf" required readonly>
 
       <label for="telefone">Telefone:</label>
-      <input type="text" id="telefone" name="telefone" readonly>
+      <input type="text" id="telefone" name="telefone">
 
       <label for="email">E-mail:</label>
-      <input type="email" id="email" name="email" readonly>
+      <input type="email" id="email" name="email">
 
       <label for="endereco">Endereço:</label>
-      <input type="text" id="endereco" name="endereco" readonly>
+      <input type="text" id="endereco" name="endereco">
 
       <label for="observacoes">Observações:</label>
-      <textarea id="observacoes" name="observacoes" readonly></textarea>
+      <textarea id="observacoes" name="observacoes"></textarea>
 
       <button type="button" onclick="atualizarCliente()">Atualizar</button>
       <button type="button" onclick="excluirCliente()">Excluir</button>
     </form>
   </div>
-
 </body>
 </html>
