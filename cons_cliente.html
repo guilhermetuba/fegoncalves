@@ -53,6 +53,8 @@
         .then(data => {
           const select = document.getElementById('clientes');
           select.innerHTML = '<option value="">Selecione</option>';
+                // Ordena os clientes pelo nome
+          data.clientes.sort((a, b) => a.nome.localeCompare(b.nome));
           data.clientes.forEach(cliente => {
             const option = document.createElement('option');
             option.value = cliente.cpf;
