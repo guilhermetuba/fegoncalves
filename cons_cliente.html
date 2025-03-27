@@ -52,6 +52,7 @@ function carregarClientes() {
   fetch("https://meu-backend-xi.vercel.app/api/consulta_cliente")
     .then(response => response.json())
     .then(data => {
+      console.log(data);
       const select = document.getElementById('clientes');
       data.clientes.forEach(cliente => {
         const option = document.createElement('option');
