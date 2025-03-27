@@ -71,13 +71,13 @@
       fetch(`${API_URL}?cpf=${clienteCpf}`)
         .then(response => response.json())
         .then(cliente => {
-          document.getElementById('nome').value = cliente.nome;
-          document.getElementById('cpf').value = cliente.cpf;
-          document.getElementById('telefone').value = cliente.telefone;
-          document.getElementById('email').value = cliente.email;
-          document.getElementById('endereco').value = cliente.endereco;
-          document.getElementById('observacoes').value = cliente.observacoes;
-        });
+      document.getElementById('nome').value = cliente.nome || '';  // Se nome for undefined ou null, coloca vazio
+      document.getElementById('cpf').value = cliente.cpf || '';    // Se cpf for undefined ou null, coloca vazio
+      document.getElementById('telefone').value = cliente.telefone || ''; // Se telefone for undefined ou null, coloca vazio
+      document.getElementById('email').value = cliente.email || '';  // Se email for undefined ou null, coloca vazio
+      document.getElementById('endereco').value = cliente.endereco || ''; // Se endereco for undefined ou null, coloca vazio
+      document.getElementById('observacoes').value = cliente.observacoes || ''; // Se observacoes for undefined ou null, coloca vazio
+            });
     }
 
     function atualizarCliente() {
