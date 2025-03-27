@@ -416,33 +416,38 @@ function removerDoCarrinho(index) {
         }
         
         function carregarClientes() {
-            fetch("https://meu-backend-xi.vercel.app/api/consulta_cliente")
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data); 
-                    if (!data.clientes || data.clientes.length < 2) {
-                        console.error("Nenhum cliente encontrado.");
-                        return;
-                    }
+    fetch("https://meu-backend-xi.vercel.app/api/consulta_cliente")
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (!data.clientes || data.clientes.length < 2) {
+                console.error("Nenhum cliente encontrado.");
+                return;
+            }
 
-                    let clientes = data.clientes;
-                    console.log(clientes);
-                    let select = document.getElementById("listaClientes");
-                    select.innerHTML = "<option value=''>Selecione um Cliente...</option>";
+            let clientes = data.clientes;
 
-                    clientes.forEach(linha => {
-                        let nome = linha;
-                        if (nome) {
-                            console.log("Nome do Cliente:", nome);
-                            let option = document.createElement("option");
-                            option.value = nome;
-                            option.textContent = nome;
-                            select.appendChild(option);
-                        }
-                    });
-                })
-                .catch(error => console.error("Erro ao buscar clientes:", error));
-        }
+            // Ordena os clientes em ordem alfabética
+            clientes.sort((a, b) => a.localeCompare(b, "pt-BR"));
+
+            console.log(clientes);
+            let select = document.getElementById("listaClientes");
+            select.innerHTML = "<option value=''>Selecione um Cliente...</option>";
+
+            clientes.forEach(nome => {
+                if (nome) {
+                    console.log("Nome do Cliente:", nome);
+                    let option = document.createElement("option");
+                    option.value = nome;
+                    option.textContent = nome;
+                    select.appendChild(option);
+                }
+            });
+        })
+        .catch(error => console.error("Erro ao buscar clientes:", error));
+}
+
+        
 
         function carregarProdutos() {
             fetch("https://meu-backend-xi.vercel.app/api/consulta_produto")
