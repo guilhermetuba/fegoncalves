@@ -57,13 +57,7 @@
     }
 
 
-    function validarEmail(email) {
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return regex.test(email);
-}
-
-
-    
+   
   function carregarClientes() {
     fetch(API_URL)
         .then(response => response.json())
@@ -119,12 +113,7 @@ function atualizarCliente(event) {
     alert("Os campos Nome e CPF são obrigatórios!");
     return false; // Impede o envio do formulário
   }
-
-    if (email && !validarEmail(email)) {
-    alert("E-mail inválido! Digite um endereço de e-mail válido.");
-    return false;
-  }
-  
+ 
   // Se passar na validação, pode continuar com a requisição
   enviaAtualizacao();
 }
