@@ -92,11 +92,11 @@ function atualizarCliente(event) {
   }
 
   // Se passar na validação, pode continuar com a requisição
-  atualizarcliente();
+  enviaAtualizacao();
 }
 
     
-   function atualizarCliente() {
+   function enviaAtualizacao() {
   const clienteCpf = document.getElementById('cpf').value;
   const formData = {
     nome: document.getElementById('nome').value,
