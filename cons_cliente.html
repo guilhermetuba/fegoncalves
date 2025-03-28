@@ -58,9 +58,10 @@
 
 
     function validarEmail(email) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return regex.test(email);
 }
+
 
     
   function carregarClientes() {
@@ -119,9 +120,9 @@ function atualizarCliente(event) {
     return false; // Impede o envio do formulário
   }
 
-    if (email && !validarEmail(email)) { // Só valida se o campo não estiver vazio
-    alert("E-mail inválido! Digite um endereço de e-mail válido.");
-    return false; 
+     if (email.length > 0 && !validarEmail(email)) { 
+    alert("❌ E-mail inválido! Digite um endereço de e-mail válido.");
+    return false;
   }
   
   // Se passar na validação, pode continuar com a requisição
