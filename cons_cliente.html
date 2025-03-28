@@ -150,7 +150,7 @@ function atualizarCliente(event) {
 <body>
   <div class="container">
     <h2>Consulta de Clientes</h2>
-    <form id="clienteForm onsubmit="return atualizarCliente(event)">
+    <form id="clienteForm" onsubmit="return atualizarCliente(event)">
       <label for="clientes">Selecione o Cliente:</label>
       <select id="clientes" name="clientes" onchange="carregarDadosCliente()">
         <option value="">Selecione</option>
@@ -174,7 +174,7 @@ function atualizarCliente(event) {
       <label for="observacoes">Observações:</label>
       <textarea id="observacoes" name="observacoes"></textarea>
 
-      <button type="submit">Atualizar Cliente</button>
+      <button type="button" onclick="atualizarCliente(event)">Atualizar Cliente</button>
       <button type="button" onclick="excluirCliente()">Excluir</button>
     </form>
   </div>
