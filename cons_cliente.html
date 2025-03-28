@@ -47,25 +47,34 @@
   <script>
     const API_URL = "https://meu-backend-xi.vercel.app/api/atualiza_cliente";
     
-    function carregarClientes() {
-      fetch(API_URL)
+  function carregarClientes() {
+    fetch(API_URL)
         .then(response => response.json())
         .then(data => {
-          const select = document.getElementById('clientes');
-          select.innerHTML = '<option value="">Selecione</option>';
-                // Ordena os clientes pelo nome
-          let array = []; // Inicializa o array vazio antes de usá-lo
-          array = array.filter(cliente => cliente && cliente.nome); 
-          array.sort((a, b) => a.nome.localeCompare(b.nome));
-          data.clientes.sort((a, b) => a.nome.localeCompare(b.nome));
-          data.clientes.forEach(cliente => {
-            const option = document.createElement('option');
-            option.value = cliente.cpf;
-            option.textContent = cliente.nome;
-            select.appendChild(option);
-          });
-        });
-    }
+            const select = document.getElementById('clientes');
+            select.innerHTML = '<option value="">Selecione</option>';
+
+            if (!data.clientes || !Array.isArray(data.clientes)) {
+                console.error("❌ Erro: Dados de clientes inválidos", data);
+                return;
+            }
+
+            // Ordena os clientes pelo nome
+            let clientesOrdenados = data.clientes
+                .filter(cliente => cliente && cliente.nome) // Remove valores inválidos
+                .sort((a, b) => a.nome.localeCompare(b.nome));
+
+            // Popula o select
+            clientesOrdenados.forEach(cliente => {
+                const option = document.createElement('option');
+                option.value = cliente.cpf;
+                option.textContent = cliente.nome;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => console.error("❌ Erro ao carregar clientes:", error));
+}
+
 
     function carregarDadosCliente() {
       const clienteCpf = document.getElementById('clientes').value;
