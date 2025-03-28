@@ -46,6 +46,15 @@
   </style>
   <script>
     const API_URL = "https://meu-backend-xi.vercel.app/api/atualiza_cliente";
+
+        // Função para aplicar a máscara no telefone
+    function aplicarMascaraTelefone() {
+      let telefone = document.getElementById("telefone");
+      telefone.value = telefone.value.replace(/\D/g, '').slice(0, 11);
+      telefone.value = telefone.value.length <= 10
+        ? telefone.value.replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{4})(\d{1,4})$/, '$1-$2')
+        : telefone.value.replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d{1,4})$/, '$1-$2');
+    }
     
   function carregarClientes() {
     fetch(API_URL)
