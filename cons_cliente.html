@@ -119,6 +119,7 @@ function atualizarCliente(event) {
   })
   .then(data => {
     alert(data.message);
+     document.getElementById("clienteForm").reset(); // Reseta o formulário
   })
   .catch(error => {
     console.error("Erro ao atualizar cliente:", error);
@@ -138,6 +139,7 @@ function atualizarCliente(event) {
         .then(response => response.json())
         .then(data => {
           alert(data.message);
+           document.getElementById("clienteForm").reset(); // Reseta o formulário
           carregarClientes();
         })
         .catch(() => alert("Erro ao excluir. Tente novamente."));
