@@ -54,6 +54,8 @@
           const select = document.getElementById('clientes');
           select.innerHTML = '<option value="">Selecione</option>';
                 // Ordena os clientes pelo nome
+          array = array.filter(cliente => cliente && cliente.nome); 
+          array.sort((a, b) => a.nome.localeCompare(b.nome));
           data.clientes.sort((a, b) => a.nome.localeCompare(b.nome));
           data.clientes.forEach(cliente => {
             const option = document.createElement('option');
