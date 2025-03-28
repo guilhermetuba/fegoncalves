@@ -120,8 +120,8 @@ function atualizarCliente(event) {
     return false; // Impede o envio do formulário
   }
 
-     if (email.length > 0 && !validarEmail(email)) { 
-    alert("❌ E-mail inválido! Digite um endereço de e-mail válido.");
+    if (email && !validarEmail(email)) {
+    alert("E-mail inválido! Digite um endereço de e-mail válido.");
     return false;
   }
   
