@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consulta de Clientes</title>
+  <title>Gerenciamento de Clientes</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -39,9 +39,17 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      margin-bottom: 10px; /* Espaço entre os botões */
     }
     button:hover {
       background: #5a32a3;
+    }
+        /* Estilo para o botão Excluir */
+    .btn-excluir {
+      background: red;
+    }
+    .btn-excluir:hover {
+      background: darkred;
     }
   </style>
   <script>
@@ -175,7 +183,7 @@ function atualizarCliente(event) {
 </head>
 <body>
   <div class="container">
-    <h2>Consulta de Clientes</h2>
+    <h2>Gerenciamento de Clientes</h2>
     <form id="clienteForm" onsubmit="return atualizarCliente(event)">
       <label for="clientes">Selecione o Cliente:</label>
       <select id="clientes" name="clientes" onchange="carregarDadosCliente()">
@@ -201,6 +209,8 @@ function atualizarCliente(event) {
       <textarea id="observacoes" name="observacoes"></textarea>
 
       <button type="submit">Atualizar Cliente</button>
+        <!-- Linha de espaço entre os botões -->
+      <div style="height: 10px;"></div>
       <button type="button" onclick="excluirCliente()">Excluir</button>
     </form>
   </div>
