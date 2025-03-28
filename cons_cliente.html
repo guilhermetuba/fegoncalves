@@ -120,7 +120,7 @@ function atualizarCliente(event) {
   .then(data => {
     alert(data.message);
      document.getElementById("clienteForm").reset(); // Reseta o formulário
-    carregarclientes();
+    carregarClientes();
   })
   .catch(error => {
     console.error("Erro ao atualizar cliente:", error);
