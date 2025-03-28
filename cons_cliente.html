@@ -80,6 +80,22 @@
             });
     }
 
+function atualizarCliente(event) {
+  event.preventDefault(); // Evita o envio padrão do formulário
+
+  const nome = document.getElementById("nome").value.trim();
+  const cpf = document.getElementById("cpf").value.trim();
+  
+  if (!nome || !cpf) {
+    alert("Os campos Nome e CPF são obrigatórios!");
+    return false; // Impede o envio do formulário
+  }
+
+  // Se passar na validação, pode continuar com a requisição
+  atualizarcliente();
+}
+
+    
    function atualizarCliente() {
   const clienteCpf = document.getElementById('cpf').value;
   const formData = {
@@ -134,7 +150,7 @@
 <body>
   <div class="container">
     <h2>Consulta de Clientes</h2>
-    <form id="clienteForm">
+    <form id="clienteForm onsubmit="return atualizarCliente(event)">
       <label for="clientes">Selecione o Cliente:</label>
       <select id="clientes" name="clientes" onchange="carregarDadosCliente()">
         <option value="">Selecione</option>
@@ -158,7 +174,7 @@
       <label for="observacoes">Observações:</label>
       <textarea id="observacoes" name="observacoes"></textarea>
 
-      <button type="button" onclick="atualizarCliente()">Atualizar</button>
+      <button type="submit">Atualizar Cliente</button>
       <button type="button" onclick="excluirCliente()">Excluir</button>
     </form>
   </div>
