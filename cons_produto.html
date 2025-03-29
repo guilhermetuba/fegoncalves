@@ -1,1 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerenciamento de Produtos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #6f42c1; /* Cor roxa */
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #5a32a3; /* Cor roxa mais escura ao passar o mouse */
+    }
+  </style>
+  <script>
 
+    function aplicarMascaraMoeda(event) {
+      var valor = event.target.value.replace(/\D/g, '');
+      valor = valor.replace(/(\d)(\d{8})$/, '$1.$2');
+      valor = valor.replace(/(\d)(\d{5})$/, '$1.$2');
+      valor = valor.replace(/(\d)(\d{2})$/, '$1,$2');
+      event.target.value = valor;
+    }
+
+    function validarQuantidade(event) {
+      let quantidade = event.target.value;
+      event.target.setCustomValidity(quantidade < 0 ? "Quantidade não pode ser negativa" : "");
+    }
+
+    function validarPreco(event) {
+      let preco = event.target.value.replace(",", ".");
+      if (isNaN(preco) || preco <= 0) {
+        event.target.setCustomValidity("Preço inválido");
+      } else {
+        event.target.setCustomValidity("");
+      }
+    }
+
+    function validarFormulario(event) {
+      event.preventDefault();
+      let form = document.getElementById("produtoForm");
+      let formData = new FormData(form);
+
+      // Desabilitar o botão durante o envio
+      let button = document.querySelector('button');
+      button.disabled = true;
+
+      // Converte os dados do formulário para JSON
+      const data = Object.fromEntries(formData.entries());
+
+      // Envia os dados do formulário para a API
+      fetch("https://meu-backend-xi.vercel.app/api/cadastro_produto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message);
+        if (data.message === "Produto cadastrado com sucesso!") {
+          form.reset();  // Reseta o formulário se sucesso
+        }
+      })
+      .catch(() => alert("Erro ao cadastrar. Tente novamente."))
+      .finally(() => {
+        button.disabled = false;  // Reabilita o botão após a resposta
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>Gerenciar Produtos</h2>
+    <form id="produtoForm" method="POST" onsubmit="validarFormulario(event)">
+      <input type="hidden" name="tipo" value="produto">
+
+      <label for="codigo">Código:</label>
+      <input type="text" id="codigo" name="codigo" required>
+
+      <label for="produto">Produto:</label>
+      <input type="text" id="produto" name="produto" required>
+
+      <label for="fornecedor">Fornecedor:</label>
+      <input type="text" id="fornecedor" name="fornecedor">
+
+      <label for="categoria">Categoria:</label>
+      <select id="categoria" name="categoria" required>
+        <option value="Brinco">Brinco</option>
+        <option value="Colar">Colar</option>
+        <option value="Pulseira">Pulseira</option>
+        <option value="Bracelete">Bracelete</option>
+        <option value="Anel">Anel</option>
+        <option value="Acessório">Acessório</option>
+        <option value="Conjunto">Conjunto</option>
+      </select>
+
+      <label for="quantidade">Quantidade:</label>
+      <input type="number" id="quantidade" name="quantidade" required min="0" inputmode="numeric" oninput="validarQuantidade(event)">
+
+      <label for="precoCusto">Preço de Custo:</label>
+      <input type="text" id="precoCusto" name="precoCusto" inputmode="numeric" oninput="aplicarMascaraMoeda(event), validarPreco(event)">
+
+      <label for="precoVenda">Preço de Venda:</label>
+      <input type="text" id="precoVenda" name="precoVenda" inputmode="numeric" oninput="aplicarMascaraMoeda(event), validarPreco(event)">
+
+      <button type="submit">Cadastrar</button>
+    </form>
+  </div>
+</body>
+</html>
