@@ -62,7 +62,7 @@
         alert("Digite um código para buscar o produto.");
         return;
       }
-      fetch(`https://meu-backend-xi.vercel.app/api/produtos/${codigo}`)
+      fetch(`https://meu-backend-xi.vercel.app/api/atualiza_produto/${codigo}`)
         .then(response => response.json())
         .then(data => {
           if (data.error) {
