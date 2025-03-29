@@ -165,6 +165,7 @@
 
            // Retorna o <select> para a opção inicial
       document.getElementById("lista_produto").value = "";
+          document.getElementById("codigo").readOnly = true;
         })
         .catch(() => alert("Erro ao consultar produto."));
     }
@@ -187,17 +188,7 @@ function removerFormatacaoMoeda(valor) {
     alert("Erro: O preço de custo não pode ser maior que o preço de venda!");
     return; // Cancela a atualização se os valores forem inválidos
   }
-      
-  try {
-    // **Verifica se o código já existe na planilha**
-    const response = await fetch(`https://meu-backend-xi.vercel.app/api/atualiza_produto/${codigo}`);
-    const produtoExistente = await response.json();
-
-    if (produtoExistente && produtoExistente.codigo) {
-      alert("Erro: O código informado já existe! Atualização cancelada.");
-      return; // Cancela a atualização
-    }
- 
+     
       fetch(`https://meu-backend-xi.vercel.app/api/atualiza_produto/${codigo}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -205,12 +196,10 @@ function removerFormatacaoMoeda(valor) {
       })
       .then(response => response.json())
       .then(data => alert(data.message))
-  }
-      catch (error) {
+       catch (error) {
     console.error("Erro ao atualizar produto:", error);
     alert("Erro ao atualizar o produto. Tente novamente.");
-  }
-    }
+      }
     
     function excluirProduto() {
       let codigo = document.getElementById("codigo").value;
@@ -247,6 +236,12 @@ document.addEventListener("DOMContentLoaded", function () {
     formatarMoeda(this);
   });
 });
+
+function novaConsulta() {
+  document.getElementById("codigo").value = ""; // Limpa o campo
+  document.getElementById("codigo").readOnly = false; // Permite editar
+  document.getElementById("produtoForm").reset(); // Limpa os outros campos
+}
     
   </script>
 </head>
@@ -290,6 +285,7 @@ document.addEventListener("DOMContentLoaded", function () {
       
       <button type="button" class="btn-purple" onclick="atualizarProduto()">Atualizar</button>
       <button type="button" class="btn-red" onclick="excluirProduto()">Excluir</button>
+      <button type="button" onclick="novaConsulta()">Nova Consulta</button>
     </form>
   </div>
 </body>
