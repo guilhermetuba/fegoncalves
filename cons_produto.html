@@ -173,7 +173,7 @@ function removerFormatacaoMoeda(valor) {
   return parseFloat(valor.replace("R$", "").replace(".", "").replace(",", ".").trim());
 }
     
-    function atualizarProduto() {
+    async function atualizarProduto() {
       let codigo = document.getElementById("codigo").value;
       let produto = document.getElementById("produto").value;
       let fornecedor = document.getElementById("fornecedor").value;
