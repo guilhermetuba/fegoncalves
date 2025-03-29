@@ -197,8 +197,7 @@ function removerFormatacaoMoeda(valor) {
       alert("Erro: O código informado já existe na planilha! Atualização cancelada.");
       return; // Cancela a atualização
     }
-  }
-      
+ 
       fetch(`https://meu-backend-xi.vercel.app/api/atualiza_produto/${codigo}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -206,7 +205,11 @@ function removerFormatacaoMoeda(valor) {
       })
       .then(response => response.json())
       .then(data => alert(data.message))
-      .catch(() => alert("Erro ao atualizar produto."));
+  }
+      catch (error) {
+    console.error("Erro ao atualizar produto:", error);
+    alert("Erro ao atualizar o produto. Tente novamente.");
+  }
     }
     
     function excluirProduto() {
