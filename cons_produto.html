@@ -194,7 +194,7 @@ function removerFormatacaoMoeda(valor) {
     const produtoExistente = await response.json();
 
     if (produtoExistente && produtoExistente.codigo) {
-      alert("Erro: O código informado já existe na planilha! Atualização cancelada.");
+      alert("Erro: O código informado já existe! Atualização cancelada.");
       return; // Cancela a atualização
     }
  
