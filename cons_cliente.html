@@ -165,7 +165,7 @@ function atualizarCliente(event) {
 
     function excluirCliente() {
       
-      const clienteCpf = document.getElementById('cpf').value;
+      let clienteCpf = document.getElementById('cpf').value;
      if (!confirm("Tem certeza que deseja excluir este cliente?")) return;
       
       fetch(`https://meu-backend-xi.vercel.app/api/atualiza_cliente/${clienteCPF}`, { method: "DELETE" })
