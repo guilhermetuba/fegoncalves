@@ -202,6 +202,7 @@ function removerFormatacaoMoeda(valor) {
 
     // Exibe a mensagem do backend
     alert(data.message);
+    document.getElementById("produtoForm").reset();     
 
   } catch (error) {
     console.error("Erro ao atualizar produto:", error);
