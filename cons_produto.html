@@ -145,6 +145,8 @@
           document.getElementById("quantidade").value = data.quantidade;
           document.getElementById("precoCusto").value = data.precoCusto;
           document.getElementById("precoVenda").value = data.precoVenda;
+           // Retorna o <select> para a opção inicial
+      document.getElementById("lista_produto").value = "";
         })
         .catch(() => alert("Erro ao consultar produto."));
     }
