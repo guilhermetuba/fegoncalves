@@ -96,7 +96,7 @@
   if (!codigo) return;
 
   try {
-    const response = await fetch(`https://meu-backend-xi.vercel.app/api/atualiza_produto/?codigo=${codigo}`);
+    const response = await fetch(`https://meu-backend-xi.vercel.app/api/atualiza_produto/${codigo}`);
     const produto = await response.json();
 
     // Preenchendo os campos
