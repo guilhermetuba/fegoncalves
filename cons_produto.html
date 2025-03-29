@@ -63,7 +63,7 @@ async function carregarProdutos() {
   try {
     const response = await fetch("https://meu-backend-xi.vercel.app/api/consulta_produto");
     const produtos = await response.json();
-
+    console.log(produtos);
     const selectProduto = document.getElementById("produto");
     
     produtos.forEach(produto => {
