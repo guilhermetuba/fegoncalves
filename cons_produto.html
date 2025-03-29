@@ -182,6 +182,11 @@ function removerFormatacaoMoeda(valor) {
    let precoCusto = removerFormatacaoMoeda(document.getElementById("precoCusto").value);
     let precoVenda = removerFormatacaoMoeda(document.getElementById("precoVenda").value);
 
+        // Verificação do preço de custo maior que o preço de venda
+  if (precoCusto > precoVenda) {
+    alert("Erro: O preço de custo não pode ser maior que o preço de venda!");
+    return; // Cancela a atualização se os valores forem inválidos
+  }
       fetch(`https://meu-backend-xi.vercel.app/api/atualiza_produto/${codigo}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
