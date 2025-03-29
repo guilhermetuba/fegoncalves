@@ -176,6 +176,40 @@ function atualizarCliente(event) {
       })
       .catch(() => alert("Erro ao excluir cliente."));
     }
+
+    function excluirCliente() {
+  let clienteCpf = document.getElementById('cpf').value;
+  
+  if (!confirm("Tem certeza que deseja excluir este cliente?")) return;
+
+  // Envia o pedido de exclusão
+  fetch(`https://meu-backend-xi.vercel.app/api/atualiza_cliente/${clienteCpf}`, { method: "DELETE" })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Erro ao excluir cliente. Tente novamente.");
+      }
+      return response.json(); // Retorna a resposta em formato JSON
+    })
+    .then(data => {
+      // Verifica se a resposta tem uma mensagem de sucesso
+      if (data.message) {
+        alert(data.message); // Exibe a mensagem de sucesso
+      } else {
+        alert("Erro desconhecido ao excluir cliente.");
+      }
+      
+      // Reseta o formulário de clientes
+      document.getElementById("clienteForm").reset();
+      
+      // Atualiza a lista de clientes
+      carregarClientes();
+    })
+    .catch(error => {
+      console.error("Erro:", error);
+      alert(error.message); // Exibe a mensagem de erro
+    });
+}
+
     
     window.onload = carregarClientes;
   </script>
