@@ -165,7 +165,8 @@
 
            // Retorna o <select> para a opção inicial
       document.getElementById("lista_produto").value = "";
-          document.getElementById("codigo").readOnly = true;
+           // Tornar o campo de código somente leitura
+    document.getElementById("codigo").setAttribute("readonly", true);
         })
         .catch(() => alert("Erro ao consultar produto."));
     }
