@@ -55,7 +55,8 @@
     }
   </style>
   <script>
-    const API_URL = "https://meu-backend-xi.vercel.app/api/atualiza_cliente";
+    const API_URLA = "https://meu-backend-xi.vercel.app/api/atualiza_cliente";
+    const API_URLC = "https://meu-backend-xi.vercel.app/api/consulta_cliente";
 
         // Função para aplicar a máscara no telefone
     function aplicarMascaraTelefone() {
@@ -69,7 +70,7 @@
 
    
   function carregarClientes() {
-    fetch(API_URL)
+    fetch(API_URLC)
         .then(response => response.json())
         .then(data => {
             const select = document.getElementById('clientes');
@@ -101,7 +102,7 @@
       const clienteCpf = document.getElementById('clientes').value;
       if (!clienteCpf) return;
 
-      fetch(`${API_URL}?cpf=${clienteCpf}`)
+      fetch(`${API_URLC}?cpf=${clienteCpf}`)
         .then(response => response.json())
         .then(cliente => {
       document.getElementById('nome').value = cliente.nome || '';  // Se nome for undefined ou null, coloca vazio
@@ -139,7 +140,7 @@ function atualizarCliente(event) {
     observacoes: document.getElementById('observacoes').value,
   };
 
- fetch(`${API_URL}/${clienteCpf}`, {
+ fetch(`${API_URLA}/${clienteCpf}`, {
   method: 'PUT',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify(formData)
