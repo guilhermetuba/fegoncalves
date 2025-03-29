@@ -163,21 +163,17 @@ function atualizarCliente(event) {
 
 
     function excluirCliente() {
+      
       const clienteCpf = document.getElementById('cpf').value;
-      if (confirm("Tem certeza de que deseja excluir este cliente?")) {
-        fetch(API_URL, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cpf: clienteCpf })
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert(data.message);
-           document.getElementById("clienteForm").reset(); // Reseta o formulário
-          carregarClientes();
-        })
-        .catch(() => alert("Erro ao excluir. Tente novamente."));
-      }
+     if (!confirm("Tem certeza que deseja excluir este cliente?")) return;
+      
+      fetch(`https://meu-backend-xi.vercel.app/api/atualiza_cliente/${codigo}`, { method: "DELETE" })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message);
+        document.getElementById("produtoForm").reset();
+      })
+      .catch(() => alert("Erro ao excluir cliente."));
     }
     
     window.onload = carregarClientes;
