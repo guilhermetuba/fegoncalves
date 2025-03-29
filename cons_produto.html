@@ -127,7 +127,8 @@
 
     precoVendaInput.value = produto.precoVenda;
     formatarMoeda(precoVendaInput);
-
+ // Tornar o campo de código somente leitura
+    document.getElementById("codigo").setAttribute("readonly", true);
   } catch (error) {
     console.error("Erro ao buscar produto:", error);
     alert("Erro ao conectar com o servidor. Tente novamente.");
