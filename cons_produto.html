@@ -23,7 +23,7 @@
       margin-top: 10px;
       display: block;
     }
-    input, select, textarea {
+    input, select {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
@@ -34,87 +34,102 @@
     button {
       width: 100%;
       padding: 10px;
-      background: #6f42c1; /* Cor roxa */
-      color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      margin-top: 10px;
     }
-    button:hover {
-      background: #5a32a3; /* Cor roxa mais escura ao passar o mouse */
+    .btn-purple {
+      background: #6f42c1;
+      color: white;
+    }
+    .btn-purple:hover {
+      background: #5a32a3;
+    }
+    .btn-red {
+      background: #dc3545;
+      color: white;
+      font-weight: bold;
+    }
+    .btn-red:hover {
+      background: #b52a38;
     }
   </style>
   <script>
-
-    function aplicarMascaraMoeda(event) {
-      var valor = event.target.value.replace(/\D/g, '');
-      valor = valor.replace(/(\d)(\d{8})$/, '$1.$2');
-      valor = valor.replace(/(\d)(\d{5})$/, '$1.$2');
-      valor = valor.replace(/(\d)(\d{2})$/, '$1,$2');
-      event.target.value = valor;
-    }
-
-    function validarQuantidade(event) {
-      let quantidade = event.target.value;
-      event.target.setCustomValidity(quantidade < 0 ? "Quantidade não pode ser negativa" : "");
-    }
-
-    function validarPreco(event) {
-      let preco = event.target.value.replace(",", ".");
-      if (isNaN(preco) || preco <= 0) {
-        event.target.setCustomValidity("Preço inválido");
-      } else {
-        event.target.setCustomValidity("");
+    function consultarProduto() {
+      let codigo = document.getElementById("codigo").value;
+      if (!codigo) {
+        alert("Digite um código para buscar o produto.");
+        return;
       }
+      fetch(`https://meu-backend-xi.vercel.app/api/produtos/${codigo}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            alert("Produto não encontrado.");
+            return;
+          }
+          document.getElementById("produto").value = data.produto;
+          document.getElementById("fornecedor").value = data.fornecedor;
+          document.getElementById("categoria").value = data.categoria;
+          document.getElementById("quantidade").value = data.quantidade;
+          document.getElementById("precoCusto").value = data.precoCusto;
+          document.getElementById("precoVenda").value = data.precoVenda;
+        })
+        .catch(() => alert("Erro ao consultar produto."));
     }
+    
+    function atualizarProduto() {
+      let codigo = document.getElementById("codigo").value;
+      let produto = document.getElementById("produto").value;
+      let fornecedor = document.getElementById("fornecedor").value;
+      let categoria = document.getElementById("categoria").value;
+      let quantidade = document.getElementById("quantidade").value;
+      let precoCusto = document.getElementById("precoCusto").value;
+      let precoVenda = document.getElementById("precoVenda").value;
 
-    function validarFormulario(event) {
-      event.preventDefault();
-      let form = document.getElementById("produtoForm");
-      let formData = new FormData(form);
-
-      // Desabilitar o botão durante o envio
-      let button = document.querySelector('button');
-      button.disabled = true;
-
-      // Converte os dados do formulário para JSON
-      const data = Object.fromEntries(formData.entries());
-
-      // Envia os dados do formulário para a API
-      fetch("https://meu-backend-xi.vercel.app/api/cadastro_produto", {
-        method: "POST",
+      fetch(`https://meu-backend-xi.vercel.app/api/produtos/${codigo}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ produto, fornecedor, categoria, quantidade, precoCusto, precoVenda })
       })
+      .then(response => response.json())
+      .then(data => alert(data.message))
+      .catch(() => alert("Erro ao atualizar produto."));
+    }
+    
+    function excluirProduto() {
+      let codigo = document.getElementById("codigo").value;
+      if (!codigo) {
+        alert("Digite um código para excluir o produto.");
+        return;
+      }
+      if (!confirm("Tem certeza que deseja excluir este produto?")) return;
+      
+      fetch(`https://meu-backend-xi.vercel.app/api/produtos/${codigo}`, { method: "DELETE" })
       .then(response => response.json())
       .then(data => {
         alert(data.message);
-        if (data.message === "Produto cadastrado com sucesso!") {
-          form.reset();  // Reseta o formulário se sucesso
-        }
+        document.getElementById("produtoForm").reset();
       })
-      .catch(() => alert("Erro ao cadastrar. Tente novamente."))
-      .finally(() => {
-        button.disabled = false;  // Reabilita o botão após a resposta
-      });
+      .catch(() => alert("Erro ao excluir produto."));
     }
   </script>
 </head>
 <body>
   <div class="container">
     <h2>Gerenciar Produtos</h2>
-    <form id="produtoForm" method="POST" onsubmit="validarFormulario(event)">
-      <input type="hidden" name="tipo" value="produto">
-
+    <form id="produtoForm">
       <label for="codigo">Código:</label>
       <input type="text" id="codigo" name="codigo" required>
-
+      <button type="button" class="btn-purple" onclick="consultarProduto()">Consultar</button>
+      
       <label for="produto">Produto:</label>
       <input type="text" id="produto" name="produto" required>
-
+      
       <label for="fornecedor">Fornecedor:</label>
       <input type="text" id="fornecedor" name="fornecedor">
-
+      
       <label for="categoria">Categoria:</label>
       <select id="categoria" name="categoria" required>
         <option value="Brinco">Brinco</option>
@@ -125,17 +140,18 @@
         <option value="Acessório">Acessório</option>
         <option value="Conjunto">Conjunto</option>
       </select>
-
+      
       <label for="quantidade">Quantidade:</label>
-      <input type="number" id="quantidade" name="quantidade" required min="0" inputmode="numeric" oninput="validarQuantidade(event)">
-
+      <input type="number" id="quantidade" name="quantidade" required>
+      
       <label for="precoCusto">Preço de Custo:</label>
-      <input type="text" id="precoCusto" name="precoCusto" inputmode="numeric" oninput="aplicarMascaraMoeda(event), validarPreco(event)">
-
+      <input type="text" id="precoCusto" name="precoCusto">
+      
       <label for="precoVenda">Preço de Venda:</label>
-      <input type="text" id="precoVenda" name="precoVenda" inputmode="numeric" oninput="aplicarMascaraMoeda(event), validarPreco(event)">
-
-      <button type="submit">Cadastrar</button>
+      <input type="text" id="precoVenda" name="precoVenda">
+      
+      <button type="button" class="btn-purple" onclick="atualizarProduto()">Atualizar</button>
+      <button type="button" class="btn-red" onclick="excluirProduto()">Excluir</button>
     </form>
   </div>
 </body>
