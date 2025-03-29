@@ -56,6 +56,49 @@
     }
   </style>
   <script>
+
+    document.addEventListener("DOMContentLoaded", carregarProdutos);
+
+async function carregarProdutos() {
+  try {
+    const response = await fetch("https://meu-backend-xi.vercel.app/api/atualiza_produto");
+    const produtos = await response.json();
+
+    const selectProduto = document.getElementById("produto");
+    
+    produtos.forEach(produto => {
+      const option = document.createElement("option");
+      option.value = produto.codigo;
+      option.textContent = produto.descricao;
+      selectProduto.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Erro ao carregar produtos:", error);
+  }
+}
+
+async function buscarProduto() {
+  const codigo = document.getElementById("produto").value;
+  if (!codigo) return;
+
+  try {
+    const response = await fetch(`https://meu-backend-xi.vercel.app/api/atualiza_produto?codigo=${codigo}`);
+    const produto = await response.json();
+
+    // Preenchendo os campos
+    document.getElementById("codigo").value = produto.codigo;
+    document.getElementById("descricao").value = produto.descricao;
+    document.getElementById("precoCusto").value = produto.precoCusto;
+    document.getElementById("precoVenda").value = produto.precoVenda;
+    document.getElementById("estoque").value = produto.estoque;
+    document.getElementById("categoria").value = produto.categoria;
+    document.getElementById("observacoes").value = produto.observacoes;
+  } catch (error) {
+    console.error("Erro ao buscar produto:", error);
+  }
+}
+
+    
     function consultarProduto() {
       let codigo = document.getElementById("codigo").value;
       if (!codigo) {
@@ -120,6 +163,10 @@
   <div class="container">
     <h2>Gerenciar Produtos</h2>
     <form id="produtoForm">
+      <label for="produto">Produto:</label>
+<select id="produto" onchange="buscarProduto()">
+  <option value="">Selecione um produto</option>
+    </select>
       <label for="codigo">Código:</label>
       <input type="text" id="codigo" name="codigo" required>
       <button type="button" class="btn-purple" onclick="consultarProduto()">Consultar</button>
