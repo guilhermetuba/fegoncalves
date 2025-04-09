@@ -188,7 +188,7 @@ label[for="formaPagamento"] {
     <div class="container">
         <h2>Vendas</h2>
         <label for="dataVenda">Data da Venda:</label>
-        <input type="text" id="dataVenda" name="dataVenda">
+        <input type="text" id="dataVenda" name="dataVenda" required>
         <label for="cliente">Cliente</label>
       <select id="listaClientes" onchange="carregarProdutos()">
         <option value="">Selecione um Cliente...</option>
@@ -628,13 +628,41 @@ atualizarCampoDataPrimeiraParcela();
         carregarClientes();
         
         document.addEventListener("DOMContentLoaded", function () {
-    // Preenche a data do dia
     const dataInput = document.getElementById("dataVenda");
+
+    // Preenche com data de hoje no formato dd/mm/yyyy
     const hoje = new Date();
     const dia = String(hoje.getDate()).padStart(2, '0');
     const mes = String(hoje.getMonth() + 1).padStart(2, '0');
     const ano = hoje.getFullYear();
-    dataInput.value = `${dia}/${mes}/${ano}`;
+    const hojeFormatado = `${dia}/${mes}/${ano}`;
+
+    dataInput.value = hojeFormatado;
+
+    // Máscara básica de data dd/mm/yyyy
+    dataInput.addEventListener("input", function (e) {
+      let valor = dataInput.value.replace(/\D/g, '');
+      if (valor.length > 2) valor = valor.replace(/^(\d{2})(\d)/, "$1/$2");
+      if (valor.length > 5) valor = valor.replace(/^(\d{2})\/(\d{2})(\d)/, "$1/$2/$3");
+      dataInput.value = valor;
+    });
+
+    // Valida se não é data futura
+    dataInput.addEventListener("blur", function () {
+      const partes = dataInput.value.split('/');
+      if (partes.length === 3) {
+        const dia = parseInt(partes[0]);
+        const mes = parseInt(partes[1]) - 1;
+        const ano = parseInt(partes[2]);
+        const dataSelecionada = new Date(ano, mes, dia);
+        const hoje = new Date();
+
+        if (dataSelecionada > hoje) {
+          alert("A data da venda não pode ser futura.");
+          dataInput.value = hojeFormatado;
+        }
+      }
+    });
   });
     </script>
 
