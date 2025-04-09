@@ -427,25 +427,26 @@ function removerDoCarrinho(index) {
 
             let clientes = data.clientes;
 
-            // Ordena os clientes em ordem alfabética
-            clientes.sort((a, b) => a.localeCompare(b, "pt-BR"));
+            // Ordena os clientes em ordem alfabética pelo nome
+            clientes.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
 
             console.log(clientes);
             let select = document.getElementById("listaClientes");
             select.innerHTML = "<option value=''>Selecione um Cliente...</option>";
 
-            clientes.forEach(nome => {
-                if (nome) {
-                    console.log("Nome do Cliente:", nome);
+            clientes.forEach(cliente => {
+                if (cliente && cliente.nome) {
+                    console.log("Nome do Cliente:", cliente.nome);
                     let option = document.createElement("option");
-                    option.value = nome;
-                    option.textContent = nome;
+                    option.value = cliente.nome;
+                    option.textContent = cliente.nome;
                     select.appendChild(option);
                 }
             });
         })
         .catch(error => console.error("Erro ao buscar clientes:", error));
 }
+
 
         
 
