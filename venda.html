@@ -242,7 +242,7 @@ label[for="formaPagamento"] {
     <label id="descricaoDataPrimeiraParcela" for="dataPrimeiraParcela">Data 1ª Parcela</label>
     <input type="date" id="dataPrimeiraParcela">
         
-    <button onclick="registrarVenda()">Registrar Venda</button>
+    <button onclick="registrarVenda()">Confirmar Venda</button>
     </div>
     
     <script>
@@ -408,12 +408,30 @@ function removerDoCarrinho(index) {
 }
 
 
+            function registrarVenda() {
+  const cpfCliente = document.getElementById("listaCliente").value;
+  const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
 
-        function registrarVenda() {
-            alert("Venda registrada com sucesso!");
-            carrinho = [];
-            atualizarCarrinho();
-        }
+  if (!cpfCliente) {
+    alert("Selecione um cliente antes de registrar a venda.");
+    return;
+  }
+
+  if (carrinho.length === 0) {
+    alert("Adicione pelo menos um produto ao carrinho antes de registrar a venda.");
+    return;
+  }
+
+  const confirmacao = confirm("Tem certeza que deseja confirmar a venda?");
+  if (!confirmacao) {
+    return;
+  }
+
+  // Aqui vai o restante do código de registro da venda.
+  alert("Validações e confirmação ok! Agora podemos seguir com o registro da venda.");
+}
+        
+
         
         function carregarClientes() {
     fetch("https://meu-backend-xi.vercel.app/api/consulta_cliente")
