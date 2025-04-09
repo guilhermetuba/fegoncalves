@@ -187,6 +187,8 @@ label[for="formaPagamento"] {
 <body>
     <div class="container">
         <h2>Vendas</h2>
+        <label for="dataVenda">Data da Venda:</label>
+        <input type="text" id="dataVenda" name="dataVenda">
         <label for="cliente">Cliente</label>
       <select id="listaClientes" onchange="carregarProdutos()">
         <option value="">Selecione um Cliente...</option>
@@ -624,6 +626,16 @@ atualizarCampoDataPrimeiraParcela();
 
 
         carregarClientes();
+        
+        document.addEventListener("DOMContentLoaded", function () {
+    // Preenche a data do dia
+    const dataInput = document.getElementById("dataVenda");
+    const hoje = new Date();
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    const ano = hoje.getFullYear();
+    dataInput.value = `${dia}/${mes}/${ano}`;
+  });
     </script>
 
 </body>
