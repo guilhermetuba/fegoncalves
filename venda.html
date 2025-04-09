@@ -594,27 +594,36 @@ function atualizarCampoDataPrimeiraParcela() {
     }
 }
 
-// Função para preencher a Data 1ª Parcela com o mesmo dia do mês, 30 dias após a data de hoje
+
 function preencherDataPrimeiraParcela() {
-    let hoje = new Date(); // Data de hoje
-    let mes = hoje.getMonth(); // Mês atual
-    let dia = hoje.getDate(); // Dia atual
+  const dataVendaStr = document.getElementById("dataVenda").value; // dd/mm/yyyy
+  const partes = dataVendaStr.split('/');
 
-    // Define a data como o mesmo dia do mês seguinte
-    hoje.setMonth(mes + 1);
+  if (partes.length !== 3) {
+    console.error("Data de venda inválida.");
+    return null;
+  }
 
-    // Caso o mês seguinte não tenha o mesmo dia (ex: 31 de janeiro para fevereiro), ajusta o dia
-    if (hoje.getDate() !== dia) {
-        hoje.setDate(0); // Define o último dia do mês anterior (para ajustar o número de dias)
-    }
+  const dia = parseInt(partes[0], 10);
+  const mes = parseInt(partes[1], 10) - 1; // meses começam do 0
+  const ano = parseInt(partes[2], 10);
 
-    // Formata a data no formato YYYY-MM-DD
-    let diaFormatado = hoje.getDate().toString().padStart(2, '0');
-    let mesFormatado = (hoje.getMonth() + 1).toString().padStart(2, '0');
-    let ano = hoje.getFullYear();
+  const dataVenda = new Date(ano, mes, dia);
+  dataVenda.setMonth(dataVenda.getMonth() + 1); // adiciona 1 mês
+
+  // Verifica se o mês virou, ex: 31/01 -> 03/03
+  // Corrige para o último dia do mês anterior se necessário
+  if (dataVenda.getDate() !== dia) {
+    dataVenda.setDate(0); // último dia do mês anterior
+  }
+
+  // Retorna no formato dd/mm/yyyy
+  const diaFormatado = String(dataVenda.getDate()).padStart(2, '0');
+  const mesFormatado = String(dataVenda.getMonth() + 1).padStart(2, '0');
+  const anoFormatado = dataVenda.getFullYear();
 
     // Define o valor do campo Data 1ª Parcela
-    document.getElementById("dataPrimeiraParcela").value = `${ano}-${mesFormatado}-${diaFormatado}`;
+    document.getElementById("dataPrimeiraParcela").value = `${anoFormatado}-${mesFormatado}-${diaFormatado}`;
 }
 
 // Chama a função para atualizar a visibilidade do campo ao carregar a página
