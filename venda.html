@@ -432,7 +432,7 @@ function removerDoCarrinho(index) {
   const dataVenda = document.getElementById("dataVenda").value;
   const formaPagamento = document.getElementById("formaPagamento").value;
   const condicoes = document.getElementById("parcelas").value;
-  const totalVenda = document.getElementById("totalVenda").value;
+  const totalVenda = parseFloat(document.getElementById("totalVenda").textContent);
    console.log(dataVenda,cpfCliente,formaPagamento,condicoes,totalVenda); 
 }
         
