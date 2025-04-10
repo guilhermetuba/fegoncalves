@@ -435,7 +435,34 @@ function removerDoCarrinho(index) {
   let totalText = document.getElementById("totalVenda").textContent;
   totalText = totalText.replace("R$", "").trim().replace(",", ".");
   const totalVenda = parseFloat(totalText);
-  console.log(dataVenda,cpfCliente,formaPagamento,condicoes,totalVenda); 
+        try {
+    const response = await fetch("https://meu-backend-xi.vercel.app/api/registrarVenda", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        dataVenda,
+        cpfCliente,
+        totalVenda,
+        formaPagamento,
+        condicoes,
+      }),
+    });
+
+    const resultado = await response.json();
+
+    if (response.ok) {
+      alert(`Venda registrada com sucesso! Código: ${resultado.codigoVenda}`);
+      // Aqui você pode continuar com o registro de itens e contas a receber, ou limpar o formulário, etc.
+    } else {
+      alert("Erro ao registrar a venda: " + resultado.message);
+    }
+
+  } catch (error) {
+    console.error("Erro ao chamar a API:", error);
+    alert("Erro na conexão com o servidor.");
+  }
 }
         
 
