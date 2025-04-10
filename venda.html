@@ -429,8 +429,12 @@ function removerDoCarrinho(index) {
     return;
   }
 
-  // Aqui vai o restante do código de registro da venda.
-  alert("Validações e confirmação ok! Agora podemos seguir com o registro da venda.");
+  const dataVenda = document.getElementById("dataVenda").value;
+  const cpfCliente = document.getElementById("listaClientes").value;
+  const formaPagamento = document.getElementById("formaPagamento").value;
+  const condicoes = document.getElementById("parcelas").value;
+  const totalVenda = document.getElementById("totalVenda").value;
+   console.log(dataVenda,cpfCliente,formaPagamento,condicoes,totalVenda); 
 }
         
 
