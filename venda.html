@@ -438,7 +438,7 @@ function removerDoCarrinho(index) {
         
 
         
-        function carregarClientes() {
+       function carregarClientes() {
     fetch("https://meu-backend-xi.vercel.app/api/consulta_cliente")
         .then(response => response.json())
         .then(data => {
@@ -458,11 +458,13 @@ function removerDoCarrinho(index) {
             select.innerHTML = "<option value=''>Selecione um Cliente...</option>";
 
             clientes.forEach(cliente => {
-                if (cliente && cliente.nome) {
-                    console.log("Nome do Cliente:", cliente.nome);
+                // Supondo que cada cliente tenha as propriedades "nome" e "cpf"
+                if (cliente && cliente.nome && cliente.cpf) {
+                    console.log("Cliente:", cliente.nome, "- CPF:", cliente.cpf);
                     let option = document.createElement("option");
-                    option.value = cliente.nome;
-                    option.textContent = cliente.nome;
+                    option.value = cliente.cpf; // Armazena o CPF como valor
+                    // Se quiser exibir nome e CPF juntos:
+                    option.textContent = `${cliente.nome} - ${cliente.cpf}`;
                     select.appendChild(option);
                 }
             });
