@@ -432,6 +432,7 @@ function removerDoCarrinho(index) {
   const dataVenda = document.getElementById("dataVenda").value;
   const formaPagamento = document.getElementById("formaPagamento").value;
   const condicoes = document.getElementById("parcelas").value;
+  const dataPrimeiraParcela = document.getElementById("dataPrimeiraParcela").value;
   let totalText = document.getElementById("totalVenda").textContent;
   totalText = totalText.replace("R$", "").trim().replace(",", ".");
   const totalVenda = parseFloat(totalText);
@@ -486,7 +487,8 @@ const response = await fetch("https://meu-backend-xi.vercel.app/api/registrar_it
     dataVenda,
     formaPagamento,
     condicoes,
-    totalVenda
+    totalVenda,
+    dataPrimeiraParcela
   }),
 });
     } else {
