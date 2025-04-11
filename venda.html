@@ -431,12 +431,6 @@ function removerDoCarrinho(index) {
     // Verifica se todos os itens do carrinho têm quantidade suficiente no estoque
     for (const item of carrinho) {
       const produtoEstoque = estoque.find(p => p[0] === item.codigoProduto); // Coluna A é o código
-
-      if (!produtoEstoque) {
-        alert(`Produto com código ${item.codigoProduto} não encontrado no estoque.`);
-        return;
-      }
-
       const nomeProduto = produtoEstoque[1];
       const quantidadeDisponivel = parseInt(produtoEstoque[4]); // Coluna E é a quantidade
       const quantidadeSolicitada = item.quantidade;
