@@ -298,7 +298,26 @@ async function incluirProdutoNoCarrinho() {
     atualizarCarrinho();
 }
 
+function resetarFormulario() {
+  document.getElementById("dataVenda").value = "";
+  document.getElementById("listaClientes").value = "";
+  document.getElementById("listaProdutos").value = "";
+  document.getElementById("codigoProdutoInput").value = "";
+  document.getElementById("detalhesProduto").innerHTML = "";
+  document.getElementById("quantidadeProduto").value = 1;
+  document.getElementById("listaCarrinho").innerHTML = "";
+  document.getElementById("subtotal").textContent = "R$ 0,00";
+  document.getElementById("formaPagamento").value = "Pix";
+  document.getElementById("desconto-reais").value = "";
+  document.getElementById("desconto-percentual").value = "";
+  document.getElementById("totalVenda").textContent = "R$ 0,00";
+  document.getElementById("parcelas").selectedIndex = 0;
+  document.getElementById("valorParcela").textContent = "";
+  document.getElementById("dataPrimeiraParcela").value = "";
 
+  // Se você estiver usando um array de carrinho no JS:
+  carrinho = [];
+}
 
 function atualizarCarrinho() {
     console.log("Atualizando carrinho...");
@@ -491,6 +510,7 @@ const response = await fetch("https://meu-backend-xi.vercel.app/api/registrar_it
   }),
 });
     alert(`Venda registrada com sucesso!`);
+    resetarFormulario(); // 👉 chama a função de limpeza aqui
     } else {
       alert("Erro ao registrar a venda: " + resultado.message);
     }
