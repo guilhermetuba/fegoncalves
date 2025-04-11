@@ -451,9 +451,9 @@ function removerDoCarrinho(index) {
     });
 
     const resultado = await response.json();
-
+    const codigoVenda = resultado.codigoVenda;
     if (response.ok) {
-      alert(`Venda registrada com sucesso!`,codigoVenda);
+      alert(`Venda registrada com sucesso!`);
         const itensVenda = carrinho.map(item => {
   return {
     codigoProduto: item.codigo, // ou o nome do campo correto no seu objeto
