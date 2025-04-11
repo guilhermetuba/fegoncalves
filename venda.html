@@ -411,7 +411,6 @@ function removerDoCarrinho(index) {
  async function registrarVenda() {
   const cpfCliente = document.getElementById("listaClientes").value;
   const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-     console.log(carrinho);
 
   if (!cpfCliente) {
     alert("Selecione um cliente antes de registrar a venda.");
@@ -424,27 +423,38 @@ function removerDoCarrinho(index) {
   }
 
   try {
-    // Consulta o estoque
-    const respostaEstoque = await fetch('https://meu-backend-xi.vercel.app/api/consulta_produto');
-      console.log(respostaEstoque);
-    const dadosEstoque = await respostaEstoque.json();
-      console.log(dadosEstoque);
-    const estoque = dadosEstoque.estoque;
-      console.log(estoque);
+ // Consulta o estoque
+const respostaEstoque = await fetch('https://meu-backend-xi.vercel.app/api/consulta_produto');
+const dadosEstoque = await respostaEstoque.json();
+const estoque = dadosEstoque.estoque;
+console.log("Estoque retornado do backend:", estoque);
 
-    // Verifica se todos os itens do carrinho têm quantidade suficiente no estoque
-    for (const item of carrinho) {
-      const produtoEstoque = estoque.find(p => p[0] === item.codigoProduto); // Coluna A é o código
-        console.log("Comparando com produto do estoque:", p[0]);
-      const nomeProduto = produtoEstoque[1];
-      const quantidadeDisponivel = parseInt(produtoEstoque[4]); // Coluna E é a quantidade
-      const quantidadeSolicitada = item.quantidade;
+// Verifica se todos os itens do carrinho têm quantidade suficiente no estoque
+for (const item of carrinho) {
+  console.log("Item do carrinho:", item);
 
-      if (quantidadeSolicitada > quantidadeDisponivel) {
-        alert(`Estoque insuficiente para "${nomeProduto}".\nDisponível: ${quantidadeDisponivel}, Solicitado: ${quantidadeSolicitada}`);
-        return;
-      }
-    }
+  const produtoEstoque = estoque.find(p => {
+    console.log("Comparando com:", p[0], "==", item.codigoProduto);
+    return String(p[0]).trim() === String(item.codigoProduto).trim();
+  });
+
+  if (!produtoEstoque) {
+    alert(`Produto com código ${item.codigoProduto} não encontrado no estoque.`);
+    return;
+  }
+
+  const nomeProduto = produtoEstoque[1];
+  const quantidadeDisponivel = parseInt(produtoEstoque[4]);
+  const quantidadeSolicitada = item.quantidade;
+
+  console.log(`Produto: ${nomeProduto} | Disponível: ${quantidadeDisponivel} | Solicitado: ${quantidadeSolicitada}`);
+
+  if (quantidadeSolicitada > quantidadeDisponivel) {
+    alert(`Estoque insuficiente para "${nomeProduto}".\nDisponível: ${quantidadeDisponivel}, Solicitado: ${quantidadeSolicitada}`);
+    return;
+  }
+}
+
 
     const confirmacao = confirm("Tem certeza que deseja confirmar a venda?");
     if (!confirmacao) {
