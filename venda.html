@@ -454,8 +454,7 @@ function removerDoCarrinho(index) {
     const resultado = await response.json();
     const codigoVenda = resultado.codigoVenda;
     if (response.ok) {
-      alert(`Venda registrada com sucesso!`);
-        const itensVenda = carrinho.map(item => {
+      const itensVenda = carrinho.map(item => {
   return {
     codigoProduto: item.codigo, // ou o nome do campo correto no seu objeto
     quantidade: item.quantidade,
@@ -491,6 +490,7 @@ const response = await fetch("https://meu-backend-xi.vercel.app/api/registrar_it
     dataPrimeiraParcela
   }),
 });
+    alert(`Venda registrada com sucesso!`);
     } else {
       alert("Erro ao registrar a venda: " + resultado.message);
     }
