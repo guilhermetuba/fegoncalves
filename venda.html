@@ -408,7 +408,7 @@ function removerDoCarrinho(index) {
 }
 
 
-          async function registrarVenda() {
+ async function registrarVenda() {
   const cpfCliente = document.getElementById("listaClientes").value;
   const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
 
@@ -421,8 +421,9 @@ function removerDoCarrinho(index) {
     alert("Adicione pelo menos um produto ao carrinho antes de registrar a venda.");
     return;
   }
-              
-try {
+
+  try {
+    // Consulta o estoque
     const respostaEstoque = await fetch('https://meu-backend-xi.vercel.app/api/consulta_produto');
     const dadosEstoque = await respostaEstoque.json();
     const estoque = dadosEstoque.estoque;
@@ -445,25 +446,24 @@ try {
         return;
       }
     }
-    
-  const confirmacao = confirm("Tem certeza que deseja confirmar a venda?");
-  if (!confirmacao) {
-    return;
-  }
 
-  const dataVenda = document.getElementById("dataVenda").value;
-  const formaPagamento = document.getElementById("formaPagamento").value;
-  const condicoes = document.getElementById("parcelas").value;
-  const dataPrimeiraParcela = document.getElementById("dataPrimeiraParcela").value;
-  let totalText = document.getElementById("totalVenda").textContent;
-  totalText = totalText.replace("R$", "").trim().replace(",", ".");
-  const totalVenda = parseFloat(totalText);
-        try {
+    const confirmacao = confirm("Tem certeza que deseja confirmar a venda?");
+    if (!confirmacao) {
+      return;
+    }
+
+    const dataVenda = document.getElementById("dataVenda").value;
+    const formaPagamento = document.getElementById("formaPagamento").value;
+    const condicoes = document.getElementById("parcelas").value;
+    const dataPrimeiraParcela = document.getElementById("dataPrimeiraParcela").value;
+    let totalText = document.getElementById("totalVenda").textContent;
+    totalText = totalText.replace("R$", "").trim().replace(",", ".");
+    const totalVenda = parseFloat(totalText);
+
+    // Envia os dados da venda
     const response = await fetch("https://meu-backend-xi.vercel.app/api/registrar_venda", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         dataVenda,
         cpfCliente,
@@ -475,54 +475,51 @@ try {
 
     const resultado = await response.json();
     const codigoVenda = resultado.codigoVenda;
+
     if (response.ok) {
       const itensVenda = carrinho.map(item => {
-  return {
-    codigoProduto: item.codigo, // ou o nome do campo correto no seu objeto
-    quantidade: item.quantidade,
-    preco: parseFloat(item.preco),
-    subtotal: parseFloat(item.preco) * parseInt(item.quantidade),
-  };
-});
-        const dados = {
-  codigoVenda,
-  cpfCliente,
-  itens: itensVenda
-};
+        return {
+          codigoProduto: item.codigo,
+          quantidade: item.quantidade,
+          preco: parseFloat(item.preco),
+          subtotal: parseFloat(item.preco) * parseInt(item.quantidade),
+        };
+      });
 
-const response = await fetch("https://meu-backend-xi.vercel.app/api/registrar_itens_venda", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify(dados),
-});
-        await fetch("https://meu-backend-xi.vercel.app/api/registrar_parcelas", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    codigoVenda,
-    cpfCliente,
-    dataVenda,
-    formaPagamento,
-    condicoes,
-    totalVenda,
-    dataPrimeiraParcela
-  }),
-});
-    alert(`Venda registrada com sucesso!`);
-        location.reload();
+      // Registra itens da venda
+      await fetch("https://meu-backend-xi.vercel.app/api/registrar_itens_venda", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ codigoVenda, cpfCliente, itens: itensVenda }),
+      });
+
+      // Registra as parcelas
+      await fetch("https://meu-backend-xi.vercel.app/api/registrar_parcelas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          codigoVenda,
+          cpfCliente,
+          dataVenda,
+          formaPagamento,
+          condicoes,
+          totalVenda,
+          dataPrimeiraParcela
+        }),
+      });
+
+      alert("Venda registrada com sucesso!");
+      location.reload();
     } else {
       alert("Erro ao registrar a venda: " + resultado.message);
     }
 
   } catch (error) {
-    console.error("Erro ao chamar a API:", error);
+    console.error("Erro ao registrar venda:", error);
     alert("Erro na conexão com o servidor.");
   }
 }
+
         
 
         
