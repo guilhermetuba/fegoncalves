@@ -411,6 +411,7 @@ function removerDoCarrinho(index) {
  async function registrarVenda() {
   const cpfCliente = document.getElementById("listaClientes").value;
   const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+     console.log(carrinho);
 
   if (!cpfCliente) {
     alert("Selecione um cliente antes de registrar a venda.");
@@ -425,12 +426,16 @@ function removerDoCarrinho(index) {
   try {
     // Consulta o estoque
     const respostaEstoque = await fetch('https://meu-backend-xi.vercel.app/api/consulta_produto');
+      console.log(respostaEstoque);
     const dadosEstoque = await respostaEstoque.json();
+      console.log(dadosEstoque);
     const estoque = dadosEstoque.estoque;
+      console.log(estoque);
 
     // Verifica se todos os itens do carrinho têm quantidade suficiente no estoque
     for (const item of carrinho) {
       const produtoEstoque = estoque.find(p => p[0] === item.codigoProduto); // Coluna A é o código
+        console.log("Comparando com produto do estoque:", p[0]);
       const nomeProduto = produtoEstoque[1];
       const quantidadeDisponivel = parseInt(produtoEstoque[4]); // Coluna E é a quantidade
       const quantidadeSolicitada = item.quantidade;
