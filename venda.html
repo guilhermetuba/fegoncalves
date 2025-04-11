@@ -410,7 +410,7 @@ function removerDoCarrinho(index) {
 }
 
 
-            function registrarVenda() {
+          async function registrarVenda() {
   const cpfCliente = document.getElementById("listaClientes").value;
   const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
 
