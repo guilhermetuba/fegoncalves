@@ -453,7 +453,29 @@ function removerDoCarrinho(index) {
     const resultado = await response.json();
 
     if (response.ok) {
-      alert(`Venda registrada com sucesso! Código: ${resultado.codigoVenda}`);
+      alert(`Venda registrada com sucesso!`);
+        const itensVenda = carrinho.map(item => {
+  return {
+    codigoProduto: item.codigo, // ou o nome do campo correto no seu objeto
+    quantidade: item.quantidade,
+    preco: parseFloat(item.preco),
+    subtotal: parseFloat(item.preco) * parseInt(item.quantidade),
+  };
+});
+        const dados = {
+  codigoVenda,
+  cpfCliente,
+  itens: itensVenda
+};
+
+const response = await fetch("https://seu-backend.vercel.app/api/registrar_itens_venda", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(dados),
+});
+        
       // Aqui você pode continuar com o registro de itens e contas a receber, ou limpar o formulário, etc.
     } else {
       alert("Erro ao registrar a venda: " + resultado.message);
