@@ -434,12 +434,12 @@ for (const item of carrinho) {
   console.log("Item do carrinho:", item);
 
   const produtoEstoque = estoque.find(p => {
-    console.log("Comparando com:", p[0], "==", item.codigoProduto);
-    return String(p[0]).trim() === String(item.codigoProduto).trim();
+    console.log("Comparando com:", p[0], "==", item.codigo);
+    return String(p[0]).trim() === String(item.codigo).trim();
   });
 
   if (!produtoEstoque) {
-    alert(`Produto com código ${item.codigoProduto} não encontrado no estoque.`);
+    alert(`Produto com código ${item.codigo} não encontrado no estoque.`);
     return;
   }
 
