@@ -475,8 +475,20 @@ const response = await fetch("https://meu-backend-xi.vercel.app/api/registrar_it
   },
   body: JSON.stringify(dados),
 });
-        
-      // Aqui você pode continuar com o registro de itens e contas a receber, ou limpar o formulário, etc.
+        await fetch("https://meu-backend-xi.vercel.app/api/registrar_parcelas", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    codigoVenda,
+    cpfCliente,
+    dataVenda,
+    formaPagamento,
+    condicoes,
+    totalVenda
+  }),
+});
     } else {
       alert("Erro ao registrar a venda: " + resultado.message);
     }
