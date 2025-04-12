@@ -43,6 +43,22 @@
     button:hover {
       background: #5a32a3; /* Cor roxa mais escura ao passar o mouse */
     }
+    .link-button {
+  display: block;
+  text-align: center;
+  color: #6f42c1;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
+/* Estilo específico só para o link de baixo */
+.link-bottom {
+  margin-top: 15px;
+}
   </style>
   <script>
 
@@ -137,7 +153,7 @@
       <input type="text" id="precoVenda" name="precoVenda" inputmode="numeric" oninput="aplicarMascaraMoeda(event), validarPreco(event)">
 
       <button type="submit">Cadastrar</button><br><br>
-      <a href="index.html" class="link-button">Voltar para o Início</a>
+      <a href="index.html" class="link-button link-bottom">Voltar para o Início</a>
     </form>
   </div>
 </body>
