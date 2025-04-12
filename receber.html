@@ -114,6 +114,11 @@
   }
 }
 
+    function parseDataBR(dataStr) {
+  const [dia, mes, ano] = dataStr.split("/");
+  return new Date(`${ano}-${mes}-${dia}`);
+}
+
 carregarClientes();
 
     document.getElementById("cliente").addEventListener("change", async function () {
@@ -137,17 +142,18 @@ carregarClientes();
       selectParcela.appendChild(opt);
       return;
     }
-
+    
+// Ordena as parcelas pela data de vencimento
+parcelas.sort((a, b) => parseDataBR(a.data_vencimento) - parseDataBR(b.data_vencimento));
   parcelas.forEach(p => {
   const option = document.createElement("option");
 
-  // Tenta converter o valor e formata
   const valorNumerico = parseFloat(p.valor?.toString().replace(",", "."));
   const valorFormatado = isNaN(valorNumerico)
     ? "Valor inválido"
     : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(valorNumerico);
 
-  option.value = p.id || JSON.stringify(p); // ainda seguro
+  option.value = p.id || JSON.stringify(p);
   option.textContent = `${p.data_venda} - Venc: ${p.data_vencimento} - Parcela ${p.parcela} - ${valorFormatado}`;
   selectParcela.appendChild(option);
 });
