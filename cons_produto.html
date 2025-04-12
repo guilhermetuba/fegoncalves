@@ -54,6 +54,23 @@
     .btn-red:hover {
       background: #b52a38;
     }
+    .link-button {
+  display: block;
+  text-align: center;
+  color: #6f42c1;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
+/* Estilo específico só para o link de baixo */
+.link-bottom {
+  margin-top: 15px;
+}
+
   </style>
   <script>
 
@@ -294,8 +311,8 @@ function novaConsulta() {
       <input type="text" id="precoVenda" name="precoVenda">
       
       <button type="button" class="btn-purple" onclick="atualizarProduto()">Atualizar</button>
-      <button type="button" class="btn-red" onclick="excluirProduto()">Excluir</button><br><br>
-      <a href="index.html" class="link-button">Voltar para o Início</a>
+      <button type="button" class="btn-red" onclick="excluirProduto()">Excluir</button>
+      <a href="index.html" class="link-button link-bottom">Voltar para o Início</a>
       </form>
   </div>
 </body>
