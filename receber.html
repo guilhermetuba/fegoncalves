@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro de Pagamento</title>
+  <title>Recebimentos</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -62,7 +62,7 @@
 
   <div class="container">
     <a href="index.html" class="link-button">Voltar para o Início</a>
-    <h2>Registrar Pagamento</h2>
+    <h2>Recebimentos</h2>
 
     <form id="pagamentoForm">
       <label for="cliente">Cliente:</label>
@@ -83,7 +83,7 @@
       <label for="dataPagamento">Data do Pagamento:</label>
       <input type="date" id="dataPagamento" name="dataPagamento" required>
 
-      <button type="submit">Registrar Pagamento</button>
+      <button type="submit">Confirmar recebimento</button>
       <a href="index.html" class="link-button link-bottom">Voltar para o Início</a>
     </form>
   </div>
@@ -93,6 +93,28 @@
     document.getElementById("dataPagamento").valueAsDate = new Date();
 
     // Em breve: buscar clientes e parcelas via API ou Google Sheets
+    async function carregarClientes() {
+  try {
+    const res = await fetch('/api/consulta_cliente');
+    const clientes = await res.json();
+
+    const selectCliente = document.getElementById("cliente");
+    selectCliente.innerHTML = '<option value="">Selecione um cliente</option>';
+
+    clientes.forEach(cliente => {
+      const option = document.createElement("option");
+      option.value = cliente.nome;
+      option.textContent = cliente.nome;
+      selectCliente.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Erro ao carregar clientes:", error);
+    alert("Erro ao carregar clientes.");
+  }
+}
+
+carregarClientes();
+
     document.getElementById("pagamentoForm").addEventListener("submit", function(event) {
       event.preventDefault();
 
