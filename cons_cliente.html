@@ -53,6 +53,23 @@
       background: darkred;
       font-weight: bold; /* Palavra 'Excluir' em negrito */
     }
+    .link-button {
+  display: block;
+  text-align: center;
+  color: #6f42c1;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
+/* Estilo específico só para o link de baixo */
+.link-bottom {
+  margin-top: 15px;
+}
+
   </style>
   <script>
     const API_URLA = "https://meu-backend-xi.vercel.app/api/atualiza_cliente";
@@ -245,8 +262,8 @@ function atualizarCliente(event) {
       <button type="submit">Atualizar Cliente</button>
         <!-- Linha de espaço entre os botões -->
       <div style="height: 10px;"></div>
-      <button type="button" class="btn-excluir" onclick="excluirCliente()">Excluir</button><br><br>
-      <a href="index.html" class="link-button">Voltar para o Início</a>
+      <button type="button" class="btn-excluir" onclick="excluirCliente()">Excluir</button>
+      <a href="index.html" class="link-button link-bottom">Voltar para o Início</a>
     </form>
   </div>
   
