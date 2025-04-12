@@ -102,11 +102,12 @@
     selectCliente.innerHTML = '<option value="">Selecione um cliente</option>';
 
     clientes.forEach(cliente => {
-      const option = document.createElement("option");
-      option.value = cliente.nome;
-      option.textContent = cliente.nome;
-      selectCliente.appendChild(option);
-    });
+  const option = document.createElement("option");
+  option.value = cliente.cpf; // agora o value é o CPF
+  option.textContent = cliente.nome;
+  selectCliente.appendChild(option);
+});
+
   } catch (error) {
     console.error("Erro ao carregar clientes:", error);
     alert("Erro ao carregar clientes.");
@@ -114,6 +115,41 @@
 }
 
 carregarClientes();
+
+    document.getElementById("cliente").addEventListener("change", async function () {
+  const cpf = this.value;
+  const selectParcela = document.getElementById("parcela");
+
+  selectParcela.innerHTML = '<option value="">Carregando parcelas...</option>';
+
+  if (!cpf) return;
+
+  try {
+    const res = await fetch(`https://meu-backend-xi.vercel.app/api/parcelas_em_aberto?cpf=${cpf}`);
+    const { parcelas } = await res.json();
+
+    selectParcela.innerHTML = '<option value="">Selecione uma parcela</option>';
+
+    if (!parcelas || parcelas.length === 0) {
+      const opt = document.createElement("option");
+      opt.textContent = "Nenhuma parcela em aberto";
+      opt.disabled = true;
+      selectParcela.appendChild(opt);
+      return;
+    }
+
+    parcelas.forEach(p => {
+      const option = document.createElement("option");
+      option.value = p.id || JSON.stringify(p); // use o que for melhor para identificar
+      option.textContent = `${p.data_venda} - Venc: ${p.data_vencimento} - Parcela ${p.parcela} - R$ ${Number(p.valor).toFixed(2)}`;
+      selectParcela.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Erro ao buscar parcelas:", error);
+    selectParcela.innerHTML = '<option value="">Erro ao carregar parcelas</option>';
+  }
+});
+
 
     document.getElementById("pagamentoForm").addEventListener("submit", function(event) {
       event.preventDefault();
