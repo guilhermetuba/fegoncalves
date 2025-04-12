@@ -169,41 +169,48 @@ parcelas.sort((a, b) => parseDataBR(a.data_vencimento) - parseDataBR(b.data_venc
   let parcelas = [];
   let valorParcelaAtual = 0; // valor da parcela selecionada
 
-  // Preenche as parcelas
-  document.getElementById("cliente").addEventListener("change", async function () {
-    const cpf = this.value;
-    selectParcela.innerHTML = '<option value="">Carregando parcelas...</option>';
+ // Quando o cliente é selecionado, carrega as parcelas
+document.getElementById("cliente").addEventListener("change", async function () {
+  const cpf = this.value;
+  selectParcela.innerHTML = '<option value="">Carregando parcelas...</option>';
 
-    if (!cpf) return;
+  if (!cpf) return;
 
-    try {
-      const res = await fetch(`https://meu-backend-xi.vercel.app/api/receber_parcelas?cpf=${cpf}`);
-      const { parcelasData } = await res.json();
-      parcelas = parcelasData; // salva as parcelas no array
+  try {
+    const res = await fetch(`https://meu-backend-xi.vercel.app/api/receber_parcelas?cpf=${cpf}`);
+    const data = await res.json();
 
-      selectParcela.innerHTML = '<option value="">Selecione uma parcela</option>';
-
-      // Ordena as parcelas pela data de vencimento
-      parcelas.sort((a, b) => parseDataBR(a.data_vencimento) - parseDataBR(b.data_vencimento));
-
-      // Adiciona as parcelas no select
-      parcelas.forEach(p => {
-        const option = document.createElement("option");
-        const valorNumerico = parseFloat(p.valor?.toString().replace(",", "."));
-        const valorFormatado = isNaN(valorNumerico) 
-          ? "Valor inválido"
-          : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(valorNumerico);
-
-        option.value = p.id || JSON.stringify(p); // usa ID ou JSON
-        option.textContent = `${p.data_venda} - Venc: ${p.data_vencimento} - Parcela ${p.parcela} - ${valorFormatado}`;
-        selectParcela.appendChild(option);
-      });
-
-    } catch (error) {
-      console.error("Erro ao buscar parcelas:", error);
-      selectParcela.innerHTML = '<option value="">Erro ao carregar parcelas</option>';
+    // Verifica se a resposta contém o campo 'parcelasData'
+    if (!data || !data.parcelasData) {
+      throw new Error("Parcelas não encontradas");
     }
-  });
+
+    parcelas = data.parcelasData; // Atribui a resposta ao array de parcelas
+
+    selectParcela.innerHTML = '<option value="">Selecione uma parcela</option>';
+
+    // Ordena as parcelas pela data de vencimento
+    parcelas.sort((a, b) => parseDataBR(a.data_vencimento) - parseDataBR(b.data_vencimento));
+
+    // Adiciona as parcelas no select
+    parcelas.forEach(p => {
+      const option = document.createElement("option");
+      const valorNumerico = parseFloat(p.valor?.toString().replace(",", "."));
+      const valorFormatado = isNaN(valorNumerico) 
+        ? "Valor inválido"
+        : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(valorNumerico);
+
+      option.value = p.id || JSON.stringify(p); // usa ID ou JSON
+      option.textContent = `${p.data_venda} - Venc: ${p.data_vencimento} - Parcela ${p.parcela} - ${valorFormatado}`;
+      selectParcela.appendChild(option);
+    });
+
+  } catch (error) {
+    console.error("Erro ao buscar parcelas:", error);
+    selectParcela.innerHTML = '<option value="">Erro ao carregar parcelas</option>';
+  }
+});
+
 
   // Quando o usuário escolhe uma parcela
   selectParcela.addEventListener("change", () => {
