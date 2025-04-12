@@ -78,7 +78,7 @@
       </select>
 
       <label for="valor">Valor Recebido:</label>
-      <input type="number" id="valor" name="valor" required step="0.01" min="0">
+      <input type="text" id="valorRecebido" />
 
       <label for="dataPagamento">Data do Pagamento:</label>
       <input type="date" id="dataPagamento" name="dataPagamento" required>
@@ -164,7 +164,46 @@ parcelas.sort((a, b) => parseDataBR(a.data_vencimento) - parseDataBR(b.data_venc
   }
 });
 
+const selectParcela = document.getElementById("parcelaSelect");
+const inputValorRecebido = document.getElementById("valorRecebido");
+let valorParcelaAtual = 0; // guarda o valor da parcela selecionada
 
+// Aplica máscara e validação ao digitar no campo
+inputValorRecebido.addEventListener("input", () => {
+  let raw = inputValorRecebido.value.replace(/\D/g, "");
+  if (raw === "") raw = "0";
+  let valor = parseFloat(raw) / 100;
+
+  // Limita ao valor da parcela
+  if (valor > valorParcelaAtual) {
+    valor = valorParcelaAtual;
+  }
+
+  inputValorRecebido.value = valor.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
+});
+
+// Quando o usuário escolhe uma parcela
+selectParcela.addEventListener("change", () => {
+  const selectedOption = selectParcela.options[selectParcela.selectedIndex];
+
+  if (selectedOption && selectedOption.value) {
+    const parcelaSelecionada = parcelas.find(p => (p.id || JSON.stringify(p)) == selectedOption.value);
+
+    if (parcelaSelecionada) {
+      // Armazena o valor da parcela atual para validar depois
+      valorParcelaAtual = parseFloat(parcelaSelecionada.valor?.toString().replace(",", ".")) || 0;
+
+      // Preenche o campo com o valor da parcela
+      inputValorRecebido.value = valorParcelaAtual.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+      });
+    }
+  }
+});
     document.getElementById("pagamentoForm").addEventListener("submit", function(event) {
       event.preventDefault();
 
