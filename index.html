@@ -1,63 +1,64 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Administração</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Administração</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
 
-        .container {
-            text-align: center;
-            background-color: white;
-            padding: 30px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            width: 400px;
-        }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
-        h1 {
-            color: #333;
-        }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
 
-        .menu {
-            margin-top: 20px;
-        }
+    .menu {
+      margin-top: 20px;
+    }
 
-        .menu a {
-            display: block;
-            padding: 15px;
-            margin: 10px 0;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 18px;
-        }
+    .menu a {
+      display: block;
+      padding: 10px;
+      margin-top: 10px;
+      background-color: #6f42c1; /* Cor roxa */
+      color: white;
+      text-decoration: none;
+      text-align: center;
+      border-radius: 4px;
+      font-size: 18px;
+    }
 
-        .menu a:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    .menu a:hover {
+      background-color: #5a32a3; /* Cor roxa mais escura ao passar o mouse */
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Painel de Administração</h1>
-        <div class="menu">
-            <a href="vendas.html">Vendas</a>
-            <a href="clientes.html">Clientes - Cadastrar / Gerenciar</a>
-            <a href="produtos.html">Produtos - Cadastrar / Gerenciar</a>
-        </div>
+  <div class="container">
+    <h2>Painel de Administração</h2>
+    <div class="menu">
+      <a href="vendas.html">Vendas</a>
+        Cliente
+      <a href="cad_cliente.html">Cadastrar</a>
+        <a href="cons_cliente.html">Gerenciar</a>
+      <a href="produtos.html">Produtos - Cadastrar / Gerenciar</a>
     </div>
+  </div>
 
 </body>
 </html>
+
