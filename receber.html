@@ -179,6 +179,7 @@ document.getElementById("cliente").addEventListener("change", async function () 
   try {
     const res = await fetch(`https://meu-backend-xi.vercel.app/api/receber_parcelas?cpf=${cpf}`);
     const data = await res.json();
+    console.log(data); // Verifique o conteúdo da resposta
 
     // Verifica se a resposta contém o campo 'parcelasData'
     if (!data || !data.parcelasData) {
