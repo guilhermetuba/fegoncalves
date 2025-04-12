@@ -96,7 +96,7 @@
     async function carregarClientes() {
   try {
     const res = await fetch('https://meu-backend-xi.vercel.app/api/consulta_cliente');
-    const clientes = await res.json();
+    const { clientes } = await res.json();
 
     const selectCliente = document.getElementById("cliente");
     selectCliente.innerHTML = '<option value="">Selecione um cliente</option>';
