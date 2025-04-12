@@ -125,7 +125,7 @@ carregarClientes();
   if (!cpf) return;
 
   try {
-    const res = await fetch(`https://meu-backend-xi.vercel.app/api/parcelas_em_aberto?cpf=${cpf}`);
+    const res = await fetch(`https://meu-backend-xi.vercel.app/api/receber_parcelas?cpf=${cpf}`);
     const { parcelas } = await res.json();
 
     selectParcela.innerHTML = '<option value="">Selecione uma parcela</option>';
