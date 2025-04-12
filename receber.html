@@ -138,12 +138,20 @@ carregarClientes();
       return;
     }
 
-    parcelas.forEach(p => {
-      const option = document.createElement("option");
-      option.value = p.id || JSON.stringify(p); // use o que for melhor para identificar
-      option.textContent = `${p.data_venda} - Venc: ${p.data_vencimento} - Parcela ${p.parcela} - R$ ${Number(p.valor).toFixed(2)}`;
-      selectParcela.appendChild(option);
-    });
+  parcelas.forEach(p => {
+  const option = document.createElement("option");
+
+  // Tenta converter o valor e formata
+  const valorNumerico = parseFloat(p.valor?.toString().replace(",", "."));
+  const valorFormatado = isNaN(valorNumerico)
+    ? "Valor inválido"
+    : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(valorNumerico);
+
+  option.value = p.id || JSON.stringify(p); // ainda seguro
+  option.textContent = `${p.data_venda} - Venc: ${p.data_vencimento} - Parcela ${p.parcela} - ${valorFormatado}`;
+  selectParcela.appendChild(option);
+});
+
   } catch (error) {
     console.error("Erro ao buscar parcelas:", error);
     selectParcela.innerHTML = '<option value="">Erro ao carregar parcelas</option>';
