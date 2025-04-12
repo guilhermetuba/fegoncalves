@@ -1,10 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Controle de Semijoias</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Administração</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            width: 400px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .menu {
+            margin-top: 20px;
+        }
+
+        .menu a {
+            display: block;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+
+        .menu a:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Bem-vindo ao Controle de Semijoias</h1>
-    <p>Este é o seu site inicial.</p>
+
+    <div class="container">
+        <h1>Painel de Administração</h1>
+        <div class="menu">
+            <a href="vendas.html">Vendas</a>
+            <a href="clientes.html">Clientes - Cadastrar / Gerenciar</a>
+            <a href="produtos.html">Produtos - Cadastrar / Gerenciar</a>
+        </div>
+    </div>
+
 </body>
 </html>
