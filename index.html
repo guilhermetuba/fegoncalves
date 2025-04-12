@@ -7,42 +7,65 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
+      margin: 0;
       background-color: #f4f4f4;
+      padding: 20px;
     }
 
     .container {
-      max-width: 400px;
+      max-width: 500px;
       margin: auto;
       background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     h2 {
       text-align: center;
+      margin-bottom: 30px;
       color: #333;
     }
 
-    .menu {
-      margin-top: 20px;
+    .section {
+      margin-bottom: 25px;
     }
 
-    .menu a {
-      display: block;
+    .section-title {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #6f42c1;
+      font-weight: bold;
+    }
+
+    .links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .link-button {
+      flex: 1;
+      min-width: 100px;
       padding: 10px;
-      margin-top: 10px;
-      background-color: #6f42c1; /* Cor roxa */
-      color: white;
-      text-decoration: none;
       text-align: center;
-      border-radius: 4px;
-      font-size: 18px;
+      background-color: #6f42c1;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s;
     }
 
-    .menu a:hover {
-      background-color: #5a32a3; /* Cor roxa mais escura ao passar o mouse */
+    .link-button:hover {
+      background-color: #5a32a3;
+    }
+
+    @media (max-width: 400px) {
+      .links {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
@@ -50,15 +73,31 @@
 
   <div class="container">
     <h2>Painel de Administração</h2>
-    <div class="menu">
-      <a href="vendas.html">Vendas</a>
-        Cliente
-      <a href="cad_cliente.html">Cadastrar</a>
-        <a href="cons_cliente.html">Gerenciar</a>
-      <a href="produtos.html">Produtos - Cadastrar / Gerenciar</a>
+
+    <div class="section">
+      <div class="section-title">Vendas</div>
+      <div class="links">
+        <a href="venda.html" class="link-button">Acessar</a>
+      </div>
     </div>
+
+    <div class="section">
+      <div class="section-title">Clientes</div>
+      <div class="links">
+        <a href="cad_cliente.html" class="link-button">Cadastrar</a>
+        <a href="cons_cliente.html" class="link-button">Gerenciar</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Produtos</div>
+      <div class="links">
+        <a href="cad_produto.html" class="link-button">Cadastrar</a>
+        <a href="cons_produto.html" class="link-button">Gerenciar</a>
+      </div>
+    </div>
+
   </div>
 
 </body>
 </html>
-
