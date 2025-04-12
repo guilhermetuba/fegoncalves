@@ -164,46 +164,88 @@ parcelas.sort((a, b) => parseDataBR(a.data_vencimento) - parseDataBR(b.data_venc
   }
 });
 
-const selectParcela = document.getElementById("parcelaSelect");
-const inputValorRecebido = document.getElementById("valorRecebido");
-let valorParcelaAtual = 0; // guarda o valor da parcela selecionada
+  const selectParcela = document.getElementById("parcela");
+  const inputValorRecebido = document.getElementById("valorRecebido");
+  let parcelas = [];
+  let valorParcelaAtual = 0; // valor da parcela selecionada
 
-// Aplica máscara e validação ao digitar no campo
-inputValorRecebido.addEventListener("input", () => {
-  let raw = inputValorRecebido.value.replace(/\D/g, "");
-  if (raw === "") raw = "0";
-  let valor = parseFloat(raw) / 100;
+  // Preenche as parcelas
+  document.getElementById("cliente").addEventListener("change", async function () {
+    const cpf = this.value;
+    selectParcela.innerHTML = '<option value="">Carregando parcelas...</option>';
 
-  // Limita ao valor da parcela
-  if (valor > valorParcelaAtual) {
-    valor = valorParcelaAtual;
-  }
+    if (!cpf) return;
 
-  inputValorRecebido.value = valor.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL"
-  });
-});
+    try {
+      const res = await fetch(`https://meu-backend-xi.vercel.app/api/receber_parcelas?cpf=${cpf}`);
+      const { parcelasData } = await res.json();
+      parcelas = parcelasData; // salva as parcelas no array
 
-// Quando o usuário escolhe uma parcela
-selectParcela.addEventListener("change", () => {
-  const selectedOption = selectParcela.options[selectParcela.selectedIndex];
+      selectParcela.innerHTML = '<option value="">Selecione uma parcela</option>';
 
-  if (selectedOption && selectedOption.value) {
-    const parcelaSelecionada = parcelas.find(p => (p.id || JSON.stringify(p)) == selectedOption.value);
+      // Ordena as parcelas pela data de vencimento
+      parcelas.sort((a, b) => parseDataBR(a.data_vencimento) - parseDataBR(b.data_vencimento));
 
-    if (parcelaSelecionada) {
-      // Armazena o valor da parcela atual para validar depois
-      valorParcelaAtual = parseFloat(parcelaSelecionada.valor?.toString().replace(",", ".")) || 0;
+      // Adiciona as parcelas no select
+      parcelas.forEach(p => {
+        const option = document.createElement("option");
+        const valorNumerico = parseFloat(p.valor?.toString().replace(",", "."));
+        const valorFormatado = isNaN(valorNumerico) 
+          ? "Valor inválido"
+          : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(valorNumerico);
 
-      // Preenche o campo com o valor da parcela
-      inputValorRecebido.value = valorParcelaAtual.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL"
+        option.value = p.id || JSON.stringify(p); // usa ID ou JSON
+        option.textContent = `${p.data_venda} - Venc: ${p.data_vencimento} - Parcela ${p.parcela} - ${valorFormatado}`;
+        selectParcela.appendChild(option);
       });
+
+    } catch (error) {
+      console.error("Erro ao buscar parcelas:", error);
+      selectParcela.innerHTML = '<option value="">Erro ao carregar parcelas</option>';
     }
+  });
+
+  // Quando o usuário escolhe uma parcela
+  selectParcela.addEventListener("change", () => {
+    const selectedOption = selectParcela.options[selectParcela.selectedIndex];
+    if (selectedOption && selectedOption.value) {
+      const parcelaSelecionada = parcelas.find(p => (p.id || JSON.stringify(p)) === selectedOption.value);
+
+      if (parcelaSelecionada) {
+        // Guarda o valor da parcela para validação
+        valorParcelaAtual = parseFloat(parcelaSelecionada.valor?.toString().replace(",", ".")) || 0;
+
+        // Preenche o campo com o valor da parcela
+        inputValorRecebido.value = valorParcelaAtual.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL"
+        });
+      }
+    }
+  });
+
+  // Função para formatar valores como moeda
+  function formatarComoMoeda(valor) {
+    return valor.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL"
+    });
   }
-});
+
+  // Máscara de moeda e validação do campo "Valor Recebido"
+  inputValorRecebido.addEventListener("input", () => {
+    let raw = inputValorRecebido.value.replace(/\D/g, ""); // remove tudo que não é número
+    let valor = parseFloat(raw) / 100; // converte para valor decimal
+
+    // Se o valor for maior que o valor da parcela, limita
+    if (valor > valorParcelaAtual) {
+      valor = valorParcelaAtual;
+    }
+
+    // Atualiza o campo de valor recebido
+    inputValorRecebido.value = formatarComoMoeda(valor);
+  });
+    
     document.getElementById("pagamentoForm").addEventListener("submit", function(event) {
       event.preventDefault();
 
