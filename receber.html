@@ -95,7 +95,7 @@
     // Em breve: buscar clientes e parcelas via API ou Google Sheets
     async function carregarClientes() {
   try {
-    const res = await fetch('/api/consulta_cliente');
+    const res = await fetch('https://meu-backend-xi.vercel.app/api/consulta_cliente');
     const clientes = await res.json();
 
     const selectCliente = document.getElementById("cliente");
