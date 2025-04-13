@@ -172,27 +172,47 @@ parcelas.sort((a, b) => parseDataBR(a.data_vencimento) - parseDataBR(b.data_venc
  // Quando o cliente é selecionado, carrega as parcelas
 document.getElementById("cliente").addEventListener("change", async function () {
   const cpf = this.value;
+  const selectParcela = document.getElementById("parcela");
+
   selectParcela.innerHTML = '<option value="">Carregando parcelas...</option>';
 
   if (!cpf) return;
 
   try {
     const res = await fetch(`https://meu-backend-xi.vercel.app/api/receber_parcelas?cpf=${cpf}`);
-    const data = await res.json();
-    console.log(data); // Verifique o conteúdo da resposta
-
-    // Verifica se a resposta contém o campo 'parcelasData'
-    if (!data || !data.parcelasData) {
-      throw new Error("Parcelas não encontradas");
-    }
-
-    parcelas = data.parcelasData; // Atribui a resposta ao array de parcelas
-console.log(parcelas); // Para verificar os dados recebidos
+    const { parcelas } = await res.json(); // Aqui, 'parcelas' já é o array que você precisa
 
     selectParcela.innerHTML = '<option value="">Selecione uma parcela</option>';
 
+    if (!parcelas || parcelas.length === 0) {
+      const opt = document.createElement("option");
+      opt.textContent = "Nenhuma parcela em aberto";
+      opt.disabled = true;
+      selectParcela.appendChild(opt);
+      return;
+    }
+
     // Ordena as parcelas pela data de vencimento
     parcelas.sort((a, b) => parseDataBR(a.data_vencimento) - parseDataBR(b.data_vencimento));
+
+    // Adiciona as parcelas no select
+    parcelas.forEach(p => {
+      const option = document.createElement("option");
+      const valorNumerico = parseFloat(p.valor?.toString().replace(",", "."));
+      const valorFormatado = isNaN(valorNumerico)
+        ? "Valor inválido"
+        : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(valorNumerico);
+
+      option.value = p.id || JSON.stringify(p); // usa ID ou JSON
+      option.textContent = `${p.data_venda} - Venc: ${p.data_vencimento} - Parcela ${p.parcela} - ${valorFormatado}`;
+      selectParcela.appendChild(option);
+    });
+
+  } catch (error) {
+    console.error("Erro ao buscar parcelas:", error);
+    selectParcela.innerHTML = '<option value="">Erro ao carregar parcelas</option>';
+  }
+});
 
     // Adiciona as parcelas no select
     parcelas.forEach(p => {
