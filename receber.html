@@ -90,7 +90,11 @@
 
   <script>
     // Define a data atual no campo de data
-    document.getElementById("dataPagamento").value = new Date().toISOString().split("T")[0];
+const hoje = new Date();
+hoje.setHours(0, 0, 0, 0); // Zera as horas, minutos, segundos e milissegundos
+
+document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0];
+
 
     // Em breve: buscar clientes e parcelas via API ou Google Sheets
     async function carregarClientes() {
