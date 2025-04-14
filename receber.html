@@ -177,6 +177,7 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
     });
 
     // Quando o usuário escolhe uma parcela
+    let valorParcelaAtual = 0; // fora de qualquer função
     document.getElementById("parcela").addEventListener("change", () => {
       const selectedOption = document.getElementById("parcela").options[document.getElementById("parcela").selectedIndex];
       if (selectedOption && selectedOption.value) {
@@ -184,7 +185,7 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
 
         if (parcelaSelecionada) {
           // Guarda o valor da parcela para validação
-          const valorParcelaAtual = parseFloat(parcelaSelecionada.valor?.toString().replace(",", ".")) || 0;
+          valorParcelaAtual = parseFloat(parcelaSelecionada.valor?.toString().replace(",", ".")) || 0;
 
           // Preenche o campo com o valor da parcela
           document.getElementById("valorRecebido").value = valorParcelaAtual.toLocaleString("pt-BR", {
@@ -213,7 +214,7 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
       inputValorRecebido.value = formatarComoMoeda(valor);
     });
 
-    document.getElementById("pagamentoForm").addEventListener("submit", function(event) {
+    document.getElementById("pagamentoForm").addEventListener("submit", async function(event) {
       event.preventDefault();
 
       const cliente = document.getElementById("cliente").value;
