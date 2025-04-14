@@ -231,10 +231,40 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
     return;
   }
 
-      // Aqui vai a lógica de atualização da aba Contas a Receber
-      console.log("Registrando pagamento de", valor, "na parcela", parcela, "do cliente", cliente, "na data", dataPagamento);
+       // Se valor for exatamente igual ao da parcela, atualiza como pago
+  if (valor === valorParcelaAtual) {
+    try {
+      const res = await fetch("https://meu-backend-xi.vercel.app/api/registrar_pagamento", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          id_parcela: parcela,
+          data_pagamento: dataPagamento,
+          status: "Pago",
+          observacoes: observacoes
+        })
+      });
 
-      alert("Pagamento registrado (simulado). Em breve integrará com o backend!");
+      const resultado = await res.json();
+      if (resultado.sucesso) {
+        alert("Pagamento registrado com sucesso!");
+        // Aqui você pode limpar o form ou atualizar as parcelas do cliente
+        document.getElementById("pagamentoForm").reset();
+        inputValorRecebido.value = "";
+        valorParcelaAtual = 0;
+      } else {
+        alert("Erro ao registrar pagamento.");
+      }
+
+    } catch (erro) {
+      console.error("Erro ao enviar dados:", erro);
+      alert("Erro ao registrar o pagamento.");
+    }
+  } else {
+    alert("O valor recebido não é o valor exato da parcela. Pagamento parcial ainda não é suportado.");
+  }
     });
   </script>
 
