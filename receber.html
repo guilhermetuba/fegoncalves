@@ -235,7 +235,7 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
        // Se valor for exatamente igual ao da parcela, atualiza como pago
   if (valor === valorParcelaAtual) {
     try {
-      const res = await fetch("https://meu-backend-xi.vercel.app/api/registrar_pagamento", {
+      const res = await fetch("https://meu-backend-xi.vercel.app/api/receber_parcelas", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
