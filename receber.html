@@ -85,7 +85,7 @@
 
        <label for="observaoes">Observações:</label>
       <textarea id="observacoes" name="observacoes"></textarea>
-
+    <br>
       <button type="submit">Confirmar recebimento</button>
       <a href="index.html" class="link-button link-bottom">Voltar para o Início</a>
     </form>
@@ -225,6 +225,11 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
         alert("Preencha todos os campos corretamente.");
         return;
       }
+
+      if (valor <= 0) {
+    alert("O valor recebido deve ser maior que zero.");
+    return;
+  }
 
       // Aqui vai a lógica de atualização da aba Contas a Receber
       console.log("Registrando pagamento de", valor, "na parcela", parcela, "do cliente", cliente, "na data", dataPagamento);
