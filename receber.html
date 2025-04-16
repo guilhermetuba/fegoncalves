@@ -165,7 +165,7 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
             ? "Valor inválido"
             : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(valorNumerico);
 
-          option.value = p.id || JSON.stringify(p); // usa ID ou JSON
+          option.value = p.codigo_parcela;
           option.textContent = `${p.data_venda} - Venc: ${p.data_vencimento} - Parcela ${p.parcela} - ${valorFormatado}`;
           selectParcela.appendChild(option);
         });
