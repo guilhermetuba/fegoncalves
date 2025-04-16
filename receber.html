@@ -219,6 +219,7 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
       const parcela = document.getElementById("parcela").value;
       const valor = parseFloat(document.getElementById("valorRecebido").value.replace("R$", "").replace(",", ".")); 
       const dataPagamento = document.getElementById("dataPagamento").value;
+      const observacoes = document.getElementById('observacoes').value || '';  // Garante que será uma string
 
       if (!cliente || !parcela || isNaN(valor) || !dataPagamento) {
         alert("Preencha todos os campos corretamente.");
@@ -244,7 +245,7 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
           id_parcela: parcela,
           data_pagamento: dataPagamento,
           status: "Pago",
-          observacoes: observacoes || '',
+          observacoes: observacoes,
         })
       });
 
