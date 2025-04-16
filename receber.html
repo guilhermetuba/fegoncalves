@@ -178,23 +178,21 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
 
     // Quando o usuário escolhe uma parcela
     let valorParcelaAtual = 0; // fora de qualquer função
-    document.getElementById("parcela").addEventListener("change", () => {
-      const selectedOption = document.getElementById("parcela").options[document.getElementById("parcela").selectedIndex];
-      if (selectedOption && selectedOption.value) {
-        const parcelaSelecionada = parcelas.find(p => (p.id || JSON.stringify(p)) === selectedOption.value);
+  document.getElementById("parcela").addEventListener("change", () => {
+  const selectParcela = document.getElementById("parcela");
+  const codigoSelecionado = selectParcela.value;
 
-        if (parcelaSelecionada) {
-          // Guarda o valor da parcela para validação
-          valorParcelaAtual = parseFloat(parcelaSelecionada.valor?.toString().replace(",", ".")) || 0;
+  const parcelaSelecionada = parcelas.find(p => p.codigo_parcela === codigoSelecionado);
 
-          // Preenche o campo com o valor da parcela
-          document.getElementById("valorRecebido").value = valorParcelaAtual.toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL"
-          });
-        }
-      }
-    });
+  if (parcelaSelecionada) {
+    // Guarda o valor da parcela para validação
+    valorParcelaAtual = parseFloat(parcelaSelecionada.valor?.toString().replace(",", ".")) || 0;
+
+    // Preenche o campo com o valor da parcela formatado como moeda
+    document.getElementById("valorRecebido").value = formatarComoMoeda(valorParcelaAtual);
+  }
+});
+
 
     // Função para formatar valores como moeda
     function formatarComoMoeda(valor) {
