@@ -239,7 +239,7 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
       console.log("ID da parcela:", parcela);
 console.log("Valor digitado:", valor);
 console.log("Valor esperado:", valorParcelaAtual);
-  if (valor === valorParcelaAtual) {
+  if (Math.abs(valor - valorParcelaAtual) < 0.01) {
     try {
       const res = await fetch("https://meu-backend-xi.vercel.app/api/receber_parcelas", {
         method: "POST",
