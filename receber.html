@@ -217,7 +217,11 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
 
       const cliente = document.getElementById("cliente").value;
       const parcela = document.getElementById("parcela").value;
-      const valor = parseFloat(document.getElementById("valorRecebido").value.replace("R$", "").replace(",", ".")); 
+      const valor = parseFloat(
+  document.getElementById("valorRecebido").value
+    .replace(/[R$\s.]/g, '') // remove R$, espaços e pontos
+    .replace(',', '.')       // substitui vírgula decimal por ponto
+);
       const dataPagamento = document.getElementById("dataPagamento").value;
       const observacoes = document.getElementById('observacoes').value || '';  // Garante que será uma string
 
