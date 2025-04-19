@@ -288,7 +288,7 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
   const novaObservacao = (observacoes ? observacoes + " " : "") + `Pago ${valorFormatado} no dia ${dataFormatada}.`;
 
   try {
-    const res = await fetch("https://meu-backend-xi.vercel.app/api/pagamento_parcial", {
+    const res = await fetch("https://meu-backend-xi.vercel.app/api/receber_parcial", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
