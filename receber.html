@@ -279,9 +279,44 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
       console.error("Erro ao enviar dados:", erro);
       alert("Erro ao registrar o pagamento.");
     }
-  } else {
-    alert("O valor recebido não é o valor exato da parcela. Pagamento parcial ainda não é suportado.");
+  } else if (valor < valorParcelaAtual) {
+  const novoValorParcela = (valorParcelaAtual - valor).toFixed(2);
+  const valorFormatado = valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const dataFormatada = new Date(dataPagamento).toLocaleDateString("pt-BR");
+
+  // Atualiza as observações com o novo pagamento
+  const novaObservacao = (observacoes ? observacoes + " " : "") + `Pago ${valorFormatado} no dia ${dataFormatada}.`;
+
+  try {
+    const res = await fetch("https://meu-backend-xi.vercel.app/api/pagamento_parcial", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        id_parcela: parcela,
+        novo_valor: parseFloat(novoValorParcela),
+        observacoes: novaObservacao,
+        data_pagamento: dataPagamento
+      })
+    });
+
+    const resultado = await res.json();
+    if (resultado.sucesso) {
+      alert("Pagamento parcial registrado com sucesso!");
+      document.getElementById("pagamentoForm").reset();
+      document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0];
+      inputValorRecebido.value = "";
+      valorParcelaAtual = 0;
+    } else {
+      alert("Erro ao registrar pagamento parcial.");
+    }
+  } catch (erro) {
+    console.error("Erro ao enviar dados:", erro);
+    alert("Erro ao registrar o pagamento parcial.");
   }
+}
+
     });
   </script>
 
