@@ -282,7 +282,9 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
   } else if (valor < valorParcelaAtual) {
   const novoValorParcela = (valorParcelaAtual - valor).toFixed(2);
   const valorFormatado = valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  const dataFormatada = new Date(dataPagamento).toLocaleDateString("pt-BR");
+  const [ano, mes, dia] = dataPagamento.split("-");
+  const dataLocal = new Date(ano, mes - 1, dia);
+  const dataFormatada = dataLocal.toLocaleDateString("pt-BR");
 
   // Atualiza as observações com o novo pagamento
   const novaObservacao = (observacoes ? observacoes + " " : "") + `Pago ${valorFormatado} no dia ${dataFormatada}.`;
