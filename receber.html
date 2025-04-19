@@ -211,6 +211,7 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
       // Atualiza o campo de valor recebido
       inputValorRecebido.value = formatarComoMoeda(valor);
     });
+  const inputValorRecebido = document.getElementById("valorRecebido");
 
     document.getElementById("pagamentoForm").addEventListener("submit", async function(event) {
       event.preventDefault();
