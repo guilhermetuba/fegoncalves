@@ -286,9 +286,6 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
   const dataLocal = new Date(ano, mes - 1, dia);
   const dataFormatada = dataLocal.toLocaleDateString("pt-BR");
 
-  // Atualiza as observações com o novo pagamento
-  const novaObservacao = (observacoes ? observacoes + " " : "") + `Pago ${valorFormatado} no dia ${dataFormatada}.`;
-
   try {
     const res = await fetch("https://meu-backend-xi.vercel.app/api/receber_parcial", {
       method: "POST",
@@ -297,8 +294,9 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
       },
       body: JSON.stringify({
         id_parcela: parcela,
+        valor_original: valorParcelaAtual,
         novo_valor: parseFloat(novoValorParcela),
-        observacoes: novaObservacao,
+        observacoes: observacoes,
         data_pagamento: dataPagamento
       })
     });
