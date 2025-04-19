@@ -237,7 +237,7 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
   }
       console.log("Valor:", valor);
       console.log("Valor Parcela Atual:", valorParcelaAtual);
-      if (valorRecebido > valorParcela) {
+      if (valor > valorParcelaAtual) {
   alert("❌ O valor recebido não pode ser maior que o valor da parcela.");
   return;
 }
