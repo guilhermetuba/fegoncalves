@@ -235,11 +235,18 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
     alert("O valor recebido deve ser maior que zero.");
     return;
   }
+      console.log("Valor Recebido:", valorRecebido);
+console.log("Valor Parcela:", valorParcela);
+      console.log("Valor:", valor);
+      console.log("Valor Parcela Atual:", valorParcelaAtual);
+      if (valorRecebido > valorParcela) {
+  alert("❌ O valor recebido não pode ser maior que o valor da parcela.");
+  return;
+}
 
        // Se valor for exatamente igual ao da parcela, atualiza como pago
       console.log("ID da parcela:", parcela);
-console.log("Valor digitado:", valor);
-console.log("Valor esperado:", valorParcelaAtual);
+
   if (Math.abs(valor - valorParcelaAtual) < 0.01) {
     try {
       const res = await fetch("https://meu-backend-xi.vercel.app/api/receber_parcelas", {
