@@ -260,6 +260,10 @@ console.log("Valor esperado:", valorParcelaAtual);
         alert("Pagamento registrado com sucesso!");
         // Aqui você pode limpar o form ou atualizar as parcelas do cliente
         document.getElementById("pagamentoForm").reset();
+        // Reaplica a data de hoje no campo dataPagamento
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+      document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0];
         inputValorRecebido.value = "";
         valorParcelaAtual = 0;
       } else {
