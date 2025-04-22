@@ -294,7 +294,7 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
       },
       body: JSON.stringify({
         id_parcela: parcela,
-        valor_original: valorParcelaAtual,
+        parcela_original: valorParcelaAtual,
         novo_valor: parseFloat(novoValorParcela),
         valor_recebido:valor,
         observacoes: observacoes,
