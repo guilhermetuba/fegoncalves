@@ -262,7 +262,8 @@ label[for="formaPagamento"] {
     <input type="date" id="dataPrimeiraParcela">
         
     <button id="registrarVendaBtn" onclick="registrarVenda()">Confirmar Venda</button>
-    <div id="loader" style="display: none; color: green; margin-top: 10px;">Registrando venda...</div>
+    <div id="loader" style="color: green; margin-top: 10px; display: none;">Registrando venda<span id="dots"></span></div>
+
      <a href="index.html" class="link-button link-bottom">Voltar para o Início</a>
     </div>
     
@@ -429,10 +430,30 @@ function removerDoCarrinho(index) {
 async function registrarVenda() {
   const btn = document.getElementById("registrarVendaBtn");
   const loader = document.getElementById("loader");
+  const dots = document.getElementById("dots");
 
-  // Ativa loader e desativa botão
+  // Controle para o efeito dos pontos
+  let dotCount = 0;
+  let intervalId;
+
+  // Função para iniciar o efeito dos pontos
+  function startDotsAnimation() {
+    intervalId = setInterval(() => {
+      dotCount = (dotCount + 1) % 4; // 0,1,2,3
+      dots.textContent = '.'.repeat(dotCount);
+    }, 500);
+  }
+
+  // Função para parar o efeito dos pontos
+  function stopDotsAnimation() {
+    clearInterval(intervalId);
+    dots.textContent = '';
+  }
+
+  // Desabilita o botão e mostra loader com animação
   btn.disabled = true;
   loader.style.display = "block";
+  startDotsAnimation();
 
   const cpfCliente = document.getElementById("listaClientes").value;
   const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
@@ -441,6 +462,7 @@ async function registrarVenda() {
     alert("Selecione um cliente antes de registrar a venda.");
     btn.disabled = false;
     loader.style.display = "none";
+    stopDotsAnimation();
     return;
   }
 
@@ -448,16 +470,15 @@ async function registrarVenda() {
     alert("Adicione pelo menos um produto ao carrinho antes de registrar a venda.");
     btn.disabled = false;
     loader.style.display = "none";
+    stopDotsAnimation();
     return;
   }
 
   try {
-    // Consulta o estoque
     const respostaEstoque = await fetch('https://meu-backend-xi.vercel.app/api/consulta_produto');
     const dadosEstoque = await respostaEstoque.json();
     const estoque = dadosEstoque.estoque;
 
-    // Verifica se todos os itens do carrinho têm quantidade suficiente no estoque
     for (const item of carrinho) {
       const produtoEstoque = estoque.find(p => String(p[0]).trim() === String(item.codigo).trim());
 
@@ -465,6 +486,7 @@ async function registrarVenda() {
         alert(`Produto com código ${item.codigo} não encontrado no estoque.`);
         btn.disabled = false;
         loader.style.display = "none";
+        stopDotsAnimation();
         return;
       }
 
@@ -476,6 +498,7 @@ async function registrarVenda() {
         alert(`Estoque insuficiente para "${nomeProduto}".\nDisponível: ${quantidadeDisponivel}, Solicitado: ${quantidadeSolicitada}`);
         btn.disabled = false;
         loader.style.display = "none";
+        stopDotsAnimation();
         return;
       }
     }
@@ -484,6 +507,7 @@ async function registrarVenda() {
     if (!confirmacao) {
       btn.disabled = false;
       loader.style.display = "none";
+      stopDotsAnimation();
       return;
     }
 
@@ -495,7 +519,6 @@ async function registrarVenda() {
     totalText = totalText.replace("R$", "").trim().replace(",", ".");
     const totalVenda = parseFloat(totalText);
 
-    // Envia os dados da venda
     const response = await fetch("https://meu-backend-xi.vercel.app/api/registrar_venda", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -512,23 +535,19 @@ async function registrarVenda() {
     const codigoVenda = resultado.codigoVenda;
 
     if (response.ok) {
-      const itensVenda = carrinho.map(item => {
-        return {
-          codigoProduto: item.codigo,
-          quantidade: item.quantidade,
-          preco: parseFloat(item.preco),
-          subtotal: parseFloat(item.preco) * parseInt(item.quantidade),
-        };
-      });
+      const itensVenda = carrinho.map(item => ({
+        codigoProduto: item.codigo,
+        quantidade: item.quantidade,
+        preco: parseFloat(item.preco),
+        subtotal: parseFloat(item.preco) * parseInt(item.quantidade),
+      }));
 
-      // Registra itens da venda
       await fetch("https://meu-backend-xi.vercel.app/api/registrar_itens_venda", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ codigoVenda, cpfCliente, itens: itensVenda }),
       });
 
-      // Registra as parcelas
       await fetch("https://meu-backend-xi.vercel.app/api/registrar_parcelas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -549,6 +568,7 @@ async function registrarVenda() {
       alert("Erro ao registrar a venda: " + resultado.message);
       btn.disabled = false;
       loader.style.display = "none";
+      stopDotsAnimation();
     }
 
   } catch (error) {
@@ -556,9 +576,9 @@ async function registrarVenda() {
     alert("Erro na conexão com o servidor.");
     btn.disabled = false;
     loader.style.display = "none";
+    stopDotsAnimation();
   }
 }
-        
 
         
        function carregarClientes() {
