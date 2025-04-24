@@ -261,7 +261,8 @@ label[for="formaPagamento"] {
     <label id="descricaoDataPrimeiraParcela" for="dataPrimeiraParcela">Data 1ª Parcela</label>
     <input type="date" id="dataPrimeiraParcela">
         
-    <button onclick="registrarVenda()">Confirmar Venda</button>
+    <button id="registrarVendaBtn" onclick="registrarVenda()">Confirmar Venda</button>
+    <div id="loader" style="display: none; color: green; margin-top: 10px;">Registrando venda...</div>
      <a href="index.html" class="link-button link-bottom">Voltar para o Início</a>
     </div>
     
@@ -425,57 +426,64 @@ function removerDoCarrinho(index) {
     }
 }
 
+async function registrarVenda() {
+  const btn = document.getElementById("registrarVendaBtn");
+  const loader = document.getElementById("loader");
 
- async function registrarVenda() {
+  // Ativa loader e desativa botão
+  btn.disabled = true;
+  loader.style.display = "block";
+
   const cpfCliente = document.getElementById("listaClientes").value;
   const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
 
   if (!cpfCliente) {
     alert("Selecione um cliente antes de registrar a venda.");
+    btn.disabled = false;
+    loader.style.display = "none";
     return;
   }
 
   if (carrinho.length === 0) {
     alert("Adicione pelo menos um produto ao carrinho antes de registrar a venda.");
+    btn.disabled = false;
+    loader.style.display = "none";
     return;
   }
 
   try {
- // Consulta o estoque
-const respostaEstoque = await fetch('https://meu-backend-xi.vercel.app/api/consulta_produto');
-const dadosEstoque = await respostaEstoque.json();
-const estoque = dadosEstoque.estoque;
-console.log("Estoque retornado do backend:", estoque);
+    // Consulta o estoque
+    const respostaEstoque = await fetch('https://meu-backend-xi.vercel.app/api/consulta_produto');
+    const dadosEstoque = await respostaEstoque.json();
+    const estoque = dadosEstoque.estoque;
 
-// Verifica se todos os itens do carrinho têm quantidade suficiente no estoque
-for (const item of carrinho) {
-  console.log("Item do carrinho:", item);
+    // Verifica se todos os itens do carrinho têm quantidade suficiente no estoque
+    for (const item of carrinho) {
+      const produtoEstoque = estoque.find(p => String(p[0]).trim() === String(item.codigo).trim());
 
-  const produtoEstoque = estoque.find(p => {
-    console.log("Comparando com:", p[0], "==", item.codigo);
-    return String(p[0]).trim() === String(item.codigo).trim();
-  });
+      if (!produtoEstoque) {
+        alert(`Produto com código ${item.codigo} não encontrado no estoque.`);
+        btn.disabled = false;
+        loader.style.display = "none";
+        return;
+      }
 
-  if (!produtoEstoque) {
-    alert(`Produto com código ${item.codigo} não encontrado no estoque.`);
-    return;
-  }
+      const nomeProduto = produtoEstoque[1];
+      const quantidadeDisponivel = parseInt(produtoEstoque[4]);
+      const quantidadeSolicitada = item.quantidade;
 
-  const nomeProduto = produtoEstoque[1];
-  const quantidadeDisponivel = parseInt(produtoEstoque[4]);
-  const quantidadeSolicitada = item.quantidade;
-
-  console.log(`Produto: ${nomeProduto} | Disponível: ${quantidadeDisponivel} | Solicitado: ${quantidadeSolicitada}`);
-
-  if (quantidadeSolicitada > quantidadeDisponivel) {
-    alert(`Estoque insuficiente para "${nomeProduto}".\nDisponível: ${quantidadeDisponivel}, Solicitado: ${quantidadeSolicitada}`);
-    return;
-  }
-}
-
+      if (quantidadeSolicitada > quantidadeDisponivel) {
+        alert(`Estoque insuficiente para "${nomeProduto}".\nDisponível: ${quantidadeDisponivel}, Solicitado: ${quantidadeSolicitada}`);
+        btn.disabled = false;
+        loader.style.display = "none";
+        return;
+      }
+    }
 
     const confirmacao = confirm("Tem certeza que deseja confirmar a venda?");
     if (!confirmacao) {
+      btn.disabled = false;
+      loader.style.display = "none";
       return;
     }
 
@@ -539,14 +547,17 @@ for (const item of carrinho) {
       location.reload();
     } else {
       alert("Erro ao registrar a venda: " + resultado.message);
+      btn.disabled = false;
+      loader.style.display = "none";
     }
 
   } catch (error) {
     console.error("Erro ao registrar venda:", error);
     alert("Erro na conexão com o servidor.");
+    btn.disabled = false;
+    loader.style.display = "none";
   }
 }
-
         
 
         
