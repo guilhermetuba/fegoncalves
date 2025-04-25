@@ -144,13 +144,13 @@
     let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
     console.log("Carrinho carregado:", carrinho);
 
-    let listaCarrinho = document.getElementById("listaCarrinho");
-    if (!listaCarrinho) {
-        console.error("Erro: Elemento 'listaCarrinho' não encontrado no DOM.");
+    let listaCondi = document.getElementById("listaCondi");
+    if (!listaCondi) {
+        console.error("Erro: Elemento 'listaCondi' não encontrado no DOM.");
         return;
     }
 
-    listaCarrinho.innerHTML = ""; // Limpa a lista antes de atualizar
+    listaCondi.innerHTML = ""; // Limpa a lista antes de atualizar
 
     let total = 0;
 
@@ -166,7 +166,7 @@
         };
 
         li.appendChild(btnRemover);
-        listaCarrinho.appendChild(li);
+        listaCondi.appendChild(li);
     });
     }
 
