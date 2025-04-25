@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Condi</title>
+  <style>
+    /* Usa seu CSS padrão para manter o estilo */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label, select, input, button {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    button {
+      background-color: #6f42c1;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #5a32a3;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      background: #eee;
+      padding: 8px;
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 4px;
+    }
+    li button {
+      background: red;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 2px 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Enviar um Condi</h2>
+
+    <label for="clienteSelect">Cliente</label>
+    <select id="clienteSelect">
+      <option value="">-- Selecione o cliente --</option>
+      <!-- Vai preencher via JS ou manual -->
+    </select>
+
+    <label for="codigoProdutoInput">Código do Produto</label>
+    <input type="text" id="codigoProdutoInput" placeholder="Digite o código do produto" />
+    <button id="addProdutoBtn">Adicionar Produto</button>
+
+    <h3>Carrinho</h3>
+    <ul id="carrinhoLista"></ul>
+
+    <label for="dataEnvio">Data de envio</label>
+    <input type="date" id="dataEnvio" value="" />
+
+    <button id="registrarCondiBtn">Registrar Condi</button>
+
+    <p id="mensagem" style="color:red;"></p>
+  </div>
+
+  <script>
+    // Mock dos produtos (pode vir do backend)
+    const produtos = [
+      { codigo: "P001", nome: "Produto 1" },
+      { codigo: "P002", nome: "Produto 2" },
+      { codigo: "P003", nome: "Produto 3" },
+    ];
+
+    // Mock clientes - ideal carregar do backend
+    const clientes = [
+      { cpf: "123.456.789-00", nome: "Cliente A" },
+      { cpf: "987.654.321-00", nome: "Cliente B" },
+    ];
+
+    // Preencher select de clientes
+    const clienteSelect = document.getElementById("clienteSelect");
+    clientes.forEach(c => {
+      const option = document.createElement("option");
+      option.value = c.cpf;
+      option.textContent = c.nome + " (" + c.cpf + ")";
+      clienteSelect.appendChild(option);
+    });
+
+    // Carrinho de condi
+    let carrinho = [];
+
+    // Atualiza a lista na tela
+    function atualizarLista() {
+      const lista = document.getElementById("carrinhoLista");
+      lista.innerHTML = "";
+      carrinho.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.textContent = `${item.codigo} - ${item.nome} (Qtd: ${item.quantidade})`;
+
+        // Botão remover
+        const btnRemover = document.createElement("button");
+        btnRemover.textContent = "X";
+        btnRemover.onclick = () => {
+          carrinho.splice(index, 1);
+          atualizarLista();
+        };
+        li.appendChild(btnRemover);
+        lista.appendChild(li);
+      });
+    }
+
+    // Função para adicionar produto
+    document.getElementById("addProdutoBtn").onclick = () => {
+      const codigoInput = document.getElementById("codigoProdutoInput");
+      const codigo = codigoInput.value.trim().toUpperCase();
+      const msg = document.getElementById("mensagem");
+      msg.textContent = "";
+
+      if (!codigo) {
+        msg.textContent = "Digite o código do produto.";
+        return;
+      }
+
+      // Verifica se produto existe
+      const produto = produtos.find(p => p.codigo === codigo);
+      if (!produto) {
+        msg.textContent = "Produto não encontrado.";
+        return;
+      }
+
+      // Verifica se já está no carrinho e aumenta quantidade
+      const existente = carrinho.find(item => item.codigo === codigo);
+      if (existente) {
+        existente.quantidade++;
+      } else {
+        carrinho.push({ codigo: produto.codigo, nome: produto.nome, quantidade: 1 });
+      }
+
+      atualizarLista();
+      codigoInput.value = "";
+      codigoInput.focus();
+    };
+
+    // Função para registrar condi
+    document.getElementById("registrarCondiBtn").onclick = async () => {
+      const cpfCliente = clienteSelect.value;
+      const dataEnvio = document.getElementById("dataEnvio").value;
+      const msg = document.getElementById("mensagem");
+      msg.style.color = "red";
+      msg.textContent = "";
+
+      if (!cpfCliente) {
+        msg.textContent = "Selecione um cliente.";
+        return;
+      }
+      if (carrinho.length === 0) {
+        msg.textContent = "Adicione pelo menos um produto ao carrinho.";
+        return;
+      }
+      if (!dataEnvio) {
+        msg.textContent = "Informe a data de envio.";
+        return;
+      }
+
+      // Monta o payload para enviar ao backend
+      const dadosCondi = [];
+      const codigoCondi = "COND" + Date.now(); // Exemplo de código único
+
+      carrinho.forEach(item => {
+        dadosCondi.push({
+          codigo_condi: codigoCondi,
+          data: dataEnvio,
+          cpf_cliente: cpfCliente,
+          codigo_produto: item.codigo,
+          quantidade: item.quantidade
+        });
+      });
+
+      msg.style.color = "black";
+      msg.textContent = "Registrando venda condicional...";
+
+      try {
+        // Exemplo de envio, ajuste a URL conforme seu backend
+        const response = await fetch("https://meu-backend-xi.vercel.app/api/registrar_condi", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dadosCondi),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || "Erro desconhecido");
+        }
+
+        msg.style.color = "green";
+        msg.textContent = "Venda condicional registrada com sucesso!";
+        carrinho = [];
+        atualizarLista();
+        clienteSelect.value = "";
+        document.getElementById("dataEnvio").value = "";
+      } catch (error) {
+        msg.style.color = "red";
+        msg.textContent = "Erro ao registrar venda condicional: " + error.message;
+      }
+    };
+
+    // Preenche data com hoje por padrão
+    document.getElementById("dataEnvio").value = new Date().toISOString().split("T")[0];
+  </script>
+</body>
+</html>
