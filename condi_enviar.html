@@ -57,173 +57,263 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Enviar Condi</h2>
-
-    <label for="clienteSelect">Cliente</label>
-    <select id="clienteSelect">
-      <option value="">-- Selecione o cliente --</option>
-      <!-- Vai preencher via JS ou manual -->
+    <div class="container">
+        <a href="index.html" class="link-button">Voltar para o Início</a>
+        <h2>Condi</h2>
+        <label for="dataVenda">Data do Condi:</label>
+        <input type="text" id="dataCondi" name="dataCondi" required>
+        <label for="cliente">Cliente</label>
+      <select id="listaClientes" onchange="carregarProdutos()">
+        <option value="">Selecione um Cliente...</option>
     </select>
 
-    <label for="codigoProdutoInput">Código do Produto</label>
-    <input type="text" id="codigoProdutoInput" placeholder="Digite o código do produto" />
-    <button id="addProdutoBtn">Adicionar Produto</button>
+    <label for="produto">Produto (Selecione ou digite o código)</label>
+    <select id="listaProdutos" onchange="buscarProdutoPorSelect()">
+        <option value="">Selecione um Produto...</option>
+    </select>
+    <div class="campo-produto">
+    <label for="codigoProdutoInput">Código:  </label>
+    <input type="text" id="codigoProdutoInput" placeholder="Digite o código">
+    <button onclick="consultarProdutoPorCodigo()">Consultar</button>
+    </div>
+    <hr>
+    <label for="detalhesProduto">Detalhes dos Produtos</label>
+    <div id="detalhesProduto"></div>
+    
+     <label for="quantidadeProduto" class="label-quantidade">Quantidade:</label>
+    <input type="number" id="quantidadeProduto" min="1" value="1">
 
-    <h3>Carrinho</h3>
-    <ul id="carrinhoLista"></ul>
+    <button onclick="incluirProdutoNoCondi()">Incluir Produto no Condi</button>
 
-    <label for="dataEnvio">Data de envio</label>
-    <input type="date" id="dataEnvio" value="" />
+    <label for="listaCondi">Condi</label>
+    <ul id="listaCondi"></ul>
 
     <button id="registrarCondiBtn">Registrar Condi</button>
 
-    <p id="mensagem" style="color:red;"></p>
-  </div>
+      </div>
 
   <script>
-    // Mock dos produtos (pode vir do backend)
-    const produtos = [
-      { codigo: "P001", nome: "Produto 1" },
-      { codigo: "P002", nome: "Produto 2" },
-      { codigo: "P003", nome: "Produto 3" },
-    ];
+    window.onload = function() {
+    localStorage.removeItem("carrinho"); // Limpa o carrinho
+    atualizarCarrinho(); // Atualiza o carrinho na interface
+};
 
-    // Mock clientes - ideal carregar do backend
-    const clientes = [
-      { cpf: "123.456.789-00", nome: "Cliente A" },
-      { cpf: "987.654.321-00", nome: "Cliente B" },
-    ];
+    async function incluirProdutoNoCondi() {
+    console.log("Iniciando inclusão do produto no Condi...");
 
-    // Preencher select de clientes
-    const clienteSelect = document.getElementById("clienteSelect");
-    clientes.forEach(c => {
-      const option = document.createElement("option");
-      option.value = c.cpf;
-      option.textContent = c.nome + " (" + c.cpf + ")";
-      clienteSelect.appendChild(option);
-    });
+    // Captura os detalhes do produto exibido na seção de detalhes
+    let codigo = document.getElementById("detalhesProduto").querySelector("#campo_Código") ? 
+                 document.getElementById("detalhesProduto").querySelector("#campo_Código").textContent.trim() : "";
+    let nomeProduto = document.getElementById("detalhesProduto").querySelector("#campo_Produto") ? 
+                      document.getElementById("detalhesProduto").querySelector("#campo_Produto").textContent.trim() : "";
+    let preco = parseFloat(document.getElementById("detalhesProduto").querySelector("#campo_Preço") ? 
+                           document.getElementById("detalhesProduto").querySelector("#campo_Preço").textContent.trim().replace("R$", "").trim().replace(",", ".") : 0);
+    let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
 
-    // Carrinho de condi
-    let carrinho = [];
+    console.log("Produto exibido nos detalhes:", { codigo, nomeProduto, preco, quantidade });
 
-    // Atualiza a lista na tela
-    function atualizarLista() {
-      const lista = document.getElementById("carrinhoLista");
-      lista.innerHTML = "";
-      carrinho.forEach((item, index) => {
-        const li = document.createElement("li");
-        li.textContent = `${item.codigo} - ${item.nome} (Qtd: ${item.quantidade})`;
-
-        // Botão remover
-        const btnRemover = document.createElement("button");
-        btnRemover.textContent = "X";
-        btnRemover.onclick = () => {
-          carrinho.splice(index, 1);
-          atualizarLista();
-        };
-        li.appendChild(btnRemover);
-        lista.appendChild(li);
-      });
+    // Valida se o código e a quantidade são válidos
+    if (!codigo || !nomeProduto || isNaN(preco) || isNaN(quantidade) || quantidade <= 0) {
+        console.error("Erro: Código, nome ou quantidade inválidos.");
+        alert("Erro ao adicionar produto: Código, nome ou quantidade inválidos.");
+        return;
     }
 
-    // Função para adicionar produto
-    document.getElementById("addProdutoBtn").onclick = () => {
-      const codigoInput = document.getElementById("codigoProdutoInput");
-      const codigo = codigoInput.value.trim().toUpperCase();
-      const msg = document.getElementById("mensagem");
-      msg.textContent = "";
-
-      if (!codigo) {
-        msg.textContent = "Digite o código do produto.";
-        return;
-      }
-
-      // Verifica se produto existe
-      const produto = produtos.find(p => p.codigo === codigo);
-      if (!produto) {
-        msg.textContent = "Produto não encontrado.";
-        return;
-      }
-
-      // Verifica se já está no carrinho e aumenta quantidade
-      const existente = carrinho.find(item => item.codigo === codigo);
-      if (existente) {
-        existente.quantidade++;
-      } else {
-        carrinho.push({ codigo: produto.codigo, nome: produto.nome, quantidade: 1 });
-      }
-
-      atualizarLista();
-      codigoInput.value = "";
-      codigoInput.focus();
+    // Criação do produto a ser adicionado ao carrinho
+    let novoProduto = {
+        codigo: codigo,
+        produto: nomeProduto,
+        quantidade: quantidade,
+        preco: preco,
+        total: quantidade * preco
     };
 
-    // Função para registrar condi
-    document.getElementById("registrarCondiBtn").onclick = async () => {
-      const cpfCliente = clienteSelect.value;
-      const dataEnvio = document.getElementById("dataEnvio").value;
-      const msg = document.getElementById("mensagem");
-      msg.style.color = "red";
-      msg.textContent = "";
+    console.log("Novo produto a ser adicionado:", novoProduto);
 
-      if (!cpfCliente) {
-        msg.textContent = "Selecione um cliente.";
+    // Adiciona ao carrinho no Local Storage
+    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    carrinho.push(novoProduto);
+    localStorage.setItem("carrinho", JSON.stringify(carrinho));
+
+    atualizarCarrinho();
+}
+
+    function atualizarCarrinho() {
+    console.log("Atualizando carrinho...");
+
+    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    console.log("Carrinho carregado:", carrinho);
+
+    let listaCarrinho = document.getElementById("listaCarrinho");
+    if (!listaCarrinho) {
+        console.error("Erro: Elemento 'listaCarrinho' não encontrado no DOM.");
         return;
-      }
-      if (carrinho.length === 0) {
-        msg.textContent = "Adicione pelo menos um produto ao carrinho.";
-        return;
-      }
-      if (!dataEnvio) {
-        msg.textContent = "Informe a data de envio.";
-        return;
-      }
+    }
 
-      // Monta o payload para enviar ao backend
-      const dadosCondi = [];
-      const codigoCondi = "COND" + Date.now(); // Exemplo de código único
+    listaCarrinho.innerHTML = ""; // Limpa a lista antes de atualizar
 
-      carrinho.forEach(item => {
-        dadosCondi.push({
-          codigo_condi: codigoCondi,
-          data: dataEnvio,
-          cpf_cliente: cpfCliente,
-          codigo_produto: item.codigo,
-          quantidade: item.quantidade
-        });
-      });
+    let total = 0;
 
-      msg.style.color = "black";
-      msg.textContent = "Registrando venda condicional...";
+    carrinho.forEach((item, index) => {
+        let li = document.createElement("li");
+        li.textContent = `${item.produto} - ${item.quantidade}x (${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}) = ${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
 
-      try {
-        // Exemplo de envio, ajuste a URL conforme seu backend
-        const response = await fetch("https://meu-backend-xi.vercel.app/api/registrar_condi", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(dadosCondi),
-        });
+        let btnRemover = document.createElement("button");
+        btnRemover.textContent = "X";
+        btnRemover.classList.add("excluir-produto");
+        btnRemover.onclick = function () {
+            removerDoCarrinho(index);
+        };
 
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.message || "Erro desconhecido");
+        li.appendChild(btnRemover);
+        listaCarrinho.appendChild(li);
+    });
+    }
+
+    function removerDoCarrinho(index) {
+    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    let itemRemovido = carrinho.splice(index, 1)[0]; // Remove o item correto
+    localStorage.setItem("carrinho", JSON.stringify(carrinho)); // Atualiza o carrinho no localStorage
+
+    // Atualiza o carrinho na interface
+    atualizarCarrinho();
+}
+
+      function carregarClientes() {
+    fetch("https://meu-backend-xi.vercel.app/api/consulta_cliente")
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (!data.clientes || data.clientes.length < 2) {
+                console.error("Nenhum cliente encontrado.");
+                return;
+            }
+
+            let clientes = data.clientes;
+
+            // Ordena os clientes em ordem alfabética pelo nome
+            clientes.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+
+            console.log(clientes);
+            let select = document.getElementById("listaClientes");
+            select.innerHTML = "<option value=''>Selecione um Cliente...</option>";
+
+            clientes.forEach(cliente => {
+                // Supondo que cada cliente tenha as propriedades "nome" e "cpf"
+                if (cliente && cliente.nome && cliente.cpf) {
+                    console.log("Cliente:", cliente.nome, "- CPF:", cliente.cpf);
+                    let option = document.createElement("option");
+                    option.value = cliente.cpf; // Armazena o CPF como valor
+                    // Se quiser exibir nome e CPF juntos:
+                    option.textContent = `${cliente.nome} - ${cliente.cpf}`;
+                    select.appendChild(option);
+                }
+            });
+        })
+        .catch(error => console.error("Erro ao buscar clientes:", error));
+}
+  
+
+       function carregarProdutos() {
+    fetch("https://meu-backend-xi.vercel.app/api/consulta_produto")
+        .then(response => response.json())
+        .then(data => {
+            if (!data.estoque || data.estoque.length < 2) {
+                console.error("Nenhum produto encontrado.");
+                return;
+            }
+
+            let produtos = data.estoque;
+
+            // Ordena os produtos em ordem alfabética pelo nome
+            produtos.sort((a, b) => a[1].localeCompare(b[1], "pt-BR"));
+
+            let select = document.getElementById("listaProdutos");
+            select.innerHTML = "<option value=''>Selecione um Produto...</option>";
+
+            produtos.forEach(linha => {
+                let codigo = linha[0];
+                let nomeProduto = linha[1];
+                if (codigo && nomeProduto) {
+                    let option = document.createElement("option");
+                    option.value = codigo;
+                    option.textContent = nomeProduto;
+                    select.appendChild(option);
+                }
+            });
+        })
+        .catch(error => console.error("Erro ao buscar produtos:", error));
+}
+
+        
+
+        function buscarProdutoPorSelect() {
+            let codigo = document.getElementById("listaProdutos").value;
+            if (codigo) {
+                buscarDetalhesProduto(codigo);
+            }
         }
 
-        msg.style.color = "green";
-        msg.textContent = "Venda condicional registrada com sucesso!";
-        carrinho = [];
-        atualizarLista();
-        clienteSelect.value = "";
-        document.getElementById("dataEnvio").value = "";
-      } catch (error) {
-        msg.style.color = "red";
-        msg.textContent = "Erro ao registrar venda condicional: " + error.message;
-      }
-    };
+        function consultarProdutoPorCodigo() {
+            let codigo = document.getElementById("codigoProdutoInput").value.trim();
+            if (!codigo) {
+                alert("Digite um código válido.");
+                return;
+            }
+            buscarDetalhesProduto(codigo);
+        }
 
-    // Preenche data com hoje por padrão
-    document.getElementById("dataEnvio").value = new Date().toISOString().split("T")[0];
+        function buscarDetalhesProduto(codigo) {
+    fetch(`${"https://meu-backend-xi.vercel.app/api/consulta_produto"}?produto=${encodeURIComponent(codigo)}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Resposta da API:", data); // Log da resposta
+
+            if (data && data["Código"]) {
+                let detalhesDiv = document.getElementById("detalhesProduto");
+                detalhesDiv.innerHTML = "";
+
+                let codigoProduto = data["Código"] || "Não encontrado";
+                let nomeProduto = data["Produto"] || "Não encontrado";
+                
+                let precoVenda = data["Preço de Venda"] !== undefined ? data["Preço de Venda"].toString().replace(",", ".") : "0.00";
+                precoVenda = parseFloat(precoVenda).toFixed(2);
+
+                console.log("Valor original do preçoVenda:", precoVenda);
+
+                if (!isNaN(precoVenda)) {
+                    precoVenda = Number(precoVenda).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                } else {
+                    precoVenda = "R$ 0,00"; // Definindo um valor padrão caso seja inválido
+                    console.error("Erro ao converter preço do produto:", data["Preço de Venda"]);
+                }
+
+                let camposExibidos = {
+                    "Código": codigoProduto,
+                    "Produto": nomeProduto,
+                    "Preço": precoVenda
+                };
+
+                for (let chave in camposExibidos) {
+                    let div = document.createElement("div");
+                    div.innerHTML = `<strong>${chave}:</strong> <span id="campo_${chave}">${camposExibidos[chave]}</span>`;
+                    detalhesDiv.appendChild(div);
+                }
+            } else {
+                console.error("Erro ao buscar produto:", data);
+                alert("Erro ao obter os detalhes do produto.");
+            }
+        })
+        .catch(error => {
+            console.error("Erro ao buscar produto:", error);
+            alert("Erro ao buscar produto. Verifique o código e tente novamente.");
+        });
+}
+
+
+
+
+
   </script>
 </body>
 </html>
