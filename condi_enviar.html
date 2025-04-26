@@ -34,20 +34,22 @@
 
     <button onclick="incluirProdutoNoCondi()">Incluir Produto no Condi</button>
 
-    <label for="tabelaCondi">Condi</label>
-<table id="tabelaCondi">
-  <thead>
-    <tr>
-      <th>Código</th>
-      <th>Produto</th>
-      <th>Quantidade</th>
-      <th>Preço Unit.</th>
-      <th>Total</th>
-      <th>Remover</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+    <div id="carrinhoContainer" style="display: none;">
+  <h3>Produtos no Condi</h3>
+  <table id="tabelaCarrinho">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Produto</th>
+        <th>Quantidade</th>
+        <th>Preço Unitário</th>
+        <th>Total</th>
+        <th>Remover</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 
     <hr>
     <label for="total">Total: <span id="total">R$ 0,00</span></label>
@@ -167,37 +169,42 @@ const registros = carrinho.map(item => ({
 }
 
  function atualizarCarrinho() {
-  console.log("Atualizando carrinho...");
-
   let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-  console.log("Carrinho carregado:", carrinho);
+  let container = document.getElementById("carrinhoContainer");
+  let tbody = document.querySelector("#tabelaCarrinho tbody");
+  let total = 0;
 
-  let tabela = document.getElementById("tabelaCondi").querySelector("tbody");
-  if (!tabela) {
-    console.error("Tabela 'tabelaCondi' não encontrada.");
+  if (carrinho.length === 0) {
+    container.style.display = "none";
+    tbody.innerHTML = "";
+    document.getElementById("total").textContent = "R$ 0,00";
     return;
   }
 
-  tabela.innerHTML = ""; // Limpa a tabela antes de atualizar
-  let total = 0;
+  container.style.display = "block";
+  tbody.innerHTML = "";
 
   carrinho.forEach((item, index) => {
-    let linha = document.createElement("tr");
+    total += item.total;
 
-    linha.innerHTML = `
+    let row = document.createElement("tr");
+
+    row.innerHTML = `
       <td>${item.codigo}</td>
       <td>${item.produto}</td>
       <td>${item.quantidade}</td>
       <td>${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
       <td>${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
-      <td><button class="excluir-produto" onclick="removerDoCarrinho(${index})">X</button></td>
+      <td><button onclick="removerDoCarrinho(${index})" class="excluir-produto">🗑️</button></td>
     `;
 
-    tabela.appendChild(linha);
-    total += item.total;
+    tbody.appendChild(row);
   });
 
-  document.getElementById("total").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  document.getElementById("total").textContent = total.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
 }
 
 
