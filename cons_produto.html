@@ -139,11 +139,9 @@
     let precoCustoInput = document.getElementById("precoCusto");
     let precoVendaInput = document.getElementById("precoVenda");
 
-    precoCustoInput.value = produto.precoCusto;
-    formatarValorParaMoeda(precoCustoInput);
+precoCustoInput.value = formatarValorParaMoeda(produto.precoCusto);
+precoVendaInput.value = formatarValorParaMoeda(produto.precoVenda);
 
-    precoVendaInput.value = produto.precoVenda;
-    formatarValorParaMoeda(precoVendaInput);
  // Tornar o campo de código somente leitura
     document.getElementById("codigo").setAttribute("readonly", true);
   } catch (error) {
@@ -175,11 +173,8 @@
     let precoCustoInput = document.getElementById("precoCusto");
     let precoVendaInput = document.getElementById("precoVenda");
 
-    precoCustoInput.value = data.precoCusto;
-    formatarValorParaMoeda(precoCustoInput);
-
-    precoVendaInput.value = data.precoVenda;
-    formatarValorParaMoeda(precoVendaInput);
+  precoCustoInput.value = formatarValorParaMoeda(produto.precoCusto);
+precoVendaInput.value = formatarValorParaMoeda(produto.precoVenda);
 
            // Retorna o <select> para a opção inicial
       document.getElementById("lista_produto").value = "";
