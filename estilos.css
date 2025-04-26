@@ -52,12 +52,20 @@ label[for="codigoProdutoInput"] {
 }
 .detalhes-produto {
   border: 1px solid #ccc;
-  padding: 10px;
-  margin-top: 10px;
-  background-color: #f9f9f9;
   border-radius: 8px;
-  font-size: 16px;
-  line-height: 1.5;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+}
+
+.detalhes-produto p {
+  margin: 5px 0;
+  font-weight: bold;
+}
+
+.detalhes-produto span {
+  font-weight: normal;
+  margin-left: 5px;
 }
 
     input, textarea, select {
