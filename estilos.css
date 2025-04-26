@@ -211,13 +211,13 @@ label[for="formaPagamento"] {
 
 #tabelaCarrinho {
   width: 100%;
+  font-size: 12px; /* Reduz o tamanho da fonte */
   border-collapse: collapse;
-  margin-top: 10px;
 }
 
 #tabelaCarrinho th, #tabelaCarrinho td {
-  border: 1px solid #ddd;
-  padding: 10px;
+  border: 1px solid #ccc;
+  padding: 5px;
   text-align: center;
 }
 
