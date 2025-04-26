@@ -230,4 +230,10 @@ label[for="formaPagamento"] {
   background-color: #ffffff;
 }
 
+#tituloProdutosNoCondi {
+  text-align: center;
+  font-size: 20px; /* Ajuste o tamanho se quiser */
+  margin-bottom: 15px;
+}
+
 
