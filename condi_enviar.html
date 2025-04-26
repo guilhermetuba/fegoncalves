@@ -304,6 +304,26 @@ const registros = carrinho.map(item => ({
             buscarDetalhesProduto(codigo);
         }
 
+function exibirDetalhesProduto(produto) {
+  const container = document.getElementById("produtoSelecionadoContainer");
+  const detalhes = document.getElementById("detalhesProduto");
+
+  if (!produto) {
+    container.style.display = "none";
+    detalhes.innerHTML = "";
+    return;
+  }
+
+  container.style.display = "block";
+
+  detalhes.innerHTML = `
+    <div><strong>Código:</strong> <span id="campo_Código">${produto.codigo}</span></div>
+    <div><strong>Produto:</strong> <span id="campo_Produto">${produto.nome}</span></div>
+    <div><strong>Preço:</strong> <span id="campo_Preço">${produto.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span></div>
+  `;
+}
+
+    
         function buscarDetalhesProduto(codigo) {
     fetch(`${"https://meu-backend-xi.vercel.app/api/consulta_produto"}?produto=${encodeURIComponent(codigo)}`)
         .then(response => response.json())
