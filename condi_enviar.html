@@ -9,7 +9,7 @@
     <div class="container">
         <a href="index.html" class="link-button">Voltar para o Início</a>
         <h2>Condi</h2>
-        <label for="dataVenda">Data do Condi:</label>
+        <label for="dataCondi">Data do Condi:</label>
         <input type="text" id="dataCondi" name="dataCondi" required>
         <label for="cliente">Cliente</label>
       <select id="listaClientes" onchange="carregarProdutos()">
@@ -53,6 +53,63 @@
     let carrinho = [];
     let total = 0;
 
+
+    document.getElementById('registrarCondiBtn').addEventListener('click', async () => {
+      const cpf = document.getElementById('listaClientes').value; 
+      if (!cpf) {
+    alert("Selecione um cliente antes de registrar o Condi");
+    return;
+  }
+
+  if (carrinho.length === 0) {
+    alert("Adicione pelo menos um produto ao carrinho antes de registrar o Condi");
+     return;
+  }
+  const dataCondi = document.getElementById('dataCondi').value;
+  carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+const registros = carrinho.map(item => ({
+  data: dataCondi,
+  cpf: cpf,
+  codigoProduto: item.codigo,
+  quantidade: item.quantidade
+}));
+
+  linhasProdutos.forEach(linha => {
+    const codigoProduto = linha.querySelector('td:nth-child(1)').innerText;
+    const quantidade = linha.querySelector('td:nth-child(2)').innerText;
+
+    registros.push({
+      data: dataCondi,
+      cpf: cpf,
+      codigoProduto: codigoProduto,
+      quantidade: quantidade
+    });
+  });
+
+  try {
+    const resposta = await fetch('/registrar-condi', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ registros })
+    });
+
+    const resultado = await resposta.json();
+
+    if (resposta.ok) {
+      alert('Condições registradas com sucesso!');
+    } else {
+      alert('Erro ao registrar: ' + resultado.erro);
+    }
+
+  } catch (erro) {
+    console.error('Erro ao enviar dados:', erro);
+    alert('Erro ao registrar condições.');
+  }
+});  
+    
+    
 
     async function incluirProdutoNoCondi() {
     console.log("Iniciando inclusão do produto no Condi...");
