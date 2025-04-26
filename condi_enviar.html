@@ -195,7 +195,7 @@ const registros = carrinho.map(item => ({
       <td>${item.quantidade}</td>
       <td>${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
       <td>${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
-      <td><button onclick="removerDoCarrinho(${index})" class="excluir-produto">🗑️</button></td>
+      <td><button onclick="removerDoCarrinho(${index})" class="excluir-produto">X</button></td>
     `;
 
     tbody.appendChild(row);
