@@ -71,38 +71,29 @@
 
 
     document.getElementById('registrarCondiBtn').addEventListener('click', async () => {
-      const cpf = document.getElementById('listaClientes').value; 
-      if (!cpf) {
+  const cpf = document.getElementById('listaClientes').value; 
+  if (!cpf) {
     alert("Selecione um cliente antes de registrar o Condi");
     return;
   }
-      
-    carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-      
+  
+  let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+  
   if (carrinho.length === 0) {
     alert("Adicione pelo menos um produto ao carrinho antes de registrar o Condi");
-     return;
+    return;
   }
+  
   const dataCondi = document.getElementById('dataCondi').value;
-  carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-const registros = carrinho.map(item => ({
-  data: dataCondi,
-  cpf: cpf,
-  codigoProduto: item.codigo,
-  quantidade: item.quantidade
-}));
 
-  linhasProdutos.forEach(linha => {
-    const codigoProduto = linha.querySelector('td:nth-child(1)').innerText;
-    const quantidade = linha.querySelector('td:nth-child(2)').innerText;
-
-    registros.push({
-      data: dataCondi,
-      cpf: cpf,
-      codigoProduto: codigoProduto,
-      quantidade: quantidade
-    });
-  });
+  // Monta os registros para envio, sem Codigo_condi
+  const registros = carrinho.map(item => ({
+    data: dataCondi,
+    cpf: cpf,
+    codigoProduto: item.codigo,
+    quantidade: item.quantidade,
+    status: "Enviado"
+  }));
 
   try {
     const resposta = await fetch('/registrar-condi', {
@@ -116,7 +107,10 @@ const registros = carrinho.map(item => ({
     const resultado = await resposta.json();
 
     if (resposta.ok) {
-      alert('Condições registradas com sucesso!');
+      alert('Condi registrado com sucesso! Código Condi: ' + resultado.Codigo_condi);
+      // Limpa carrinho após registrar
+      localStorage.removeItem("carrinho");
+      atualizarCarrinho();
     } else {
       alert('Erro ao registrar: ' + resultado.erro);
     }
@@ -125,7 +119,8 @@ const registros = carrinho.map(item => ({
     console.error('Erro ao enviar dados:', erro);
     alert('Erro ao registrar condições.');
   }
-});  
+});
+
     
     
 
