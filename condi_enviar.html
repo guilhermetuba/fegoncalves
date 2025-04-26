@@ -36,7 +36,8 @@
 
     <label for="listaCondi">Condi</label>
     <ul id="listaCondi"></ul>
-
+    <hr>
+    <label for="total">Total: <span id="total">R$ 0,00</span></label>
     <button id="registrarCondiBtn">Registrar Condi</button>
 
       </div>
@@ -48,6 +49,9 @@
     const hoje = new Date().toLocaleDateString('pt-BR');
     document.getElementById("dataCondi").value = hoje;
 };
+    let carrinho = [];
+    let total = 0;
+
 
     async function incluirProdutoNoCondi() {
     console.log("Iniciando inclusão do produto no Condi...");
@@ -119,6 +123,7 @@
         li.appendChild(btnRemover);
         listaCondi.appendChild(li);
     });
+          document.getElementById("total").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     }
 
     function removerDoCarrinho(index) {
