@@ -319,8 +319,7 @@ function exibirDetalhesProduto(produto) {
     <div><strong>Código:</strong> <span id="campo_Código">${produto.codigo}</span></div>
     <div><strong>Produto:</strong> <span id="campo_Produto">${produto.nome}</span></div>
     <div><strong>Preço:</strong> <span id="campo_Preço">${produto.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span></div>
-     <div class="campo-quantidade" style="margin-top: 10px;">
-      <label for="quantidadeProduto" class="label-quantidade"><strong>Quantidade:</strong></label>
+    <div><strong>Quantidade:</strong>
       <input type="number" id="quantidadeProduto" min="1" value="1" style="width: 60px; margin-left: 8px;">
     </div>
   `;
