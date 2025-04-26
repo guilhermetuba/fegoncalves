@@ -213,16 +213,4 @@ label[for="formaPagamento"] {
   background-color: #f0f0f0;
 }
 
-.excluir-produto {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 5px 8px;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.excluir-produto:hover {
-  background-color: #c0392b;
-}
 
