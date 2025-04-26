@@ -26,12 +26,11 @@
     <input type="text" id="codigoProdutoInput" placeholder="Digite o código">
     <button onclick="consultarProdutoPorCodigo()">Consultar</button>
     </div>
-    <hr>
-    <label for="detalhesProduto">Detalhes dos Produtos</label>
-    <div id="detalhesProduto"></div>
-    
-     <label for="quantidadeProduto" class="label-quantidade">Quantidade:</label>
-    <input type="number" id="quantidadeProduto" min="1" value="1">
+    <div id="produtoSelecionadoContainer" style="display: none;">
+  <label for="detalhesProduto">Produto Selecionado</label>
+  <div id="detalhesProduto" class="detalhes-produto">
+  </div>
+</div>
 
     <button onclick="incluirProdutoNoCarrinho()">Incluir Produto no Carrinho</button>
 
@@ -499,42 +498,45 @@ async function registrarVenda() {
             buscarDetalhesProduto(codigo);
         }
 
+        
+function exibirDetalhesProduto(produto) {
+  console.log("Chamando exibirDetalhesProduto com:", produto);
+  const container = document.getElementById("produtoSelecionadoContainer");
+  const detalhes = document.getElementById("detalhesProduto");
+
+  if (!produto) {
+    container.style.display = "none";
+    detalhes.innerHTML = "";
+    return;
+  }
+
+  container.style.display = "block";
+
+  detalhes.innerHTML = `
+    <div><strong>Código:</strong> <span id="campo_Código">${produto.codigo}</span></div>
+    <div><strong>Produto:</strong> <span id="campo_Produto">${produto.nome}</span></div>
+    <div><strong>Preço:</strong> <span id="campo_Preço">${produto.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span></div>
+    <div><strong>Quantidade:</strong>
+      <input type="number" id="quantidadeProduto" min="1" value="1" style="width: 60px; margin-left: 8px;">
+    </div>
+  `;
+}
+
+        
         function buscarDetalhesProduto(codigo) {
     fetch(`${"https://meu-backend-xi.vercel.app/api/consulta_produto"}?produto=${encodeURIComponent(codigo)}`)
         .then(response => response.json())
         .then(data => {
             console.log("Resposta da API:", data); // Log da resposta
 
-            if (data && data["Código"]) {
-                let detalhesDiv = document.getElementById("detalhesProduto");
-                detalhesDiv.innerHTML = "";
-
-                let codigoProduto = data["Código"] || "Não encontrado";
-                let nomeProduto = data["Produto"] || "Não encontrado";
-                
-                let precoVenda = data["Preço de Venda"] !== undefined ? data["Preço de Venda"].toString().replace(",", ".") : "0.00";
-                precoVenda = parseFloat(precoVenda).toFixed(2);
-
-                console.log("Valor original do preçoVenda:", precoVenda);
-
-                if (!isNaN(precoVenda)) {
-                    precoVenda = Number(precoVenda).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-                } else {
-                    precoVenda = "R$ 0,00"; // Definindo um valor padrão caso seja inválido
-                    console.error("Erro ao converter preço do produto:", data["Preço de Venda"]);
-                }
-
-                let camposExibidos = {
-                    "Código": codigoProduto,
-                    "Produto": nomeProduto,
-                    "Preço": precoVenda
+             if (data && data["Código"]) {
+                const produto = {
+                    codigo: data["Código"],
+                    nome: data["Produto"],
+                    preco: parseFloat((data["Preço de Venda"] || "0").toString().replace(",", "."))
                 };
 
-                for (let chave in camposExibidos) {
-                    let div = document.createElement("div");
-                    div.innerHTML = `<strong>${chave}:</strong> <span id="campo_${chave}">${camposExibidos[chave]}</span>`;
-                    detalhesDiv.appendChild(div);
-                }
+                exibirDetalhesProduto(produto);
             } else {
                 console.error("Erro ao buscar produto:", data);
                 alert("Erro ao obter os detalhes do produto.");
