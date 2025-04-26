@@ -45,6 +45,8 @@
     window.onload = function() {
     localStorage.removeItem("carrinho"); // Limpa o carrinho
     atualizarCarrinho(); // Atualiza o carrinho na interface
+    const hoje = new Date().toLocaleDateString('pt-BR');
+    document.getElementById("dataCondi").value = hoje;
 };
 
     async function incluirProdutoNoCondi() {
