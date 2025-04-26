@@ -35,8 +35,25 @@
 
     <button onclick="incluirProdutoNoCarrinho()">Incluir Produto no Carrinho</button>
 
-    <label for="listaCarrinho">Carrinho</label>
-    <ul id="listaCarrinho"></ul>
+  <div id="carrinhoContainerVendas" style="display: none;">
+  <h3 id="tituloProdutosNoCarrinho">Produtos no Carrinho</h3>
+  <div class="tabela-wrapper">
+    <table id="tabelaCarrinhoVendas">
+      <thead>
+        <tr>
+          <th>Cód</th>
+          <th>Produto</th>
+          <th>Qtde</th>
+          <th>Preço</th>
+          <th>Subtotal</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
 
     <hr>
     <label for="subtotal">Subtotal: <span id="subtotal">R$ 0,00</span></label>
@@ -125,45 +142,56 @@ async function incluirProdutoNoCarrinho() {
 }
 
 function atualizarCarrinho() {
-    console.log("Atualizando carrinho...");
+  console.log("Atualizando carrinho...");
 
-    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-    console.log("Carrinho carregado:", carrinho);
+  let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+  console.log("Carrinho carregado:", carrinho);
 
-    let listaCarrinho = document.getElementById("listaCarrinho");
-    if (!listaCarrinho) {
-        console.error("Erro: Elemento 'listaCarrinho' não encontrado no DOM.");
-        return;
-    }
+  let container = document.getElementById("carrinhoContainerVendas");
+  let tbody = document.querySelector("#tabelaCarrinhoVendas tbody");
+  let total = 0;
 
-    listaCarrinho.innerHTML = ""; // Limpa a lista antes de atualizar
+  if (!container || !tbody) {
+    console.error("Erro: Elementos da tabela não encontrados no DOM.");
+    return;
+  }
 
-    let total = 0;
-
-    carrinho.forEach((item, index) => {
-        let li = document.createElement("li");
-        li.textContent = `${item.produto} - ${item.quantidade}x (${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}) = ${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
-
-        let btnRemover = document.createElement("button");
-        btnRemover.textContent = "X";
-        btnRemover.classList.add("excluir-produto");
-        btnRemover.onclick = function () {
-            removerDoCarrinho(index);
-        };
-
-        li.appendChild(btnRemover);
-        listaCarrinho.appendChild(li);
-
-        total += item.total;
-    });
-
-    // Atualiza o subtotal no campo correspondente
-    document.getElementById("subtotal").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
-    // Chama a função para atualizar o total
+  if (carrinho.length === 0) {
+    container.style.display = "none";
+    tbody.innerHTML = "";
+    document.getElementById("subtotal").textContent = "R$ 0,00";
     atualizarTotal();
+    return;
+  }
 
-     console.log("Carrinho atualizado no DOM.");
+  container.style.display = "block";
+  tbody.innerHTML = "";
+
+  carrinho.forEach((item, index) => {
+    total += item.total;
+
+    let row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${item.codigo || ""}</td>
+      <td>${item.produto}</td>
+      <td>${item.quantidade}</td>
+      <td>${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+      <td>${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+      <td><button onclick="removerDoCarrinho(${index})" class="excluir-produto">X</button></td>
+    `;
+
+    tbody.appendChild(row);
+  });
+
+  document.getElementById("subtotal").textContent = total.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
+
+  atualizarTotal();
+
+  console.log("Carrinho atualizado no DOM.");
 }
 
 
