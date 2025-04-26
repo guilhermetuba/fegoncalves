@@ -111,7 +111,7 @@
 
     carrinho.forEach((item, index) => {
         let li = document.createElement("li");
-        li.textContent = `${item.codigo} - ${item.produto} - ${item.quantidade}x (${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}) = ${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+        li.textContent = `Cod ${item.codigo} - ${item.produto} - ${item.quantidade}x (${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}) = ${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
 
         let btnRemover = document.createElement("button");
         btnRemover.textContent = "X";
