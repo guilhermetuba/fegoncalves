@@ -26,11 +26,12 @@
     <button onclick="consultarProdutoPorCodigo()">Consultar</button>
     </div>
     <hr>
-    <label for="detalhesProduto">Detalhes dos Produtos</label>
-    <div id="detalhesProduto"></div>
-    
-     <label for="quantidadeProduto" class="label-quantidade">Quantidade:</label>
-    <input type="number" id="quantidadeProduto" min="1" value="1">
+   <div id="produtoSelecionadoContainer" style="display: none;">
+  <label for="detalhesProduto">Produto Selecionado</label>
+  <div id="detalhesProduto" class="detalhes-produto"></div>
+  <label for="quantidadeProduto" class="label-quantidade">Quantidade:</label>
+  <input type="number" id="quantidadeProduto" min="1" value="1">
+</div>
 
     <button onclick="incluirProdutoNoCondi()">Incluir Produto no Condi</button>
 
