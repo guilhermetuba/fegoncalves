@@ -147,8 +147,8 @@ function atualizarCarrinho() {
   let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
   console.log("Carrinho carregado:", carrinho);
 
-  let container = document.getElementById("carrinhoContainerVendas");
-  let tbody = document.querySelector("#tabelaCarrinhoVendas tbody");
+  let container = document.getElementById("carrinhoContainer");
+  let tbody = document.querySelector("#tabelaCarrinho tbody");
   let total = 0;
 
   if (!container || !tbody) {
