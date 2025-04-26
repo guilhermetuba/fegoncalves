@@ -200,6 +200,7 @@ label[for="formaPagamento"] {
 #carrinhoContainer {
   margin-top: 15px;
   padding: 15px;
+padding-top: 0;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #f9f9f9;
