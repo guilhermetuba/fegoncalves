@@ -34,8 +34,21 @@
 
     <button onclick="incluirProdutoNoCondi()">Incluir Produto no Condi</button>
 
-    <label for="listaCondi">Condi</label>
-    <ul id="listaCondi"></ul>
+    <label for="tabelaCondi">Condi</label>
+<table id="tabelaCondi">
+  <thead>
+    <tr>
+      <th>Código</th>
+      <th>Produto</th>
+      <th>Quantidade</th>
+      <th>Preço Unit.</th>
+      <th>Total</th>
+      <th>Remover</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
     <hr>
     <label for="total">Total: <span id="total">R$ 0,00</span></label>
     <br>
@@ -153,38 +166,40 @@ const registros = carrinho.map(item => ({
     atualizarCarrinho();
 }
 
-    function atualizarCarrinho() {
-    console.log("Atualizando carrinho...");
+ function atualizarCarrinho() {
+  console.log("Atualizando carrinho...");
 
-    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-    console.log("Carrinho carregado:", carrinho);
+  let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+  console.log("Carrinho carregado:", carrinho);
 
-    let listaCondi = document.getElementById("listaCondi");
-    if (!listaCondi) {
-        console.error("Erro: Elemento 'listaCondi' não encontrado no DOM.");
-        return;
-    }
+  let tabela = document.getElementById("tabelaCondi").querySelector("tbody");
+  if (!tabela) {
+    console.error("Tabela 'tabelaCondi' não encontrada.");
+    return;
+  }
 
-    listaCondi.innerHTML = ""; // Limpa a lista antes de atualizar
+  tabela.innerHTML = ""; // Limpa a tabela antes de atualizar
+  let total = 0;
 
-    let total = 0;
+  carrinho.forEach((item, index) => {
+    let linha = document.createElement("tr");
 
-    carrinho.forEach((item, index) => {
-        let li = document.createElement("li");
-        li.textContent = `Cod ${item.codigo} - ${item.produto} - ${item.quantidade}x (${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}) = ${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
-        total += item.total;
-        let btnRemover = document.createElement("button");
-        btnRemover.textContent = "X";
-        btnRemover.classList.add("excluir-produto");
-        btnRemover.onclick = function () {
-            removerDoCarrinho(index);
-        };
+    linha.innerHTML = `
+      <td>${item.codigo}</td>
+      <td>${item.produto}</td>
+      <td>${item.quantidade}</td>
+      <td>${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+      <td>${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+      <td><button class="excluir-produto" onclick="removerDoCarrinho(${index})">X</button></td>
+    `;
 
-        li.appendChild(btnRemover);
-        listaCondi.appendChild(li);
-    });
-          document.getElementById("total").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-    }
+    tabela.appendChild(linha);
+    total += item.total;
+  });
+
+  document.getElementById("total").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
 
     function removerDoCarrinho(index) {
     let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
