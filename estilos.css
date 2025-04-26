@@ -196,21 +196,38 @@ label[for="formaPagamento"] {
   cursor: not-allowed;
   opacity: 0.7;
 }
+
+#carrinhoContainer {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.tabela-wrapper {
+  overflow-x: auto;
+}
+
 #tabelaCarrinho {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
 }
 
-#tabelaCarrinho th,
-#tabelaCarrinho td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: left;
+#tabelaCarrinho th, #tabelaCarrinho td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
 }
 
 #tabelaCarrinho th {
-  background-color: #f0f0f0;
+  background-color: #e0e0e0;
+  font-weight: bold;
+}
+
+#tabelaCarrinho td {
+  background-color: #ffffff;
 }
 
 
