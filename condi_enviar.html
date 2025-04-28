@@ -41,7 +41,6 @@
       <tr>
         <th>Cód</th>
         <th>Produto</th>
-        <th>Qtde</th>
         <th>Preço</th>
         <th>Subtotal</th>
         <th></th>
@@ -91,7 +90,6 @@
     data: dataCondi,
     cpf: cpf,
     codigoProduto: item.codigo,
-    quantidade: item.quantidade,
     status: "Enviado"
   }));
 
@@ -134,14 +132,13 @@
                       document.getElementById("detalhesProduto").querySelector("#campo_Produto").textContent.trim() : "";
     let preco = parseFloat(document.getElementById("detalhesProduto").querySelector("#campo_Preço") ? 
                            document.getElementById("detalhesProduto").querySelector("#campo_Preço").textContent.trim().replace("R$", "").trim().replace(",", ".") : 0);
-    let quantidade = parseInt(document.getElementById("quantidadeProduto").value);
-
-    console.log("Produto exibido nos detalhes:", { codigo, nomeProduto, preco, quantidade });
+ 
+    console.log("Produto exibido nos detalhes:", { codigo, nomeProduto, preco });
 
     // Valida se o código e a quantidade são válidos
-    if (!codigo || !nomeProduto || isNaN(preco) || isNaN(quantidade) || quantidade <= 0) {
-        console.error("Erro: Código, nome ou quantidade inválidos.");
-        alert("Erro ao adicionar produto: Código, nome ou quantidade inválidos.");
+    if (!codigo || !nomeProduto || isNaN(preco) <= 0) {
+        console.error("Erro: Código ou nome inválidos.");
+        alert("Erro ao adicionar produto: Código ou nome inválidos.");
         return;
     }
 
@@ -149,9 +146,7 @@
     let novoProduto = {
         codigo: codigo,
         produto: nomeProduto,
-        quantidade: quantidade,
         preco: preco,
-        total: quantidade * preco
     };
 
     console.log("Novo produto a ser adicionado:", novoProduto);
@@ -188,7 +183,6 @@
     row.innerHTML = `
       <td>${item.codigo}</td>
       <td>${item.produto}</td>
-      <td>${item.quantidade}</td>
       <td>${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
       <td>${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
       <td><button onclick="removerDoCarrinho(${index})" class="excluir-produto">X</button></td>
@@ -314,10 +308,7 @@ function exibirDetalhesProduto(produto) {
     <div><strong>Código:</strong> <span id="campo_Código">${produto.codigo}</span></div>
     <div><strong>Produto:</strong> <span id="campo_Produto">${produto.nome}</span></div>
     <div><strong>Preço:</strong> <span id="campo_Preço">${produto.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span></div>
-    <div><strong>Quantidade:</strong>
-      <input type="number" id="quantidadeProduto" min="1" value="1" style="width: 60px; margin-left: 8px;">
-    </div>
-  `;
+     `;
 }
 
     
