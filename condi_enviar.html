@@ -176,7 +176,7 @@
   tbody.innerHTML = "";
 
   carrinho.forEach((item, index) => {
-    total += item.total;
+    total += item.preco; // ← aqui mudou: somar o preço, não o item.total!
 
     let row = document.createElement("tr");
 
@@ -184,7 +184,7 @@
       <td>${item.codigo}</td>
       <td>${item.produto}</td>
       <td>${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
-      <td>${item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+      <td>${item.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td> <!-- aqui também mudou -->
       <td><button onclick="removerDoCarrinho(${index})" class="excluir-produto">X</button></td>
     `;
 
@@ -196,6 +196,7 @@
     currency: "BRL"
   });
 }
+
 
 
     function removerDoCarrinho(index) {
