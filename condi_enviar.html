@@ -136,7 +136,7 @@
     console.log("Produto exibido nos detalhes:", { codigo, nomeProduto, preco });
 
     // Valida se o código e a quantidade são válidos
-    if (!codigo || !nomeProduto || isNaN(preco) <= 0) {
+  if (!codigo || !nomeProduto || isNaN(preco) || preco <= 0) {
         console.error("Erro: Código ou nome inválidos.");
         alert("Erro ao adicionar produto: Código ou nome inválidos.");
         return;
