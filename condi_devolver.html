@@ -63,7 +63,7 @@ async function carregarCondisEnviados() {
   if (!cpf) return;
 
   try {
-    const resposta = await fetch("https://meu-backend-xi.vercel.app/api/condis_enviados?cpf=" + cpf);
+    const resposta = await fetch("https://meu-backend-xi.vercel.app/api/condi?cpf=" + cpf);
     const data = await resposta.json();
     console.log("Condis recebidos para o CPF:", cpf, data);
 
