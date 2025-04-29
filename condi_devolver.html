@@ -1,1 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Devolução de Condi</title>
+  <link rel="stylesheet" href="estilos.css" />
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="link-button">Voltar para o Início</a>
+    <h2>Devolução de Condi</h2>
+
+    <label for="listaClientes">Selecione o Cliente</label>
+    <select id="listaClientes" onchange="carregarCondisEnviados()">
+      <option value="">Selecione um Cliente...</option>
+    </select>
+
+    <div id="condiContainer" style="display: none;">
+      <h3>Produtos com status "Enviado"</h3>
+      <div class="tabela-wrapper">
+        <table id="tabelaCondis">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>CPF</th>
+              <th>Código</th>
+              <th>Produto</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>3
+    
+async function carregarClientes() {
+  const res = await fetch('/api/condi'); // mesma rota do POST
+  const clientes = await res.json();
+  const select = document.getElementById('selectCliente');
+
+  clientes.forEach(cliente => {
+    const option = document.createElement('option');
+    option.value = cliente.cpf;
+    option.textContent = `${cliente.nome} (${cliente.cpf})`;
+    select.appendChild(option);
+  });
+}
+
+    async function carregarCondisEnviados() {
+      const cpf = document.getElementById("listaClientes").value;
+      if (!cpf) return;
+
+      try {
+        const resposta = await fetch("https://meu-backend-xi.vercel.app/api/condis_enviados?cpf=" + cpf);
+        const data = await resposta.json();
+
+        const tabela = document.getElementById("tabelaCondis").querySelector("tbody");
+        tabela.innerHTML = "";
+
+        if (data.condis && data.condis.length > 0) {
+          data.condis.forEach((item, index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${item.data}</td>
+              <td>${item.cpf}</td>
+              <td>${item.codigoProduto}</td>
+              <td>${item.nomeProduto || ""}</td>
+              <td><button onclick="marcarComoDevolvido('${item.id}')" class="excluir-produto">Condi Devolvido</button></td>
+            `;
+            tabela.appendChild(row);
+          });
+
+          document.getElementById("condiContainer").style.display = "block";
+        } else {
+          alert("Nenhum produto com status 'Enviado' encontrado para este cliente.");
+          document.getElementById("condiContainer").style.display = "none";
+        }
+
+      } catch (erro) {
+        console.error("Erro ao carregar Condis enviados:", erro);
+      }
+    }
+
+    async function marcarComoDevolvido(idCondi) {
+      if (!confirm("Tem certeza que deseja marcar este item como 'Devolvido'?")) return;
+
+      try {
+        const resposta = await fetch("https://meu-backend-xi.vercel.app/api/condi_devolvido", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ id: idCondi })
+        });
+
+        const resultado = await resposta.json();
+        if (resposta.ok) {
+          alert("Condi marcado como 'Devolvido'.");
+          carregarCondisEnviados(); // Recarrega lista
+        } else {
+          alert("Erro: " + resultado.erro);
+        }
+      } catch (erro) {
+        console.error("Erro ao atualizar status:", erro);
+        alert("Erro ao marcar como devolvido.");
+      }
+    }
+
+    window.onload = () => {
+      carregarClientes();
+    };
+  </script>
+</body>
+</html>
 
