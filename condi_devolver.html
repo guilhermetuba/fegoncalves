@@ -99,7 +99,7 @@ async function marcarComoDevolvido(idCondi) {
   if (!confirm("Tem certeza que deseja marcar este item como 'Devolvido'?")) return;
 
   try {
-    const resposta = await fetch("https://meu-backend-xi.vercel.app/api/condi_devolvido", {
+    const resposta = await fetch("https://meu-backend-xi.vercel.app/api/condi?action=devolver", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
