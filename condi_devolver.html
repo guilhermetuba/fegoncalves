@@ -34,12 +34,13 @@
     </div>
   </div>
 
-  <script>3
+  <script>
     
 async function carregarClientes() {
   const res = await fetch('https://meu-backend-xi.vercel.app/api/condi'); // mesma rota do POST
   const clientes = await res.json();
-  const select = document.getElementById('selectCliente');
+  const select = document.getElementById('listaClientes');
+
 
   clientes.forEach(cliente => {
     const option = document.createElement('option');
