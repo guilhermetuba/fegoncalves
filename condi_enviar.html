@@ -108,6 +108,7 @@
       alert('Condi registrado com sucesso!);
       // Limpa carrinho após registrar
       localStorage.removeItem("carrinho");
+      window.location.reload();
       atualizarCarrinho();
     } else {
       alert('Erro ao registrar: ' + resultado.erro);
