@@ -37,7 +37,7 @@
   <script>3
     
 async function carregarClientes() {
-  const res = await fetch('/api/condi'); // mesma rota do POST
+  const res = await fetch('https://meu-backend-xi.vercel.app/api/condi'); // mesma rota do POST
   const clientes = await res.json();
   const select = document.getElementById('selectCliente');
 
