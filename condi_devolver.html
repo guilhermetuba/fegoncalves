@@ -15,7 +15,7 @@
       <option value="">Selecione um Cliente...</option>
     </select>
 
-    <div id="condiContainer" style="display: none;">
+    <div id="carrinhoContainer" style="display: none;">
       <h4>Peças enviadas no Condi</h4>
       <div class="tabela-wrapper">
         <table id="tabelaCarrinho">
@@ -79,11 +79,11 @@ async function carregarCondisEnviados() {
         tabela.appendChild(row);
       });
 
-      document.getElementById("condiContainer").style.display = "block";
+      document.getElementById("carrinhoContainer").style.display = "block";
     } else {
       console.warn("Nenhum produto com status 'Enviado' encontrado para este cliente.");
       alert("Nenhum produto com status 'Enviado' encontrado para este cliente.");
-      document.getElementById("condiContainer").style.display = "none";
+      document.getElementById("carrinhoContainer").style.display = "none";
     }
 
   } catch (erro) {
