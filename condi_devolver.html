@@ -16,16 +16,14 @@
     </select>
 
     <div id="condiContainer" style="display: none;">
-      <h3>Produtos com status "Enviado"</h3>
+      <h4>Peças enviadas no Condi</h4>
       <div class="tabela-wrapper">
         <table id="tabelaCondis">
           <thead>
             <tr>
               <th>Data</th>
-              <th>CPF</th>
               <th>Código</th>
-              <th>Produto</th>
-              <th></th>
+              <th>Peça</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -75,11 +73,9 @@ async function carregarCondisEnviados() {
         const row = document.createElement("tr");
         row.innerHTML = `
           <td>${item.data}</td>
-          <td>${item.cpf}</td>
           <td>${item.codigoProduto}</td>
           <td>${item.nomeProduto || ""}</td>
-          <td><button onclick="marcarComoDevolvido('${item.id}')" class="excluir-produto">Condi Devolvido</button></td>
-        `;
+                  `;
         tabela.appendChild(row);
       });
 
