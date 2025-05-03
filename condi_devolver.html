@@ -49,7 +49,7 @@ async function carregarClientes() {
     clientes.forEach(cliente => {
       const option = document.createElement('option');
       option.value = cliente.cpf;
-      option.textContent = `${cliente.nome} (${cliente.cpf})`;
+      option.textContent = cliente.nome;
       select.appendChild(option);
     });
   } catch (erro) {
