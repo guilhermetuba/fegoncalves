@@ -18,7 +18,7 @@
     <div id="condiContainer" style="display: none;">
       <h4>Peças enviadas no Condi</h4>
       <div class="tabela-wrapper">
-        <table id="tabelaCondis">
+        <table id="tabelaCarrinho">
           <thead>
             <tr>
               <th>Data</th>
@@ -65,7 +65,7 @@ async function carregarCondisEnviados() {
     const data = await resposta.json();
     console.log("Condis recebidos para o CPF:", cpf, data);
 
-    const tabela = document.getElementById("tabelaCondis").querySelector("tbody");
+    const tabela = document.getElementById("tabelaCarrinho").querySelector("tbody");
     tabela.innerHTML = "";
 
     if (data.condis && data.condis.length > 0) {
