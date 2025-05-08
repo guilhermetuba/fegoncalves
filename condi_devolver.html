@@ -29,7 +29,7 @@
           <tbody></tbody>
         </table>
         <hr>
-        <button id="btn-devolver" class="botao-devolver">Confirmar devolução do Condi</button>
+        <button id="btn-devolver" class="botao-devolver" onclick="marcarTodosComoDevolvidos()">Confirmar devolução do Condi</button>
         <hr>
         <a href="index.html" class="link-button">Voltar para o Início</a>
       </div>
@@ -95,30 +95,36 @@ async function carregarCondisEnviados() {
   }
 }
 
-async function marcarComoDevolvido(idCondi) {
-  if (!confirm("Tem certeza que deseja marcar este item como 'Devolvido'?")) return;
+ async function marcarTodosComoDevolvidos() {
+  const cpf = document.getElementById("listaClientes").value;
+  if (!cpf) {
+    alert("Selecione um cliente primeiro.");
+    return;
+  }
+
+  if (!confirm("Tem certeza que deseja marcar todas as peças como 'Devolvido'?")) return;
 
   try {
-    const resposta = await fetch("https://meu-backend-xi.vercel.app/api/condi?action=devolver", {
+    const resposta = await fetch("https://meu-backend-xi.vercel.app/api/condi?action=devolver-por-cpf", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ id: idCondi })
+      body: JSON.stringify({ cpf: cpf })
     });
 
     const resultado = await resposta.json();
-    console.log("Resultado da devolução:", resultado);
+    console.log("Resultado da devolução por CPF:", resultado);
 
     if (resposta.ok) {
-      alert("Condi marcado como 'Devolvido'.");
-      carregarCondisEnviados(); // Recarrega lista
+      alert("Todas as peças foram devolvidas'.");
+      carregarCondisEnviados(); // Atualiza a tabela
     } else {
       alert("Erro: " + resultado.erro);
     }
   } catch (erro) {
-    console.error("Erro ao atualizar status:", erro);
-    alert("Erro ao marcar como devolvido.");
+    console.error("Erro ao devolver Condis:", erro);
+    alert("Erro ao marcar devoluções.");
   }
 }
 
