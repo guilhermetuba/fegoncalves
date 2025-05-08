@@ -117,8 +117,8 @@ async function carregarCondisEnviados() {
     console.log("Resultado da devolução por CPF:", resultado);
 
     if (resposta.ok) {
-      alert("Todas as peças foram devolvidas'.");
-      carregarCondisEnviados(); // Atualiza a tabela
+      alert("Todas as peças foram devolvidas");
+      carregarClientes();
     } else {
       alert("Erro: " + resultado.erro);
     }
