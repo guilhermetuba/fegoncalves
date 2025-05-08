@@ -118,7 +118,7 @@ async function carregarCondisEnviados() {
 
     if (resposta.ok) {
       alert("Todas as peças foram devolvidas");
-      carregarClientes();
+      location.reload();
     } else {
       alert("Erro: " + resultado.erro);
     }
