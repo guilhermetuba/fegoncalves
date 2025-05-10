@@ -2,14 +2,14 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Contas a Receber</title>
-  <link rel="stylesheet" href="estilos.css">
+ <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
-  <h1>Contas a Receber</h1>
-
-  <label for="filtro">Filtrar por situação:</label>
+    <div class="container">
+        <a href="index.html" class="link-button">Voltar para o Início</a>
+        <h2>Contas a Receber</h2>
+        <label for="filtro">Filtrar por situação:</label>
   <select id="filtro" onchange="aplicarFiltro()">
     <option value="todas">Todas</option>
     <option value="atrasadas">Atrasadas</option>
@@ -18,23 +18,34 @@
     <option value="90">A vencer em 90 dias ou mais</option>
   </select>
 
-  <table id="tabelaContas">
+    
+
+
+
+    <div id="carrinhoContainer" style="display: none;">
+  <h3 id="tituloCarrinho">Produtos no Condi</h3>
+  <div class="tabela-wrapper">
+  <table id="tabelaCarrinho">
     <thead>
       <tr>
         <th>Cliente</th>
         <th>CPF</th>
-        <th>Valor (R$)</th>
+        <th>Valor</th>
         <th>Vencimento</th>
+        <th></th>
       </tr>
     </thead>
     <tbody></tbody>
-    <tfoot>
-      <tr>
-        <td colspan="2">Total</td>
-        <td colspan="2" id="total">R$ 0,00</td>
-      </tr>
-    </tfoot>
   </table>
+  </div>
+</div>
+
+    <hr>
+    <label for="total">Total: <span id="total">R$ 0,00</span></label>
+    <br>
+
+      </div>
+  <a href="index.html" class="link-button">Voltar para o Início</a>
 
   <script>
     let contas = [];
