@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contas a Receber</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    h1 {
+      color: #333;
+    }
+    label, select {
+      font-size: 1rem;
+      margin-right: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #fff;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    tfoot td {
+      font-weight: bold;
+      background-color: #e8e8e8;
+    }
+  </style>
+</head>
+<body>
+  <h1>Contas a Receber</h1>
+
+  <label for="filtro">Filtrar por situação:</label>
+  <select id="filtro" onchange="aplicarFiltro()">
+    <option value="todas">Todas</option>
+    <option value="atrasadas">Atrasadas</option>
+    <option value="30">A vencer em até 30 dias</option>
+    <option value="60">A vencer em até 60 dias</option>
+    <option value="90">A vencer em 90 dias ou mais</option>
+  </select>
+
+  <table id="tabelaContas">
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>CPF</th>
+        <th>Valor (R$)</th>
+        <th>Vencimento</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2">Total</td>
+        <td colspan="2" id="total">R$ 0,00</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <script>
+    let contas = [];
+
+    async function carregarDados() {
+      try {
+        // Substituir quando API estiver pronta
+        // const response = await fetch('https://seu-backend/api/contas');
+        // contas = await response.json();
+
+        // MOCK de dados para simulação
+        contas = [
+          { cpf: '12345678900', valor: 150, vencimento: '2025-05-05', status: 'Em aberto' },
+          { cpf: '11122233344', valor: 300, vencimento: '2025-06-01', status: 'Em aberto' },
+          { cpf: '55566677788', valor: 450, vencimento: '2025-03-15', status: 'Pago' },
+          { cpf: '12345678900', valor: 200, vencimento: '2025-06-20', status: 'Em aberto' },
+        ];
+
+        contas = contas.filter(c => c.status === 'Em aberto');
+
+        for (let c of contas) {
+          c.nome = await buscarNomeCliente(c.cpf);
+        }
+
+        aplicarFiltro();
+      } catch (error) {
+        alert('Erro ao carregar dados: ' + error);
+      }
+    }
+
+    async function buscarNomeCliente(cpf) {
+      try {
+        const response = await fetch(`https://meu-backend-xi.vercel.app/api/consulta_cliente?cpf=${cpf}`);
+        const dados = await response.json();
+        return dados.nome || 'Cliente não encontrado';
+      } catch (error) {
+        return 'Erro na consulta';
+      }
+    }
+
+    function aplicarFiltro() {
+      const filtro = document.getElementById('filtro').value;
+      const hoje = new Date();
+      const corpo = document.querySelector('#tabelaContas tbody');
+      corpo.innerHTML = '';
+      let total = 0;
+
+      contas.forEach(conta => {
+        const venc = new Date(conta.vencimento);
+        const dias = Math.ceil((venc - hoje) / (1000 * 60 * 60 * 24));
+
+        let incluir = false;
+        if (filtro === 'todas') incluir = true;
+        else if (filtro === 'atrasadas' && dias < 0) incluir = true;
+        else if (filtro === '30' && dias >= 0 && dias <= 30) incluir = true;
+        else if (filtro === '60' && dias > 30 && dias <= 60) incluir = true;
+        else if (filtro === '90' && dias > 60) incluir = true;
+
+        if (incluir) {
+          const linha = document.createElement('tr');
+          linha.innerHTML = `
+            <td>${conta.nome}</td>
+            <td>${conta.cpf}</td>
+            <td>R$ ${conta.valor.toFixed(2)}</td>
+            <td>${new Date(conta.vencimento).toLocaleDateString()}</td>
+          `;
+          corpo.appendChild(linha);
+          total += conta.valor;
+        }
+      });
+
+      document.getElementById('total').textContent = `R$ ${total.toFixed(2)}`;
+    }
+
+    carregarDados();
+  </script>
+</body>
+</html>
