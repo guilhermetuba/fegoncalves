@@ -93,7 +93,7 @@
       const linha = document.createElement('tr');
       linha.innerHTML = `
         <td>${conta.nome}</td>
-        <td>R$ ${conta.valor.toFixed(2)}</td>
+        <td>R$ ${conta.valor.toFixed(2).replace('.', ',')}</td>
         <td>${new Date(conta.vencimento).toLocaleDateString()}</td>
       `;
       corpo.appendChild(linha);
