@@ -96,7 +96,7 @@ async function aplicarFiltro() {
     }
   }
 
- function exibirContas(contas) {
+function exibirContas(contas) {
   const corpo = document.querySelector('#tabelaCarrinho tbody');
   corpo.innerHTML = '';
   let total = 0;
@@ -107,7 +107,7 @@ async function aplicarFiltro() {
       style: "currency",
       currency: "BRL"
     });
-const vencimentoFormatado = conta.vencimento; // já está no formato correto
+    const vencimentoFormatado = conta.vencimento;
 
     linha.innerHTML = `
       <td>${conta.nome}</td>
@@ -118,14 +118,21 @@ const vencimentoFormatado = conta.vencimento; // já está no formato correto
     total += conta.valor;
   });
 
-  document.getElementById('carrinhoContainer').style.display = contas.length ? 'block' : 'none';
+  const carrinhoContainer = document.getElementById('carrinhoContainer');
+  carrinhoContainer.style.display = contas.length ? 'block' : 'none';
 
+  // Remove qualquer total anterior
+  const totalAntigo = carrinhoContainer.querySelector('#totalWrapper');
+  if (totalAntigo) {
+    carrinhoContainer.removeChild(totalAntigo);
+  }
+
+  // Cria o novo total
   const totalElement = document.createElement('div');
+  totalElement.id = 'totalWrapper';
   totalElement.innerHTML = `<hr><label for="total">Total: <span id="total">${total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span></label>`;
-  document.getElementById('carrinhoContainer').appendChild(totalElement);
+  carrinhoContainer.appendChild(totalElement);
 }
-
-
 
   function formatarData(dataBR) {
   const [dia, mes, ano] = dataBR.split('/');
