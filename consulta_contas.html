@@ -11,6 +11,7 @@
         <h2>Contas a Receber</h2>
         <label for="filtro">Filtrar por situação:</label>
   <select id="filtro" onchange="aplicarFiltro()">
+    <option value="">-- Selecione --</option>
     <option value="todas">Todas</option>
     <option value="atrasadas">Atrasadas</option>
     <option value="30">A vencer em até 30 dias</option>
@@ -25,7 +26,6 @@
     <thead>
       <tr>
         <th>Cliente</th>
-        <th>CPF</th>
         <th>Valor</th>
         <th>Vencimento</th>
         <th></th>
@@ -93,7 +93,6 @@
       const linha = document.createElement('tr');
       linha.innerHTML = `
         <td>${conta.nome}</td>
-        <td>${conta.cpf}</td>
         <td>R$ ${conta.valor.toFixed(2)}</td>
         <td>${new Date(conta.vencimento).toLocaleDateString()}</td>
       `;
