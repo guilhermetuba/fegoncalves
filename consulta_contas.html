@@ -101,7 +101,7 @@
     });
 
     document.getElementById('carrinhoContainer').style.display = contas.length ? 'block' : 'none';
-    document.getElementById('total').textContent = `R$ ${total.toFixed(2)}`;
+    document.getElementById('total').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
   }
 
   function formatarData(dataBR) {
