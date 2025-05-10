@@ -94,7 +94,7 @@
       linha.innerHTML = `
         <td>${conta.nome}</td>
         <td>R$ ${conta.valor.toFixed(2).replace('.', ',')}</td>
-        <td>${new Date(conta.vencimento).toLocaleDateString()}</td>
+        <td>${formatarData(conta.vencimento)}</td>
       `;
       corpo.appendChild(linha);
       total += conta.valor;
@@ -104,6 +104,11 @@
     document.getElementById('total').textContent = `R$ ${total.toFixed(2)}`;
   }
 
+  function formatarData(dataBR) {
+  const [dia, mes, ano] = dataBR.split('/');
+  return `${dia}/${mes}/${ano}`;
+}
+  
 </script>
 
 </body>
