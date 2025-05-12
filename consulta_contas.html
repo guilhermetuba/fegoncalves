@@ -85,54 +85,76 @@ async function aplicarFiltro() {
   }
 }
 
+  async function buscarNomePorCpf(cpf) {
+  try {
+    const response = await fetch('https:///meu-backend-xi.vercel.app/api/receber_parcial', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ cpf })
+    });
 
-  async function buscarNomeCliente(cpf) {
-    try {
-      const response = await fetch(`https://meu-backend-xi.vercel.app/api/consulta_cliente?cpf=${cpf}`);
-      const dados = await response.json();
-      return dados.nome || 'Cliente não encontrado';
-    } catch (error) {
-      return 'Erro na consulta';
-    }
+    if (!response.ok) throw new Error('Erro ao buscar nome');
+
+    const data = await response.json();
+    return data.nome || 'Desconhecido';
+  } catch (error) {
+    console.error(error);
+    return 'Erro ao buscar';
   }
+}
 
-function exibirContas(contas) {
+
+async function exibirContas(contas) {
   const corpo = document.querySelector('#tabelaCarrinho tbody');
   corpo.innerHTML = '';
   let total = 0;
 
-  contas.forEach(conta => {
+  const nomeCache = {}; // cache para CPF -> nome
+
+  for (const conta of contas) {
     const linha = document.createElement('tr');
+
+    let nomeCliente;
+
+    if (nomeCache[conta.cpf]) {
+      nomeCliente = nomeCache[conta.cpf]; // pega do cache
+    } else {
+      nomeCliente = await buscarNomePorCpf(conta.cpf); // consulta no backend
+      nomeCache[conta.cpf] = nomeCliente; // armazena no cache
+    }
+
     const valorFormatado = conta.valor.toLocaleString("pt-BR", {
       style: "currency",
       currency: "BRL"
     });
+
     const vencimentoFormatado = conta.vencimento;
 
     linha.innerHTML = `
-      <td>${conta.nome}</td>
+      <td>${nomeCliente}</td>
       <td>${valorFormatado}</td>
       <td>${vencimentoFormatado}</td>
     `;
+
     corpo.appendChild(linha);
     total += conta.valor;
-  });
-
-  const carrinhoContainer = document.getElementById('carrinhoContainer');
-  carrinhoContainer.style.display = contas.length ? 'block' : 'none';
-
-  // Remove qualquer total anterior
-  const totalAntigo = carrinhoContainer.querySelector('#totalWrapper');
-  if (totalAntigo) {
-    carrinhoContainer.removeChild(totalAntigo);
   }
 
-  // Cria o novo total
-  const totalElement = document.createElement('div');
-  totalElement.id = 'totalWrapper';
-  totalElement.innerHTML = `<hr><label for="total">Total: <span id="total">${total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span></label>`;
-  carrinhoContainer.appendChild(totalElement);
+  document.getElementById('carrinhoContainer').style.display = contas.length ? 'block' : 'none';
+
+  // Atualiza o total SEM duplicar
+  const totalDiv = document.getElementById('totalDiv') || document.createElement('div');
+  totalDiv.id = 'totalDiv';
+  totalDiv.innerHTML = `<hr><label for="total">Total: <span id="total">${total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span></label>`;
+
+  const container = document.getElementById('carrinhoContainer');
+  const totalExistente = document.getElementById('totalDiv');
+  if (!totalExistente) container.appendChild(totalDiv);
+  else container.replaceChild(totalDiv, totalExistente);
 }
+
 
   function formatarData(dataBR) {
   const [dia, mes, ano] = dataBR.split('/');
