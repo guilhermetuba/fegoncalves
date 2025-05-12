@@ -16,7 +16,7 @@
     <option value="atrasadas">Vencidas</option>
     <option value="30">A vencer em até 30 dias</option>
     <option value="60">A vencer em até 60 dias</option>
-    <option value="90">A vencer em 90 dias ou mais</option>
+    <option value="90">Todas à vencer</option>
   </select>
       
     <div id="carrinhoContainer" style="display: none;">
@@ -64,7 +64,7 @@ async function aplicarFiltro() {
     if (filtro === "atrasadas") titulo += " - Vencidas";
     else if (filtro === "30") titulo += " - A vencer em até 30 dias";
     else if (filtro === "60") titulo += " - A vencer em até 60 dias";
-    else if (filtro === "90") titulo += " - A vencer em 90 dias ou mais";
+    else if (filtro === "90") titulo += " - Todas à vencer";
     else if (filtro === "todas") titulo += " - Todas";
 
     document.getElementById('tituloCarrinho').textContent = titulo;
