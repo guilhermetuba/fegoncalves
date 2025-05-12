@@ -108,7 +108,7 @@ async function exibirContas(contas) {
     if (nomeCache[conta.cpf]) {
       nomeCliente = nomeCache[conta.cpf]; // pega do cache
     } else {
-      nomeCliente = await buscarNomePorCpf(conta.cpf); // consulta no backend
+      nomeCliente = await buscarNomesPorCpfs(conta.cpf); // consulta no backend
       nomeCache[conta.cpf] = nomeCliente; // armazena no cache
     }
 
