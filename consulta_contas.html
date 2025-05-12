@@ -61,7 +61,7 @@ async function aplicarFiltro() {
 
     // Buscar nome do cliente por CPF
     for (let conta of contas) {
-      conta.nome = await buscarNomeCliente(conta.cpf);
+      conta.nome = await buscarNomePorCpf(conta.cpf);
     }
 
     // Atualiza título da tabela conforme filtro
