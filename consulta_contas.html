@@ -87,7 +87,8 @@ async function aplicarFiltro() {
 
   async function buscarNomePorCpf(cpf) {
   try {
-    const response = await fetch('https:///meu-backend-xi.vercel.app/api/receber_parcial', {
+    console.log('Buscando nome para CPF:', cpf); // Log de CPF
+    const response = await fetch('https://meu-backend-xi.vercel.app/api/receber_parcial', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -98,9 +99,14 @@ async function aplicarFiltro() {
     if (!response.ok) throw new Error('Erro ao buscar nome');
 
     const data = await response.json();
+    console.log('Resposta recebida para CPF', cpf, ':', data); // Log da resposta
+   if (!response.ok) {
+      console.error('Resposta não OK para CPF:', cpf, response.status);
+      return 'Desconhecido';
+    }
     return data.nome || 'Desconhecido';
   } catch (error) {
-    console.error(error);
+    console.error('Erro ao buscar nome do cliente para CPF', cpf, error);
     return 'Erro ao buscar';
   }
 }
