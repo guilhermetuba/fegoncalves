@@ -10,14 +10,14 @@
         <a href="index.html" class="link-button">Voltar para o Início</a>
         <h2>Contas a Receber</h2>
         <label for="filtro">Filtrar por situação:</label>
-  <select id="filtro" onchange="aplicarFiltro()">
-    <option value="">-- Selecione --</option>
-    <option value="todas">Todas</option>
-    <option value="atrasadas">Vencidas</option>
-    <option value="30">A vencer em até 30 dias</option>
-    <option value="60">A vencer em até 60 dias</option>
-    <option value="90">Todas à vencer</option>
-  </select>
+ <select id="filtro" onchange="aplicarFiltro()">
+  <option value="">-- Selecione --</option>
+  <option value="todas">Todas</option>
+  <option value="atrasadas">Vencidas</option>
+  <option value="30">A vencer em até 30 dias</option>
+  <option value="60">A vencer em até 60 dias</option>
+  <option value="9999">Todas à vencer</option>
+</select>
       
     <div id="carrinhoContainer" style="display: none;">
   <h3 id="tituloCarrinho">Relação de contas à receber</h3>
@@ -44,10 +44,10 @@ async function aplicarFiltro() {
   const filtro = document.getElementById('filtro').value;
   let url = 'https://meu-backend-xi.vercel.app/api/receber_parcial?status=Em aberto';
 
-  if (filtro === 'atrasadas') url += '&dias=-1';
-  else if (filtro === '30') url += '&dias=30';
-  else if (filtro === '60') url += '&dias=60';
-  else if (filtro === '90') url += '&dias=90+';
+ if (filtro === 'atrasadas') url += '&dias=-1';
+else if (filtro === '30') url += '&dias=30';
+else if (filtro === '60') url += '&dias=60';
+else if (filtro === '9999') url += '&dias=9999';
 
   try {
     const response = await fetch(url);
