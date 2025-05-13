@@ -106,24 +106,40 @@ async function carregarClientes() {
         })
         .catch(error => console.error("❌ Erro ao carregar clientes:", error));
 }
-  
-async function carregarProdutos() {
-  const select = document.getElementById('produto');
-  try {
-    const res = await fetch('https://meu-backend-xi.vercel.app/api/consulta_produto');
-    const nomes = await res.json(); // ["Brinco A", "Colar B"]
-    nomes.forEach(nome => {
-      const option = document.createElement('option');
-      option.value = nome;
-      option.textContent = nome;
-      select.appendChild(option);
-    });
-  } catch (e) {
-    console.error('Erro ao carregar produtos', e);
-  }
-}
 
-async function aplicarFiltro() {
+async function carregarProdutos() {
+    fetch("https://meu-backend-xi.vercel.app/api/consulta_produto")
+        .then(response => response.json())
+        .then(data => {
+            if (!data.estoque || data.estoque.length < 2) {
+                console.error("Nenhum produto encontrado.");
+                return;
+            }
+
+            let produtos = data.estoque;
+
+            // Ordena os produtos em ordem alfabética pelo nome
+            produtos.sort((a, b) => a[1].localeCompare(b[1], "pt-BR"));
+
+            let select = document.getElementById("lista_produto");
+            select.innerHTML = "<option value=''>Todos</option>";
+
+            produtos.forEach(linha => {
+                let codigo = linha[0];
+                let nomeProduto = linha[1];
+                if (codigo && nomeProduto) {
+                    let option = document.createElement("option");
+                    option.value = codigo;
+                    option.textContent = nomeProduto;
+                    select.appendChild(option);
+                }
+            });
+        })
+        .catch(error => console.error("Erro ao buscar produtos:", error));
+}
+  
+
+  async function aplicarFiltro() {
   const dataInicio = document.getElementById('dataInicio').value;
   const dataFim = document.getElementById('dataFim').value;
   const cliente = document.getElementById('cliente').value;
@@ -158,7 +174,7 @@ function exibirResultado(dados) {
 
   document.getElementById('resultadoContainer').style.display = 'block';
 }
-  window.onload = carregarClientes;
+  window.onload = carregarClientes;carregarProdutos;
 </script>
 
 </body>
