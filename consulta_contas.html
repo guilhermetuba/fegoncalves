@@ -69,6 +69,15 @@ else if (filtro === '9999') url += '&dias=9999';
 
     document.getElementById('tituloCarrinho').textContent = titulo;
 
+    // Ordenar as contas por data de vencimento (mais próximas primeiro)
+contas.sort((a, b) => {
+  const [diaA, mesA, anoA] = a.vencimento.split('/');
+  const [diaB, mesB, anoB] = b.vencimento.split('/');
+  const dataA = new Date(`${anoA}-${mesA}-${diaA}`);
+  const dataB = new Date(`${anoB}-${mesB}-${diaB}`);
+  return dataA - dataB;
+});
+
     exibirContas(contas, nomesPorCpf);
   } catch (error) {
     alert('Erro ao carregar dados: ' + error.message);
