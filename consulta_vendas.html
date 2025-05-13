@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Consulta de Vendas</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="link-button">Voltar para o Início</a>
+    <h2>Consulta de Vendas</h2>
+
+    <label for="periodo">Período:</label>
+    <select id="periodo" onchange="atualizarDatas()">
+      <option value="">-- Selecione --</option>
+      <option value="mes_atual">Mês Atual</option>
+      <option value="mes_anterior">Mês Anterior</option>
+      <option value="personalizado">Personalizado</option>
+    </select><br><br>
+
+    <div id="datasPersonalizadas" style="display: none;">
+      <label for="dataInicio">Data Inicial:</label>
+      <input type="date" id="dataInicio">
+
+      <label for="dataFim">Data Final:</label>
+      <input type="date" id="dataFim"><br><br>
+    </div>
+
+    <label for="cliente">Cliente:</label>
+    <select id="cliente">
+      <option value="">Todos</option>
+      <!-- Preenchido dinamicamente -->
+    </select>
+
+    <label for="produto">Produto:</label>
+    <select id="produto">
+      <option value="">Todos</option>
+      <!-- Preenchido dinamicamente -->
+    </select>
+
+    <br><br>
+    <button onclick="aplicarFiltro()">Filtrar</button>
+
+    <div id="resultadoContainer" style="display: none; margin-top: 20px;">
+      <h3>Resumo das Vendas</h3>
+      <div id="resultadoResumo"></div>
+    </div>
+
+    <br>
+    <a href="index.html" class="link-button">Voltar para o Início</a>
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  await carregarClientes();
+  await carregarProdutos();
+});
+
+function atualizarDatas() {
+  const periodo = document.getElementById('periodo').value;
+  const hoje = new Date();
+  const inicioInput = document.getElementById('dataInicio');
+  const fimInput = document.getElementById('dataFim');
+  const datasBox = document.getElementById('datasPersonalizadas');
+
+  if (periodo === 'personalizado') {
+    datasBox.style.display = 'block';
+    return;
+  }
+
+  datasBox.style.display = 'none';
+  let inicio, fim;
+
+  if (periodo === 'mes_atual') {
+    inicio = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+    fim = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
+  } else if (periodo === 'mes_anterior') {
+    inicio = new Date(hoje.getFullYear(), hoje.getMonth() - 1, 1);
+    fim = new Date(hoje.getFullYear(), hoje.getMonth(), 0);
+  }
+
+  if (inicio && fim) {
+    inicioInput.value = inicio.toISOString().split('T')[0];
+    fimInput.value = fim.toISOString().split('T')[0];
+  }
+}
+
+async function carregarClientes() {
+  const select = document.getElementById('cliente');
+  try {
+    const res = await fetch('https://meu-backend-xi.vercel.app/api/clientes_nomes');
+    const nomes = await res.json(); // ["Maria", "João", "Carlos"]
+    nomes.forEach(nome => {
+      const option = document.createElement('option');
+      option.value = nome;
+      option.textContent = nome;
+      select.appendChild(option);
+    });
+  } catch (e) {
+    console.error('Erro ao carregar clientes', e);
+  }
+}
+
+async function carregarProdutos() {
+  const select = document.getElementById('produto');
+  try {
+    const res = await fetch('https://meu-backend-xi.vercel.app/api/produtos_nomes');
+    const nomes = await res.json(); // ["Brinco A", "Colar B"]
+    nomes.forEach(nome => {
+      const option = document.createElement('option');
+      option.value = nome;
+      option.textContent = nome;
+      select.appendChild(option);
+    });
+  } catch (e) {
+    console.error('Erro ao carregar produtos', e);
+  }
+}
+
+async function aplicarFiltro() {
+  const dataInicio = document.getElementById('dataInicio').value;
+  const dataFim = document.getElementById('dataFim').value;
+  const cliente = document.getElementById('cliente').value;
+  const produto = document.getElementById('produto').value;
+
+  let url = 'https://meu-backend-xi.vercel.app/api/vendas_resumo?';
+  if (dataInicio) url += `dataInicio=${dataInicio}&`;
+  if (dataFim) url += `dataFim=${dataFim}&`;
+  if (cliente) url += `cliente=${encodeURIComponent(cliente)}&`;
+  if (produto) url += `produto=${encodeURIComponent(produto)}&`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Erro ao buscar resumo');
+
+    const resultado = await response.json(); // { total_valor: 1000, total_quantidade: 10 }
+    exibirResultado(resultado);
+  } catch (error) {
+    alert('Erro: ' + error.message);
+  }
+}
+
+function exibirResultado(dados) {
+  const container = document.getElementById('resultadoResumo');
+  const totalValor = dados.total_valor || 0;
+  const totalQtd = dados.total_quantidade || 0;
+
+  container.innerHTML = `
+    <p><strong>Total de Vendas:</strong> ${totalValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+    <p><strong>Total de Itens Vendidos:</strong> ${totalQtd}</p>
+  `;
+
+  document.getElementById('resultadoContainer').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
