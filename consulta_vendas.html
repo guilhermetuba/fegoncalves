@@ -121,7 +121,7 @@ async function carregarProdutos() {
             // Ordena os produtos em ordem alfabética pelo nome
             produtos.sort((a, b) => a[1].localeCompare(b[1], "pt-BR"));
 
-            let select = document.getElementById("lista_produto");
+            let select = document.getElementById("produto");
             select.innerHTML = "<option value=''>Todos</option>";
 
             produtos.forEach(linha => {
