@@ -88,7 +88,7 @@ function atualizarDatas() {
 async function carregarClientes() {
   const select = document.getElementById('cliente');
   try {
-    const res = await fetch('https://meu-backend-xi.vercel.app/api/clientes_nomes');
+    const res = await fetch('https://meu-backend-xi.vercel.app/api/consulta_cliente');
     const nomes = await res.json(); // ["Maria", "João", "Carlos"]
     nomes.forEach(nome => {
       const option = document.createElement('option');
@@ -104,7 +104,7 @@ async function carregarClientes() {
 async function carregarProdutos() {
   const select = document.getElementById('produto');
   try {
-    const res = await fetch('https://meu-backend-xi.vercel.app/api/produtos_nomes');
+    const res = await fetch('https://meu-backend-xi.vercel.app/api/consulta_produto');
     const nomes = await res.json(); // ["Brinco A", "Colar B"]
     nomes.forEach(nome => {
       const option = document.createElement('option');
@@ -123,7 +123,7 @@ async function aplicarFiltro() {
   const cliente = document.getElementById('cliente').value;
   const produto = document.getElementById('produto').value;
 
-  let url = 'https://meu-backend-xi.vercel.app/api/vendas_resumo?';
+  let url = 'https://meu-backend-xi.vercel.app/api/registrar_venda?';
   if (dataInicio) url += `dataInicio=${dataInicio}&`;
   if (dataFim) url += `dataFim=${dataFim}&`;
   if (cliente) url += `cliente=${encodeURIComponent(cliente)}&`;
