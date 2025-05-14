@@ -69,6 +69,14 @@ function atualizarDatas() {
   }
 
   datasBox.style.display = 'none';
+
+  // ✅ Limpa os campos quando "Tudo" é selecionado
+  if (periodo === '') {
+    inicioInput.value = '';
+    fimInput.value = '';
+    return;
+  }
+
   let inicio, fim;
 
   if (periodo === 'mes_atual') {
@@ -84,6 +92,7 @@ function atualizarDatas() {
     fimInput.value = fim.toISOString().split('T')[0];
   }
 }
+
 
 async function carregarClientes() {
     fetch('https://meu-backend-xi.vercel.app/api/consulta_cliente')
