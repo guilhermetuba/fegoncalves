@@ -106,41 +106,43 @@
       }
     }
 
-    function exibirResultado(dados) {
-      document.getElementById('resultadoContainer').style.display = 'block';
+   function exibirResultado(dados) {
+  const container = document.getElementById('resultadoResumo');
+  const totalValor = dados.total_valor || 0;
+  const totalQtd = dados.total_quantidade || 0;
 
-      const totalValor = dados.total_valor || 0;
-      const totalQtd = dados.total_quantidade || 0;
+  let html = `
+    <p><strong>Total de Vendas:</strong> ${totalValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+    <p><strong>Total de Itens Vendidos:</strong> ${totalQtd}</p>
+  `;
 
-      document.getElementById('resultadoResumo').innerHTML = `
-        <p><strong>Total de Vendas:</strong> ${totalValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-        <p><strong>Total de Itens Vendidos:</strong> ${totalQtd}</p>
-      `;
+  if (dados.resumoClientes) {
+    html += `<h4>Resumo por Cliente</h4>
+    <table>
+      <tr><th>Cliente</th><th>Total Comprado</th></tr>
+      ${Object.entries(dados.resumoClientes).sort((a,b) => b[1] - a[1])
+        .map(([cliente, total]) =>
+          `<tr><td>${cliente}</td><td>${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td></tr>`
+        ).join('')}
+    </table>`;
+  }
 
-      const tbodyClientes = document.querySelector('#tabelaClientes tbody');
-      tbodyClientes.innerHTML = '';
-      (dados.clientes || []).forEach(c => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${c.nome}</td>
-          <td>${c.cpf}</td>
-          <td>${Number(c.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-        `;
-        tbodyClientes.appendChild(tr);
-      });
+  if (dados.resumoProdutos) {
+    html += `<h4>Resumo por Produto</h4>
+    <table>
+      <tr><th>Produto</th><th>Quantidade</th><th>Total Vendido</th></tr>
+      ${Object.entries(dados.resumoProdutos)
+        .sort((a,b) => b[1].total - a[1].total)
+        .map(([produto, info]) =>
+          `<tr><td>${produto}</td><td>${info.quantidade}</td><td>${info.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td></tr>`
+        ).join('')}
+    </table>`;
+  }
 
-      const tbodyProdutos = document.querySelector('#tabelaProdutos tbody');
-      tbodyProdutos.innerHTML = '';
-      (dados.produtos || []).forEach(p => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${p.nome}</td>
-          <td>${p.codigo}</td>
-          <td>${Number(p.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-        `;
-        tbodyProdutos.appendChild(tr);
-      });
-    }
+  container.innerHTML = html;
+  document.getElementById('resultadoContainer').style.display = 'block';
+}
+
   </script>
 </body>
 </html>
