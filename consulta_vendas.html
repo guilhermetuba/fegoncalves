@@ -43,7 +43,7 @@
       <h3>Resumo por Produto</h3>
       <table id="tabelaProdutos" border="1">
         <thead>
-          <tr><th>Produto</th><th>Código</th><th>Total Vendido</th></tr>
+          <tr><th>Código</th><th>Produto</th><th>Quantidade Vendida</th><th>Total Vendido</th></tr>
         </thead>
         <tbody></tbody>
       </table>
@@ -134,8 +134,8 @@
   (dados.produtos || []).forEach(p => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${p.nome}</td>
       <td>${p.codigo}</td>
+      <td>${p.nome}</td>
       <td>${p.quantidade}</td>
       <td>${Number(p.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
     `;
