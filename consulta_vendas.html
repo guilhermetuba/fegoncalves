@@ -16,41 +16,48 @@
       <option value="mes_atual">Mês Atual</option>
       <option value="mes_anterior">Mês Anterior</option>
       <option value="personalizado">Personalizado</option>
-    </select><br><br>
+    </select>
 
-    <div id="datasPersonalizadas" style="display: none;">
+    <div id="datasPersonalizadas" style="display: none; margin-top: 10px;">
       <label for="dataInicio">Data Inicial:</label>
       <input type="date" id="dataInicio">
 
-      <label for="dataFim">Data Final:</label>
-      <input type="date" id="dataFim"><br><br>
+      <label for="dataFim" style="margin-left: 10px;">Data Final:</label>
+      <input type="date" id="dataFim">
     </div>
 
+    <br>
     <button onclick="aplicarFiltro()">Consultar</button>
 
     <div id="resultadoContainer" style="display: none; margin-top: 20px;">
       <h3>Resumo das Vendas</h3>
-      <div id="resultadoResumo"></div>
-      <div class="tabela-wrapper">
-      <h3>Resumo por Cliente</h3>
-      <table id="tabelaClientes" border="1">
-        <thead>
-          <tr><th>Cliente</th><th>CPF</th><th>Total Comprado</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div id="resultadoResumo" style="margin-bottom: 20px;"></div>
 
-      <h3>Resumo por Produto</h3>
-      <table id="tabelaProdutos" border="1">
-        <thead>
-          <tr><th>Código</th><th>Produto</th><th>Quantidade Vendida</th><th>Total Vendido</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="tabela-wrapper">
+        <h3>Resumo por Cliente</h3>
+        <table id="tabelaClientes">
+          <thead>
+            <tr><th>Cliente</th><th>CPF</th><th>Total Vendido</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="tabela-wrapper">
+        <h3>Resumo por Produto</h3>
+        <table id="tabelaProdutos">
+          <thead>
+            <tr><th>Código</th><th>Produto</th><th>Quantidade Vendida</th><th>Total Vendido</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
+
+    <br>
+    <a href="index.html" class="link-button">Voltar para o Início</a>
   </div>
-  </div>
-  <div>
+
   <script>
     function atualizarDatas() {
       const periodo = document.getElementById('periodo').value;
@@ -107,45 +114,42 @@
       }
     }
 
-   function exibirResultado(dados) {
-  document.getElementById('resultadoContainer').style.display = 'block';
+    function exibirResultado(dados) {
+      document.getElementById('resultadoContainer').style.display = 'block';
 
-  const totalValor = dados.total_valor || 0;
-  const totalQtd = dados.total_quantidade || 0;
+      const totalValor = dados.total_valor || 0;
+      const totalQtd = dados.total_quantidade || 0;
 
-  document.getElementById('resultadoResumo').innerHTML = `
-    <p><strong>Total de Vendas:</strong> ${totalValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-    <p><strong>Total de Itens Vendidos:</strong> ${totalQtd}</p>
-  `;
+      document.getElementById('resultadoResumo').innerHTML = `
+        <p><strong>Total de Vendas:</strong> ${totalValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+        <p><strong>Total de Itens Vendidos:</strong> ${totalQtd}</p>
+      `;
 
-  const tbodyClientes = document.querySelector('#tabelaClientes tbody');
-  tbodyClientes.innerHTML = '';
-  (dados.clientes || []).forEach(c => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${c.nome}</td>
-      <td>${c.cpf}</td>
-      <td>${Number(c.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-    `;
-    tbodyClientes.appendChild(tr);
-  });
+      const tbodyClientes = document.querySelector('#tabelaClientes tbody');
+      tbodyClientes.innerHTML = '';
+      (dados.clientes || []).forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${c.nome}</td>
+          <td>${c.cpf}</td>
+          <td>${Number(c.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+        `;
+        tbodyClientes.appendChild(tr);
+      });
 
-  const tbodyProdutos = document.querySelector('#tabelaProdutos tbody');
-  tbodyProdutos.innerHTML = '';
-  (dados.produtos || []).forEach(p => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${p.codigo}</td>
-      <td>${p.nome}</td>
-      <td>${p.quantidade}</td>
-      <td>${Number(p.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-    `;
-    tbodyProdutos.appendChild(tr);
-  });
-}
-
-
+      const tbodyProdutos = document.querySelector('#tabelaProdutos tbody');
+      tbodyProdutos.innerHTML = '';
+      (dados.produtos || []).forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${p.codigo}</td>
+          <td>${p.nome}</td>
+          <td>${p.quantidade}</td>
+          <td>${Number(p.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+        `;
+        tbodyProdutos.appendChild(tr);
+      });
+    }
   </script>
 </body>
 </html>
-
