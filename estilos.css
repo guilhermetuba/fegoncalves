@@ -255,4 +255,46 @@ margin-top: 0;
   margin-bottom: 5px;
 }
 
+#tabelaClientes {
+  width: 100%;
+  font-size: 12px; /* Reduz o tamanho da fonte */
+  border-collapse: collapse;
+}
+
+#tabelaClientes th, #tabelaClientes td {
+  border: 1px solid #ccc;
+  padding: 5px;
+  text-align: center;
+}
+
+#tabelaClientes th {
+  background-color: #e0e0e0;
+  font-weight: bold;
+}
+
+#tabelaClientes td {
+  background-color: #ffffff;
+}
+
+#tabelaProdutos {
+  width: 100%;
+  font-size: 12px; /* Reduz o tamanho da fonte */
+  border-collapse: collapse;
+}
+
+#tabelaProdutos th, #tabelaProdutos td {
+  border: 1px solid #ccc;
+  padding: 5px;
+  text-align: center;
+}
+
+#tabelaProdutos th {
+  background-color: #e0e0e0;
+  font-weight: bold;
+}
+
+#tabelaProdutos td {
+  background-color: #ffffff;
+}
+
 
