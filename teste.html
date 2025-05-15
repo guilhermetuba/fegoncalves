@@ -30,10 +30,10 @@
 
     <div id="resultadoContainer" style="display: none; margin-top: 20px;">
       <h3>Resumo das Vendas</h3>
-      <div id="resultadoResumo"></div>
+      <div id="resultadoResumo" style="margin-bottom: 20px;"></div>
 
-      <h3>Resumo por Cliente</h3>
       <div class="tabela-wrapper">
+        <h3>Resumo por Cliente</h3>
         <table id="tabelaClientes">
           <thead>
             <tr><th>Cliente</th><th>CPF</th><th>Total Comprado</th></tr>
@@ -42,8 +42,8 @@
         </table>
       </div>
 
-      <h3>Resumo por Produto</h3>
       <div class="tabela-wrapper">
+        <h3>Resumo por Produto</h3>
         <table id="tabelaProdutos">
           <thead>
             <tr><th>Código</th><th>Produto</th><th>Quantidade Vendida</th><th>Total Vendido</th></tr>
@@ -52,9 +52,6 @@
         </table>
       </div>
     </div>
-
-    <br>
-    <a href="index.html" class="link-button">Voltar para o Início</a>
   </div>
 
   <script>
@@ -138,18 +135,16 @@
 
       const tbodyProdutos = document.querySelector('#tabelaProdutos tbody');
       tbodyProdutos.innerHTML = '';
-      (dados.produtos || [])
-        .sort((a, b) => b.total - a.total) // Ordenar por total vendido
-        .forEach(p => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${p.codigo}</td>
-            <td>${p.nome}</td>
-            <td>${p.quantidade}</td>
-            <td>${Number(p.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-          `;
-          tbodyProdutos.appendChild(tr);
-        });
+      (dados.produtos || []).forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${p.codigo}</td>
+          <td>${p.nome}</td>
+          <td>${p.quantidade}</td>
+          <td>${Number(p.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+        `;
+        tbodyProdutos.appendChild(tr);
+      });
     }
   </script>
 </body>
