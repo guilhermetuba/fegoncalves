@@ -16,16 +16,17 @@
       <option value="mes_atual">Mês Atual</option>
       <option value="mes_anterior">Mês Anterior</option>
       <option value="personalizado">Personalizado</option>
-    </select><br><br>
+    </select>
 
-    <div id="datasPersonalizadas" style="display: none;">
+    <div id="datasPersonalizadas" style="display: none; margin-top: 10px;">
       <label for="dataInicio">Data Inicial:</label>
       <input type="date" id="dataInicio">
 
-      <label for="dataFim">Data Final:</label>
-      <input type="date" id="dataFim"><br><br>
+      <label for="dataFim" style="margin-left: 10px;">Data Final:</label>
+      <input type="date" id="dataFim">
     </div>
 
+    <br>
     <button onclick="aplicarFiltro()">Consultar</button>
 
     <div id="resultadoContainer" style="display: none; margin-top: 20px;">
@@ -52,6 +53,9 @@
         </table>
       </div>
     </div>
+
+    <br>
+    <a href="index.html" class="link-button">Voltar para o Início</a>
   </div>
 
   <script>
