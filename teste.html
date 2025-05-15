@@ -1,51 +1,156 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dados do Google Sheets</title>
+  <meta charset="UTF-8" />
+  <title>Consulta de Vendas</title>
+  <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
-    <h1>Dados da Planilha</h1>
-    <div id="result"></div>
+  <div class="container">
+    <a href="index.html" class="link-button">Voltar para o Início</a>
+    <h2>Consulta de Vendas</h2>
 
-    <script>
-        const apiKey = 'AIzaSyDmAzDeFQv1DeMwSMKJuTz0c224kI74Mo8'; // Substitua com a sua chave de API
-        const spreadsheetId = '1-r5uYv0yTB3__2rrHNLiosd2mFHHCdJAjwMdvxUKXRQ'; // Substitua com o ID da sua planilha
-        const range = 'Clientes!A1:B5'; // Altere o intervalo conforme necessário
+    <label for="periodo">Período:</label>
+    <select id="periodo" onchange="atualizarDatas()">
+      <option value="">Tudo</option>
+      <option value="mes_atual">Mês Atual</option>
+      <option value="mes_anterior">Mês Anterior</option>
+      <option value="personalizado">Personalizado</option>
+    </select><br><br>
 
-       function getData() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
-    console.log("URL da requisição: ", url);  // Para ver a URL da requisição no console
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            const resultDiv = document.getElementById('result');
-            if (data.values) {
-                let htmlContent = '<table border="1">';
-                data.values.forEach(row => {
-                    htmlContent += '<tr>';
-                    row.forEach(cell => {
-                        htmlContent += `<td>${cell}</td>`;
-                    });
-                    htmlContent += '</tr>';
-                });
-                htmlContent += '</table>';
-                resultDiv.innerHTML = htmlContent;
-            } else {
-                resultDiv.innerHTML = 'Nenhum dado encontrado!';
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao acessar a planilha:', error);
-            document.getElementById('result').innerHTML = 'Erro ao carregar os dados.';
+    <div id="datasPersonalizadas" style="display: none;">
+      <label for="dataInicio">Data Inicial:</label>
+      <input type="date" id="dataInicio">
+
+      <label for="dataFim">Data Final:</label>
+      <input type="date" id="dataFim"><br><br>
+    </div>
+
+    <button onclick="aplicarFiltro()">Consultar</button>
+
+    <div id="resultadoContainer" style="display: none; margin-top: 20px;">
+      <h3>Resumo das Vendas</h3>
+      <div id="resultadoResumo"></div>
+
+      <h3>Resumo por Cliente</h3>
+      <div class="tabela-wrapper">
+        <table id="tabelaClientes">
+          <thead>
+            <tr><th>Cliente</th><th>CPF</th><th>Total Comprado</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <h3>Resumo por Produto</h3>
+      <div class="tabela-wrapper">
+        <table id="tabelaProdutos">
+          <thead>
+            <tr><th>Código</th><th>Produto</th><th>Quantidade Vendida</th><th>Total Vendido</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <br>
+    <a href="index.html" class="link-button">Voltar para o Início</a>
+  </div>
+
+  <script>
+    function atualizarDatas() {
+      const periodo = document.getElementById('periodo').value;
+      const hoje = new Date();
+      const inicioInput = document.getElementById('dataInicio');
+      const fimInput = document.getElementById('dataFim');
+      const datasBox = document.getElementById('datasPersonalizadas');
+
+      if (periodo === 'personalizado') {
+        datasBox.style.display = 'block';
+        return;
+      }
+
+      datasBox.style.display = 'none';
+
+      if (periodo === '') {
+        inicioInput.value = '';
+        fimInput.value = '';
+        return;
+      }
+
+      let inicio, fim;
+
+      if (periodo === 'mes_atual') {
+        inicio = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+        fim = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
+      } else if (periodo === 'mes_anterior') {
+        inicio = new Date(hoje.getFullYear(), hoje.getMonth() - 1, 1);
+        fim = new Date(hoje.getFullYear(), hoje.getMonth(), 0);
+      }
+
+      if (inicio && fim) {
+        inicioInput.value = inicio.toISOString().split('T')[0];
+        fimInput.value = fim.toISOString().split('T')[0];
+      }
+    }
+
+    async function aplicarFiltro() {
+      const dataInicio = document.getElementById('dataInicio').value;
+      const dataFim = document.getElementById('dataFim').value;
+
+      let url = 'https://meu-backend-xi.vercel.app/api/registrar_venda?';
+      if (dataInicio) url += `dataInicio=${dataInicio}&`;
+      if (dataFim) url += `dataFim=${dataFim}&`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Erro ao buscar resumo');
+
+        const resultado = await response.json();
+        exibirResultado(resultado);
+      } catch (error) {
+        alert('Erro: ' + error.message);
+      }
+    }
+
+    function exibirResultado(dados) {
+      document.getElementById('resultadoContainer').style.display = 'block';
+
+      const totalValor = dados.total_valor || 0;
+      const totalQtd = dados.total_quantidade || 0;
+
+      document.getElementById('resultadoResumo').innerHTML = `
+        <p><strong>Total de Vendas:</strong> ${totalValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+        <p><strong>Total de Itens Vendidos:</strong> ${totalQtd}</p>
+      `;
+
+      const tbodyClientes = document.querySelector('#tabelaClientes tbody');
+      tbodyClientes.innerHTML = '';
+      (dados.clientes || []).forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${c.nome}</td>
+          <td>${c.cpf}</td>
+          <td>${Number(c.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+        `;
+        tbodyClientes.appendChild(tr);
+      });
+
+      const tbodyProdutos = document.querySelector('#tabelaProdutos tbody');
+      tbodyProdutos.innerHTML = '';
+      (dados.produtos || [])
+        .sort((a, b) => b.total - a.total) // Ordenar por total vendido
+        .forEach(p => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${p.codigo}</td>
+            <td>${p.nome}</td>
+            <td>${p.quantidade}</td>
+            <td>${Number(p.total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+          `;
+          tbodyProdutos.appendChild(tr);
         });
-}
-
-
-        // Chama a função para pegar os dados quando o site carregar
-        window.onload = getData;
-    </script>
+    }
+  </script>
 </body>
 </html>
-
