@@ -85,32 +85,29 @@
     }
   </style>
 
- <script>
-  (function() {
-    const user = 'admin';
-    const pass = 'fedora';
+  <script>
+    (function() {
+      const user = 'admin';
+      const pass = 'fedora';
 
-    function showLogin() {
-      let username = prompt('Usuário:');
-      let password = prompt('Senha:');
-      if (username === user && password === pass) {
-        localStorage.setItem('logado', 'true');
-        return true;
-      } else {
-        alert('Usuário ou senha incorretos. Acesso negado.');
-        window.location.href = 'https://www.google.com';
-        return false;
+      function showLogin() {
+        let username = prompt('Usuário:');
+        let password = prompt('Senha:');
+        if (username === user && password === pass) {
+          localStorage.setItem('logado', 'true');
+          return true;
+        } else {
+          alert('Usuário ou senha incorretos. Acesso negado.');
+          window.location.href = 'https://www.google.com';
+          return false;
+        }
       }
-    }
 
-    if (localStorage.getItem('logado') !== 'true') {
-      showLogin();
-    }
-
-    // Para criar um logout simples, você pode colocar isso em algum botão:
-    // localStorage.removeItem('logado');
-  })();
-</script>
+      if (localStorage.getItem('logado') !== 'true') {
+        showLogin();
+      }
+    })();
+  </script>
 
 </head>
 <body>
