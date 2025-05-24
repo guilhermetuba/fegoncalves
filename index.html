@@ -85,21 +85,32 @@
     }
   </style>
 
-  <script>
-    (function() {
-      const user = 'admin';    // seu usuário
-      const pass = 'fedora';     // sua senha
+ <script>
+  (function() {
+    const user = 'admin';
+    const pass = 'fedora';
 
+    function showLogin() {
       let username = prompt('Usuário:');
       let password = prompt('Senha:');
-
-      if (username !== user || password !== pass) {
+      if (username === user && password === pass) {
+        localStorage.setItem('logado', 'true');
+        return true;
+      } else {
         alert('Usuário ou senha incorretos. Acesso negado.');
-        window.location.href = 'https://www.google.com'; // redireciona para outro site
+        window.location.href = 'https://www.google.com';
+        return false;
       }
-      // Se estiver certo, deixa abrir a página normalmente
-    })();
-  </script>
+    }
+
+    if (localStorage.getItem('logado') !== 'true') {
+      showLogin();
+    }
+
+    // Para criar um logout simples, você pode colocar isso em algum botão:
+    // localStorage.removeItem('logado');
+  })();
+</script>
 
 </head>
 <body>
