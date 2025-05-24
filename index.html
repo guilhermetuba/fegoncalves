@@ -85,16 +85,16 @@
     }
   </style>
 
-  <script>
+ <script>
     (function() {
       const user = 'admin';
-      const pass = 'fedora';
+      const pass = '1234';
 
       function showLogin() {
         let username = prompt('Usuário:');
         let password = prompt('Senha:');
         if (username === user && password === pass) {
-          localStorage.setItem('logado', 'true');
+          sessionStorage.setItem('logado', 'true');
           return true;
         } else {
           alert('Usuário ou senha incorretos. Acesso negado.');
@@ -103,7 +103,7 @@
         }
       }
 
-      if (localStorage.getItem('logado') !== 'true') {
+      if (sessionStorage.getItem('logado') !== 'true') {
         showLogin();
       }
     })();
