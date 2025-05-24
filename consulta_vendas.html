@@ -29,6 +29,11 @@
     <br>
     <button onclick="aplicarFiltro()">Consultar</button>
 
+    <div id="loading" style="display: none; margin-top: 20px;">
+  <p><strong>Aguarde...</strong></p>
+  <div class="barra-carregamento"></div>
+</div>
+
     <div id="resultadoContainer" style="display: none; margin-top: 20px;">
       <h3>Resumo das Vendas</h3>
       <div id="resultadoResumo" style="margin-bottom: 20px;"></div>
@@ -96,23 +101,34 @@
     }
 
     async function aplicarFiltro() {
-      const dataInicio = document.getElementById('dataInicio').value;
-      const dataFim = document.getElementById('dataFim').value;
+  const dataInicio = document.getElementById('dataInicio').value;
+  const dataFim = document.getElementById('dataFim').value;
 
-      let url = 'https://meu-backend-xi.vercel.app/api/registrar_venda?';
-      if (dataInicio) url += `dataInicio=${dataInicio}&`;
-      if (dataFim) url += `dataFim=${dataFim}&`;
+  const loading = document.getElementById('loading');
+  const resultadoContainer = document.getElementById('resultadoContainer');
 
-      try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Erro ao buscar resumo');
+  // Exibe o "Aguarde..." e esconde o resultado anterior
+  loading.style.display = 'block';
+  resultadoContainer.style.display = 'none';
 
-        const resultado = await response.json();
-        exibirResultado(resultado);
-      } catch (error) {
-        alert('Erro: ' + error.message);
-      }
-    }
+  let url = 'https://meu-backend-xi.vercel.app/api/registrar_venda?';
+  if (dataInicio) url += `dataInicio=${dataInicio}&`;
+  if (dataFim) url += `dataFim=${dataFim}&`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Erro ao buscar resumo');
+
+    const resultado = await response.json();
+    exibirResultado(resultado);
+  } catch (error) {
+    alert('Erro: ' + error.message);
+  } finally {
+    // Esconde o "Aguarde..." após a resposta
+    loading.style.display = 'none';
+  }
+}
+
 
     function exibirResultado(dados) {
       document.getElementById('resultadoContainer').style.display = 'block';
