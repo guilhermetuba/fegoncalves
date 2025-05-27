@@ -37,46 +37,42 @@
       </div>
   
 <script>
-
 document.addEventListener("DOMContentLoaded", () => {
   const loading = document.getElementById("loading");
   const container = document.getElementById("carrinhoContainer");
   const tabelaBody = document.querySelector("#tabelaCarrinho tbody");
 
-  // Mostrar a barra de carregamento
   loading.style.display = "block";
 
   fetch("https://meu-backend-xi.vercel.app/api/consulta_produto")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Erro ao buscar os dados do estoque.");
-      }
-      return response.json();
-    })
-    .then((produtos) => {
-      // Esconde o loading e mostra a tabela
+    .then((response) => response.json())
+    .then((data) => {
+      const produtos = data.estoque;
+      console.log("Produtos recebidos:", produtos);
+
       loading.style.display = "none";
       container.style.display = "block";
 
-      produtos.forEach((produto) => {
+      produtos.forEach((item) => {
         const linha = document.createElement("tr");
         linha.innerHTML = `
-          <td>${produto.codigo}</td>
-          <td>${produto.nome}</td>
-          <td>${produto.fornecedor}</td>
-          <td>${produto.categoria}</td>
-          <td>${produto.quantidade}</td>
-          <td>R$ ${parseFloat(produto.preco_venda).toFixed(2).replace(".", ",")}</td>
+          <td>${item[0]}</td>
+          <td>${item[1]}</td>
+          <td>${item[2] || "-"}</td>
+          <td>${item[3] || "-"}</td>
+          <td>${item[4]}</td>
+          <td>R$ ${parseFloat(item[6] || 0).toFixed(2).replace(".", ",")}</td>
         `;
         tabelaBody.appendChild(linha);
       });
     })
     .catch((error) => {
+      console.error("Erro ao buscar dados:", error);
       loading.innerHTML = `<p style="color:red;"><strong>Erro:</strong> ${error.message}</p>`;
     });
 });
-
 </script>
+
 
 </body>
 </html>
