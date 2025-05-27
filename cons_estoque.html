@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
       linhaTotal.innerHTML = `
         <td colspan="4" style="text-align:right;"><strong>Totais:</strong></td>
         <td><strong>${totalQuantidade}</strong></td>
-        <td><strong>R$ ${totalValor.toFixed(2).replace(".", ",")}</strong></td>
+        <td><strong>R$ ${totalValor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong></td>
       `;
       tabelaBody.appendChild(linhaTotal);
     })
