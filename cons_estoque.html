@@ -1,1 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Estoque</title>
+ <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="link-button">Voltar para o Início</a>
+        <h2>Estoque</h2>
+        
+      <div id="loading" style="display: none; margin-top: 20px;">
+  <p><strong>Aguarde...</strong></p>
+  <div class="barra-carregamento"></div>
+</div>
+      
+    <div id="carrinhoContainer" style="display: none;">
+  <h3 id="tituloCarrinho">Relação de Peças no Estoque</h3>
+  <div class="tabela-wrapper">
+  <table id="tabelaCarrinho">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Peça</th>
+        <th>Fornecedor</th>
+        <th>Categoria</th>
+        <th>Quantidade</th>
+        <th>Preço de Venda</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  </div>
+</div><br>
+<a href="index.html" class="link-button">Voltar para o Início</a>
+      </div>
+  
+<script>
+
+document.addEventListener("DOMContentLoaded", () => {
+  const loading = document.getElementById("loading");
+  const container = document.getElementById("carrinhoContainer");
+  const tabelaBody = document.querySelector("#tabelaCarrinho tbody");
+
+  // Mostrar a barra de carregamento
+  loading.style.display = "block";
+
+  fetch("https://meu-backend-xi.vercel.app/api/consulta_produto")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Erro ao buscar os dados do estoque.");
+      }
+      return response.json();
+    })
+    .then((produtos) => {
+      // Esconde o loading e mostra a tabela
+      loading.style.display = "none";
+      container.style.display = "block";
+
+      produtos.forEach((produto) => {
+        const linha = document.createElement("tr");
+        linha.innerHTML = `
+          <td>${produto.codigo}</td>
+          <td>${produto.nome}</td>
+          <td>${produto.fornecedor}</td>
+          <td>${produto.categoria}</td>
+          <td>${produto.quantidade}</td>
+          <td>R$ ${parseFloat(produto.preco_venda).toFixed(2).replace(".", ",")}</td>
+        `;
+        tabelaBody.appendChild(linha);
+      });
+    })
+    .catch((error) => {
+      loading.innerHTML = `<p style="color:red;"><strong>Erro:</strong> ${error.message}</p>`;
+    });
+});
+
+</script>
+
+</body>
+</html>
 
