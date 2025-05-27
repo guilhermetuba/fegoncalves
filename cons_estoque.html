@@ -17,6 +17,12 @@
       
     <div id="carrinhoContainer" style="display: none;">
   <h3 id="tituloCarrinho">Relação de Peças no Estoque</h3>
+      <label for="filtroCategoria"><strong>Filtrar por Categoria:</strong></label>
+<select id="filtroCategoria">
+  <option value="todas">Todas</option>
+</select>
+<br><br>
+
   <div class="tabela-wrapper">
   <table id="tabelaCarrinho">
     <thead>
@@ -38,58 +44,89 @@
   
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const loading = document.getElementById("loading");
-  const container = document.getElementById("carrinhoContainer");
+  const url = "https://meu-backend-xi.vercel.app/api/consulta_produto";
   const tabelaBody = document.querySelector("#tabelaCarrinho tbody");
+  const carrinhoContainer = document.getElementById("carrinhoContainer");
+  const loading = document.getElementById("loading");
+  const filtroCategoria = document.getElementById("filtroCategoria");
 
-  loading.style.display = "block";
+  let produtosFiltrados = [];
 
-  fetch("https://meu-backend-xi.vercel.app/api/consulta_produto")
-    .then((response) => response.json())
-    .then((data) => {
-      const produtos = data.estoque;
-      let totalQuantidade = 0;
-      let totalValor = 0;
+  async function carregarDados() {
+    loading.style.display = "block";
+    try {
+      const resposta = await fetch(url);
+      const dados = await resposta.json();
+      const produtos = dados.estoque
+        .filter(p => parseInt(p[4]) > 0); // Apenas produtos com quantidade > 0
 
+      produtosFiltrados = produtos;
+      preencherCategorias(produtos);
+      renderizarTabela(produtos);
+    } catch (erro) {
+      alert("Erro ao carregar dados: " + erro.message);
+    } finally {
       loading.style.display = "none";
-      container.style.display = "block";
+      carrinhoContainer.style.display = "block";
+    }
+  }
 
-      produtos.forEach((item) => {
-        const quantidade = parseInt(item[4]);
-        const precoVenda = parseFloat(item[6]?.replace(",", ".") || 0);
-
-        if (quantidade > 0) {
-          totalQuantidade += quantidade;
-          totalValor += quantidade * precoVenda;
-
-          const linha = document.createElement("tr");
-          linha.innerHTML = `
-            <td>${item[0]}</td>
-            <td>${item[1]}</td>
-            <td>${item[2] || "-"}</td>
-            <td>${item[3] || "-"}</td>
-            <td>${quantidade}</td>
-            <td>R$ ${precoVenda.toFixed(2).replace(".", ",")}</td>
-          `;
-          tabelaBody.appendChild(linha);
-        }
-      });
-
-      // Linha de totais
-      const linhaTotal = document.createElement("tr");
-      linhaTotal.innerHTML = `
-        <td colspan="4" style="text-align:right;"><strong>Totais:</strong></td>
-        <td><strong>${totalQuantidade}</strong></td>
-        <td><strong>R$ ${totalValor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong></td>
-      `;
-      tabelaBody.appendChild(linhaTotal);
-    })
-    .catch((error) => {
-      console.error("Erro ao buscar dados:", error);
-      loading.innerHTML = `<p style="color:red;"><strong>Erro:</strong> ${error.message}</p>`;
+  function preencherCategorias(produtos) {
+    const categorias = [...new Set(produtos.map(p => p[3]).filter(Boolean))].sort();
+    categorias.forEach(cat => {
+      const option = document.createElement("option");
+      option.value = cat;
+      option.textContent = cat;
+      filtroCategoria.appendChild(option);
     });
+  }
+
+  function renderizarTabela(produtos) {
+    tabelaBody.innerHTML = "";
+    let totalQuantidade = 0;
+    let totalValor = 0;
+
+    produtos.forEach(p => {
+      const quantidade = parseInt(p[4]);
+      const precoVenda = parseFloat(p[6].replace(",", "."));
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${p[0]}</td>
+        <td>${p[1]}</td>
+        <td>${p[2]}</td>
+        <td>${p[3]}</td>
+        <td>${quantidade}</td>
+        <td>R$ ${precoVenda.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+      `;
+      tabelaBody.appendChild(tr);
+
+      totalQuantidade += quantidade;
+      totalValor += quantidade * precoVenda;
+    });
+
+    // Linha de totais
+    const linhaTotal = document.createElement("tr");
+    linhaTotal.innerHTML = `
+      <td colspan="4" style="text-align:right;"><strong>Totais:</strong></td>
+      <td><strong>${totalQuantidade}</strong></td>
+      <td><strong>R$ ${totalValor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong></td>
+    `;
+    tabelaBody.appendChild(linhaTotal);
+  }
+
+  filtroCategoria.addEventListener("change", () => {
+    const categoria = filtroCategoria.value;
+    const filtrado = categoria === "todas"
+      ? produtosFiltrados
+      : produtosFiltrados.filter(p => p[3] === categoria);
+    renderizarTabela(filtrado);
+  });
+
+  carregarDados();
 });
 </script>
+
 
 
 
