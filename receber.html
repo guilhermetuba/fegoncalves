@@ -108,12 +108,15 @@ document.getElementById("dataPagamento").value = hoje.toISOString().split("T")[0
         const selectCliente = document.getElementById("cliente");
         selectCliente.innerHTML = '<option value="">Selecione um cliente</option>';
 
-        clientes.forEach(cliente => {
-          const option = document.createElement("option");
-          option.value = cliente.cpf; // agora o value é o CPF
-          option.textContent = cliente.nome;
-          selectCliente.appendChild(option);
-        });
+       // Ordena os clientes pelo nome (ordem alfabética, desconsiderando acentos e maiúsculas/minúsculas)
+clientes.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' }));
+
+clientes.forEach(cliente => {
+  const option = document.createElement("option");
+  option.value = cliente.cpf;
+  option.textContent = cliente.nome;
+  selectCliente.appendChild(option);
+});
 
       } catch (error) {
         console.error("Erro ao carregar clientes:", error);
