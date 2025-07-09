@@ -111,13 +111,6 @@ button:hover {
       let form = document.getElementById("clienteForm");
       let formData = new FormData(form);
 
-      // Verificando se o CPF é válido
-      let cpf = formData.get('cpf')
-      if (!validarCPF(cpf)) {
-        alert("CPF inválido.");
-        return;
-      }
-
        // Enviando o formulário via fetch
    fetch("https://meu-backend-xi.vercel.app/api/cadastro", {
   method: "POST",
